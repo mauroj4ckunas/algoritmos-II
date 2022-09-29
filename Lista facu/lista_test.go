@@ -1,12 +1,12 @@
 package lista_test
 
 import (
-	Lista "lista"
 	"github.com/stretchr/testify/require"
+	Lista "lista"
 	"testing"
 )
 
-func TestListaVacia(t *testing.T){
+func TestListaVacia(t *testing.T) {
 	lista := Lista.CrearListaEnlazada[string]()
 	require.True(t, lista.EstaVacia())
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
@@ -85,13 +85,13 @@ func TestOrdenDeListado(t *testing.T) {
 func TestVolumetria(t *testing.T) {
 	lista := Lista.CrearListaEnlazada[int]()
 	//volumetria agregando al final
-	for i:= 0; i < 10000 ; i++ {
+	for i := 0; i < 10000; i++ {
 		lista.InsertarUltimo(i)
 		require.EqualValues(t, i, lista.VerUltimo())
 		require.False(t, lista.EstaVacia())
-		require.EqualValues(t, i + 1, lista.Largo())
+		require.EqualValues(t, i+1, lista.Largo())
 	}
-	for i:= 0; i < 10000 ; i-- {
+	for i := 0; i < 10000; i++ {
 		require.EqualValues(t, i, lista.VerPrimero())
 		require.EqualValues(t, i, lista.BorrarPrimero())
 	}
@@ -102,13 +102,13 @@ func TestVolumetria(t *testing.T) {
 	require.EqualValues(t, 0, lista.Largo())
 
 	//Volumetria agregando al principio
-	for i:= 0; i < 10000 ; i++ {
+	for i := 0; i < 10000; i++ {
 		lista.InsertarPrimero(i)
 		require.EqualValues(t, i, lista.VerPrimero())
 		require.False(t, lista.EstaVacia())
-		require.EqualValues(t, i + 1, lista.Largo())
+		require.EqualValues(t, i+1, lista.Largo())
 	}
-	for i:= 9999; i >= 0 ; i-- {
+	for i := 9999; i >= 0; i-- {
 		require.EqualValues(t, i, lista.VerPrimero())
 		require.EqualValues(t, i, lista.BorrarPrimero())
 	}
