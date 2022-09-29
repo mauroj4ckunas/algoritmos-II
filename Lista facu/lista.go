@@ -8,7 +8,7 @@ type Lista[T any] interface {
 	VerPrimero() T
 	VerUltimo() T
 	Largo() int
-	Iterar(visitar func(T) bool)
+	Iterar(visitar func(*T) bool)
 	Iterador() IteradorLista[T]
 }
 

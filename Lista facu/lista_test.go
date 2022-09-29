@@ -112,4 +112,65 @@ func TestVolumetria(t *testing.T) {
 		require.EqualValues(t, i, lista.VerPrimero())
 		require.EqualValues(t, i, lista.BorrarPrimero())
 	}
+	require.True(t, lista.EstaVacia())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.EqualValues(t, 0, lista.Largo())
+}
+
+func TestIteradorInterno(t *testing.T) {
+	lista := Lista.CrearListaEnlazada[int]()
+	for i := 0; i <= 10; i++ {
+		lista.InsertarUltimo(i)
+	}
+	lista.Iterar(func(elem *int) bool{
+		*elem *= 2
+		return true
+	})
+	for i := 0; i <= 10; i++ {
+		require.EqualValues(t, i * 2, lista.VerPrimero())
+		require.EqualValues(t, i * 2, lista.BorrarPrimero())
+	}
+
+	for i := 4; i <= 20; i += 4 {
+		lista.InsertarUltimo(i)
+	}
+	for i := 24; i <= 40; i += 2 {
+		lista.InsertarUltimo(i)
+	}
+
+	lista.Iterar(func(elem *int) bool{
+		*elem /=2
+		return *elem % 2 == 0
+	})
+	for i := 4; i <= 24; i += 4 {
+		require.EqualValues(t, i / 2, lista.VerPrimero())
+		require.EqualValues(t, i / 2, lista.BorrarPrimero())
+	}
+
+	require.EqualValues(t, 13, lista.VerPrimero())
+	require.EqualValues(t, 13, lista.BorrarPrimero())
+
+	for i := 28; i <= 40; i += 2 {
+		require.EqualValues(t, i, lista.VerPrimero())
+		require.EqualValues(t, i, lista.BorrarPrimero())
+	}
+
+}
+
+
+func TestIteradorInterno(t *testing.T) {
+	lista := Lista.CrearListaEnlazada[string]()
+	lista.InsertarPrimero("Externo")
+	lista.InsertarPrimero("Iterador")
+	lista.InsertarPrimero("Del")
+	lista.InsertarPrimero("Prueba")
+	lista.InsertarPrimero("La")
+	lista.InsertarPrimero("Es")
+	lista.InsertarPrimero("Esta")
+	
+	lista.InsertarPrimero("Gusto")
+	iterador := lista.Iterador()
+
 }

@@ -65,9 +65,9 @@ func (lista *listaEnlazada[T]) Largo() int {
 	return lista.cantidad
 }
 
-func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
+func (lista *listaEnlazada[T]) Iterar(visitar func(*T) bool) {
 	actual := lista.prim
-	for i := 0; i < lista.cantidad && visitar(actual.dato); i++ {
+	for i := 0; i < lista.cantidad && visitar(&actual.dato); i++ {
 		actual = actual.prox
 	}
 }

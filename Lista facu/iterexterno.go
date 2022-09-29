@@ -6,6 +6,13 @@ type iteradorLista[T any] struct {
 	lista    *listaEnlazada[T]
 }
 
+func crearIteradorExterno[T any](actual *nodo[T], lista *listaEnlazada[T]) IteradorLista[T] {
+	iterador := new(iteradorLista[T])
+	iterador.actual = actual
+	iterador.lista = lista
+	return iterador
+}
+
 func (iter *iteradorLista[T]) VerActual() T {
 	if !iter.HaySiguiente() {
 		panic("El iterador termino de iterar")
@@ -60,9 +67,4 @@ func (iter *iteradorLista[T]) Borrar() T {
 	return devolver
 }
 
-func crearIteradorExterno[T any](actual *nodo[T], lista *listaEnlazada[T]) IteradorLista[T] {
-	iterador := new(iteradorLista[T])
-	iterador.actual = actual
-	iterador.lista = lista
-	return iterador
-}
+
