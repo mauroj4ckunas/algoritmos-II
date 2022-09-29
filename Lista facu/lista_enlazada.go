@@ -38,9 +38,6 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
 }
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
 	retorno := lista.VerPrimero()
 	lista.prim = lista.prim.prox
 	lista.cantidad--
