@@ -64,6 +64,9 @@ func TestVolumen(t *testing.T) {
 
 	for k := 1; k <= 10000; k++ {
 		require.EqualValues(t, k, listaInt.BorrarPrimero())
+		if k < 10000 {
+			require.EqualValues(t, k+1, listaInt.VerPrimero())
+		}
 	}
 	validarListaVacia[int](listaInt, t)
 }
