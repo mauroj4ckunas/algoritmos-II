@@ -42,10 +42,30 @@ func TestConVariosElementos(t *testing.T) {
 	listaStr.InsertarPrimero(a)
 	listaStr.InsertarUltimo(c)
 	listaStr.InsertarUltimo(d)
-
+	require.False(t, listaStr.EstaVacia())
 	require.EqualValues(t, a, listaStr.VerPrimero())
 	require.EqualValues(t, d, listaStr.VerUltimo())
 	require.EqualValues(t, 4, listaStr.Largo())
+}
+
+func TestVolumen(t *testing.T) {
+	listaInt := TDALista.CrarListaEnlazada[int]()
+
+	for i := 5000; i >= 1; i-- {
+		listaInt.InsertarPrimero(i)
+		require.EqualValues(t, i, listaInt.VerPrimero())
+	}
+	require.EqualValues(t, 5000, listaInt.VerUltimo())
+	for j := 5001; j <= 10000; j++ {
+		listaInt.InsertarUltimo(j)
+		require.EqualValues(t, j, listaInt.VerUltimo())
+	}
+	require.EqualValues(t, 1, listaInt.VerPrimero())
+
+	for k := 1; k <= 10000; k++ {
+		require.EqualValues(t, k, listaInt.BorrarPrimero())
+	}
+	validarListaVacia[int](listaInt, t)
 }
 
 func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
@@ -53,5 +73,4 @@ func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerPrimero() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerUltimo() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.BorrarPrimero() })
-
 }
