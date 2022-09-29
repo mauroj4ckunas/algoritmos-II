@@ -18,10 +18,7 @@ func (iter *iteradorLista[T]) HaySiguiente() bool {
 }
 
 func (iter *iteradorLista[T]) Siguiente() T {
-	if !iter.HaySiguiente() {
-		panic("El iterador termino de iterar")
-	}
-	devolver := iter.actual.dato
+	devolver := iter.VerActual()
 	iter.anterior = iter.actual
 	iter.actual = iter.actual.prox
 	return devolver
@@ -46,9 +43,7 @@ func (iter *iteradorLista[T]) Insertar(elem T) {
 }
 
 func (iter *iteradorLista[T]) Borrar() T {
-	if !iter.HaySiguiente() {
-		panic("El iterador termino de iterar")
-	}
+	devolver := iter.VerActual()
 
 	if iter.actual.prox == nil {
 		iter.lista.ulti = iter.anterior
@@ -60,7 +55,6 @@ func (iter *iteradorLista[T]) Borrar() T {
 		iter.anterior.prox = iter.actual.prox
 	}
 
-	devolver := iter.actual.dato
 	iter.actual = iter.actual.prox
 	iter.lista.cantidad--
 	return devolver

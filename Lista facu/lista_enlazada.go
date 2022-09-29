@@ -17,7 +17,7 @@ func (lista *listaEnlazada[T]) EstaVacia() bool {
 
 func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 	nodo := crearNodo[T](elem)
-	if lista.prim == nil {
+	if lista.EstaVacia() {
 		lista.ulti = nodo
 	} else {
 		nodo.prox = lista.prim
@@ -28,7 +28,7 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 
 func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
 	nodo := crearNodo[T](elem)
-	if lista.ulti == nil {
+	if lista.EstaVacia() {
 		lista.prim = nodo
 	} else {
 		lista.ulti.prox = nodo
@@ -41,7 +41,7 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	if lista.EstaVacia() {
 		panic("La lista esta vacia")
 	}
-	retorno := lista.prim.dato
+	retorno := lista.VerPrimero()
 	lista.prim = lista.prim.prox
 	lista.cantidad--
 	if lista.prim == nil {
