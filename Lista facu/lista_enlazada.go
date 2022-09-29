@@ -1,80 +1,76 @@
-package lista
+package lista_test
 
-type listaEnlazada[T any] struct {
-	cantidad int
-	prim     *nodo[T]
-	ulti     *nodo[T]
+import (
+	TDALista "lista"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
+
+func TestListaVacia(t *testing.T) {
+	lista := TDALista.CrarListaEnlazada[int]()
+	validarListaVacia(lista, t)
 }
 
-func CrearListaEnlazada[T any]() Lista[T] {
-	lista := new(listaEnlazada[T])
-	return lista
+func TestConUnElemento(t *testing.T) {
+	listaBool := TDALista.CrarListaEnlazada[bool]()
+	listaBool.InsertarPrimero(true)
+	require.EqualValues(t, 1, listaBool.Largo())
+	require.EqualValues(t, true, listaBool.VerPrimero())
+	require.EqualValues(t, true, listaBool.VerUltimo())
+	require.EqualValues(t, true, listaBool.BorrarPrimero())
+	validarListaVacia[bool](listaBool, t)
+
+	listaBool.InsertarUltimo(false)
+	require.EqualValues(t, false, listaBool.VerPrimero())
+	require.EqualValues(t, false, listaBool.VerUltimo())
+	require.EqualValues(t, false, listaBool.BorrarPrimero())
+	require.EqualValues(t, 0, listaBool.Largo())
+	validarListaVacia[bool](listaBool, t)
 }
 
-func (lista *listaEnlazada[T]) EstaVacia() bool {
-	return lista.cantidad == 0
+func TestConVariosElementos(t *testing.T) {
+	listaStr := TDALista.CrarListaEnlazada[string]()
+	var (
+		a string = "Primero"
+		b string = "Segundo"
+		c string = "Tercero"
+		d string = "Cuarto"
+	)
+
+	listaStr.InsertarPrimero(b)
+	listaStr.InsertarPrimero(a)
+	listaStr.InsertarUltimo(c)
+	listaStr.InsertarUltimo(d)
+	require.False(t, listaStr.EstaVacia())
+	require.EqualValues(t, a, listaStr.VerPrimero())
+	require.EqualValues(t, d, listaStr.VerUltimo())
+	require.EqualValues(t, 4, listaStr.Largo())
 }
 
-func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
-	nodo := crearNodo[T](elem)
-	if lista.EstaVacia() {
-		lista.ulti = nodo
-	} else {
-		nodo.prox = lista.prim
+func TestVolumen(t *testing.T) {
+	listaInt := TDALista.CrarListaEnlazada[int]()
+
+	for i := 5000; i >= 1; i-- {
+		listaInt.InsertarPrimero(i)
+		require.EqualValues(t, i, listaInt.VerPrimero())
 	}
-	lista.prim = nodo
-	lista.cantidad++
-}
-
-func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
-	nodo := crearNodo[T](elem)
-	if lista.EstaVacia() {
-		lista.prim = nodo
-	} else {
-		lista.ulti.prox = nodo
+	require.EqualValues(t, 5000, listaInt.VerUltimo())
+	for j := 5001; j <= 10000; j++ {
+		listaInt.InsertarUltimo(j)
+		require.EqualValues(t, j, listaInt.VerUltimo())
 	}
-	lista.ulti = nodo
-	lista.cantidad++
-}
+	require.EqualValues(t, 1, listaInt.VerPrimero())
 
-func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
+	for k := 1; k <= 10000; k++ {
+		require.EqualValues(t, k, listaInt.BorrarPrimero())
 	}
-	retorno := lista.VerPrimero()
-	lista.prim = lista.prim.prox
-	lista.cantidad--
-	if lista.prim == nil {
-		lista.ulti = nil
-	}
-	return retorno
+	validarListaVacia[int](listaInt, t)
 }
 
-func (lista *listaEnlazada[T]) VerPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	return lista.prim.dato
-}
-
-func (lista *listaEnlazada[T]) VerUltimo() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	return lista.ulti.dato
-}
-
-func (lista *listaEnlazada[T]) Largo() int {
-	return lista.cantidad
-}
-
-func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-	actual := lista.prim
-	for i := 0; i < lista.cantidad && visitar(actual.dato); i++ {
-		actual = actual.prox
-	}
-}
-
-func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
-	return crearIteradorExterno[T](lista.prim, lista)
+func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
+	require.True(test, lista.EstaVacia())
+	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.BorrarPrimero() })
 }
