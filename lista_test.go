@@ -15,6 +15,7 @@ func TestListaVacia(t *testing.T) {
 func TestConUnElemento(t *testing.T) {
 	listaBool := TDALista.CrarListaEnlazada[bool]()
 	listaBool.InsertarPrimero(true)
+	require.EqualValues(t, 1, listaBool.Largo())
 	require.EqualValues(t, true, listaBool.VerPrimero())
 	require.EqualValues(t, true, listaBool.VerUltimo())
 	require.EqualValues(t, true, listaBool.BorrarPrimero())
@@ -24,6 +25,7 @@ func TestConUnElemento(t *testing.T) {
 	require.EqualValues(t, false, listaBool.VerPrimero())
 	require.EqualValues(t, false, listaBool.VerUltimo())
 	require.EqualValues(t, false, listaBool.BorrarPrimero())
+	require.EqualValues(t, 0, listaBool.Largo())
 	validarListaVacia[bool](listaBool, t)
 }
 
@@ -36,14 +38,14 @@ func TestConVariosElementos(t *testing.T) {
 		d string = "Cuarto"
 	)
 
-	listaStr.InsertarPrimero(a)
 	listaStr.InsertarPrimero(b)
+	listaStr.InsertarPrimero(a)
 	listaStr.InsertarUltimo(c)
 	listaStr.InsertarUltimo(d)
 
 	require.EqualValues(t, a, listaStr.VerPrimero())
 	require.EqualValues(t, d, listaStr.VerUltimo())
-
+	require.EqualValues(t, 4, listaStr.Largo())
 }
 
 func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
