@@ -31,6 +31,7 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 		nuevo.siguiente = lista.primero
 		lista.primero = nuevo
 	}
+
 	lista.largo++
 }
 
@@ -42,6 +43,7 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
 		lista.ultimo.siguiente = nuevo
 		lista.ultimo = nuevo
 	}
+
 	lista.largo++
 }
 
@@ -74,14 +76,27 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	return datoPrimero
 }
 
+// func (lista *listaEnlazada[T]) BorrarPrimero() T {
+// 	if lista.EstaVacia() {
+// 		panic("La lista esta vacia")
+// 	}
+// 	retorno := lista.VerPrimero()
+// 	lista.primero = lista.primero.siguiente
+// 	lista.largo--
+// 	if lista.primero == nil {
+// 		lista.ultimo = nil
+// 	}
+// 	return retorno
+// }
+
 func (lista *listaEnlazada[T]) Largo() int {
 	return lista.largo
 }
 
-// func CrarListaEnlazada[T any]() Lista[T] {
-// 	lista := new(listaEnlazada[T])
-// 	return lista
-// }
+func CrarListaEnlazada[T any]() Lista[T] {
+	lista := new(listaEnlazada[T])
+	return lista
+}
 
 /* Primitivas de los iteradores */
 
@@ -90,9 +105,9 @@ func (iter *iteradorExterno[T]) VerActual() T {
 	return iter.actual.dato
 }
 
-func (iter *iteradorExterno[T]) HaySiguiente() bool {
-	return iter.actual.siguiente != nil
-}
+// func (iter *iteradorExterno[T]) HaySiguiente() bool {
+// 	return iter.actual.siguiente != nil
+// }
 
 func (iter *iteradorExterno[T]) Siguiente() T {
 	findeIteracion(iter)
@@ -141,6 +156,60 @@ func (iter *iteradorExterno[T]) Borrar() T {
 	return datoFuera
 }
 
+// func (iter *iteradorExterno[T]) VerActual() T {
+// 	if !iter.HaySiguiente() {
+// 		panic("El iterador termino de iterar")
+// 	}
+// 	return iter.actual.dato
+// }
+
+func (iter *iteradorExterno[T]) HaySiguiente() bool {
+	return iter.actual != nil
+}
+
+// func (iter *iteradorExterno[T]) Siguiente() T {
+// 	devolver := iter.VerActual()
+// 	iter.anterior = iter.actual
+// 	iter.actual = iter.actual.siguiente
+// 	return devolver
+// }
+
+// func (iter *iteradorExterno[T]) Insertar(elem T) {
+// 	nuevoNodo := crearNodo[T](elem)
+
+// 	if iter.HaySiguiente() {
+// 		iter.listaExterna.ultimo = nuevoNodo
+// 	}
+
+// 	if iter.anterior == nil {
+// 		iter.listaExterna.primero = nuevoNodo
+// 	} else {
+// 		iter.anterior.siguiente = nuevoNodo
+// 	}
+
+// 	nuevoNodo.siguiente = iter.actual
+// 	iter.actual = nuevoNodo
+// 	iter.listaExterna.largo++
+// }
+
+// func (iter *iteradorExterno[T]) Borrar() T {
+// 	devolver := iter.VerActual()
+
+// 	if iter.actual.siguiente == nil {
+// 		iter.listaExterna.ultimo = iter.anterior
+// 	}
+
+// 	if iter.anterior == nil {
+// 		iter.listaExterna.primero = iter.actual.siguiente
+// 	} else {
+// 		iter.anterior.siguiente = iter.actual.siguiente
+// 	}
+
+// 	iter.actual = iter.actual.siguiente
+// 	iter.listaExterna.largo--
+// 	return devolver
+// }
+
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 	iterador := new(iteradorExterno[T])
 	iterador.actual = lista.primero
@@ -149,7 +218,10 @@ func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 }
 
 func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-
+	actual := lista.primero
+	for i := 0; i < lista.largo && visitar(actual.dato); i++ {
+		actual = actual.siguiente
+	}
 }
 
 // Funciones auxiliares

@@ -12,6 +12,8 @@ func TestListaVacia(t *testing.T) {
 	validarListaVacia(lista, t)
 }
 
+/* Test de TDA Lista (sin iteradores) */
+
 func TestConUnElemento(t *testing.T) {
 	listaBool := TDALista.CrarListaEnlazada[bool]()
 	listaBool.InsertarPrimero(true)
@@ -69,6 +71,26 @@ func TestVolumen(t *testing.T) {
 		}
 	}
 	validarListaVacia[int](listaInt, t)
+}
+
+/* Test de TDA Lista con Iteradores */
+
+func TestIterarVacio(t *testing.T) {
+	lista := TDALista.CrarListaEnlazada[bool]()
+	iter := lista.Iterador()
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
+}
+
+func TestIterarUnElemento(t *testing.T) {
+	listaStr := TDALista.CrarListaEnlazada[string]()
+	listaStr.InsertarPrimero("Segundo")
+	iter := listaStr.Iterador()
+	require.EqualValues(t, "Segundo", iter.VerActual())
+	iter.Insertar("Primero")
+	require.True(t, iter.HaySiguiente())
+	require.EqualValues(t, "Primero", listaStr.VerPrimero())
 }
 
 func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
