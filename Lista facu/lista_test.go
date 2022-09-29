@@ -81,3 +81,35 @@ func TestOrdenDeListado(t *testing.T) {
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
 	require.EqualValues(t, 0, lista.Largo())
 }
+
+func TestVolumetria(t *testing.T) {
+	lista := Lista.CrearListaEnlazada[int]()
+	//volumetria agregando al final
+	for i:= 0; i < 10000 ; i++ {
+		lista.InsertarUltimo(i)
+		require.EqualValues(t, i, lista.VerUltimo())
+		require.False(t, lista.EstaVacia())
+		require.EqualValues(t, i + 1, lista.Largo())
+	}
+	for i:= 0; i < 10000 ; i-- {
+		require.EqualValues(t, i, lista.VerPrimero())
+		require.EqualValues(t, i, lista.BorrarPrimero())
+	}
+	require.True(t, lista.EstaVacia())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.EqualValues(t, 0, lista.Largo())
+
+	//Volumetria agregando al principio
+	for i:= 0; i < 10000 ; i++ {
+		lista.InsertarPrimero(i)
+		require.EqualValues(t, i, lista.VerPrimero())
+		require.False(t, lista.EstaVacia())
+		require.EqualValues(t, i + 1, lista.Largo())
+	}
+	for i:= 9999; i >= 0 ; i-- {
+		require.EqualValues(t, i, lista.VerPrimero())
+		require.EqualValues(t, i, lista.BorrarPrimero())
+	}
+}
