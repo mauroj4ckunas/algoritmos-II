@@ -160,7 +160,7 @@ func TestIteradorInterno(t *testing.T) {
 }
 
 
-func TestIteradorInterno(t *testing.T) {
+func TestIteradorExterno1(t *testing.T) {
 	lista := Lista.CrearListaEnlazada[string]()
 	lista.InsertarPrimero("Externo")
 	lista.InsertarPrimero("Iterador")
@@ -169,8 +169,52 @@ func TestIteradorInterno(t *testing.T) {
 	lista.InsertarPrimero("La")
 	lista.InsertarPrimero("Es")
 	lista.InsertarPrimero("Esta")
-	
 	lista.InsertarPrimero("Gusto")
+	lista.InsertarPrimero("Mucho")
+	lista.InsertarPrimero("Tal")
+	lista.InsertarPrimero("Que")
+	lista.InsertarPrimero("Hola")
 	iterador := lista.Iterador()
+	require.EqualValues(t, "Hola", iterador.VerActual())
+	require.EqualValues(t, "Hola", iterador.Siguiente())
+	require.EqualValues(t, "Que", iterador.VerActual())
+	require.EqualValues(t, "Que", iterador.Siguiente())
+	require.EqualValues(t, "Tal", iterador.VerActual())
+	require.EqualValues(t, "Tal", iterador.Siguiente())
+	require.EqualValues(t, "Mucho", iterador.VerActual())
+	require.EqualValues(t, "Mucho", iterador.Siguiente())
+	require.EqualValues(t, "Gusto", iterador.VerActual())
+	require.EqualValues(t, "Gusto", iterador.Siguiente())
+	require.EqualValues(t, "Esta", iterador.VerActual())
+	require.EqualValues(t, "Esta", iterador.Siguiente())
+	require.EqualValues(t, "Es", iterador.VerActual())
+	require.EqualValues(t, "Es", iterador.Siguiente())
+	require.EqualValues(t, "La", iterador.VerActual())
+	require.EqualValues(t, "La", iterador.Siguiente())
+	require.EqualValues(t, "Prueba", iterador.VerActual())
+	require.EqualValues(t, "Prueba", iterador.Siguiente())
+	require.EqualValues(t, "Del", iterador.VerActual())
+	require.EqualValues(t, "Del", iterador.Siguiente())
+	require.EqualValues(t, "Iterador", iterador.VerActual())
+	require.EqualValues(t, "Iterador", iterador.Siguiente())
+	require.EqualValues(t, "Externo", iterador.VerActual())
+	require.EqualValues(t, "Externo", iterador.Siguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Borrar() })
+}
 
+func TestIteradorExterno2(t *testing.T) {
+	lista := Lista.CrearListaEnlazada[int]()
+	iterador := lista.Iterador()
+	iterador.Insertar(1)
+	require.EqualValues(t, 1, iterador.VerActual())
+	require.EqualValues(t, 1, lista.VerPrimero())
+	require.EqualValues(t, 1, lista.VerUltimo())
+	require.EqualValues(t, 1, lista.Largo())
+	require.EqualValues(t, 1, iterador.Siguiente())
+	require.False(t, iterador.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Borrar() })
 }
