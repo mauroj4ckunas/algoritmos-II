@@ -175,20 +175,46 @@ func TestIteradorExternoPasoPorPaso(t *testing.T) {
 }
 
 func TestIteradorInterno(t *testing.T) {
-	lista := TDALista.CrearListaEnlazada[int]()
+	lista1 := TDALista.CrearListaEnlazada[int]()
+	lista2 := TDALista.CrearListaEnlazada[int]()
+
 	for i := 0; i <= 10; i++ {
-		lista.InsertarUltimo(i)
-	}
-	lista.Iterar(func(elem *int) bool {
-		*elem *= 2
-		return true
-	})
-	for i := 0; i <= 10; i++ {
-		require.EqualValues(t, i*2, lista.VerPrimero())
-		require.EqualValues(t, i*2, lista.BorrarPrimero())
+		lista1.InsertarUltimo(i)
 	}
 
-	for i := 4; i <= 20; i += 4 {
+	lista1.Iterar(func(elem int) bool {
+		elem *= 2
+		lista2.InsertarUltimo(elem)
+		return true
+	})
+
+	for i := 0; i <= 10; i++ {
+		require.EqualValues(t, i*2, lista2.VerPrimero())
+		require.EqualValues(t, i*2, lista2.BorrarPrimero())
+	}
+
+	var (
+		a string = "Mauro"
+		b string = "Facundo"
+		c string = "Martin"
+		d string = "Nicolas"
+		e string = "Wally"
+	)
+
+	dondeEstaWally := TDALista.CrearListaEnlazada[string]()
+	dondeEstaWally.InsertarPrimero(a)
+	dondeEstaWally.InsertarUltimo(b)
+	dondeEstaWally.InsertarUltimo(e)
+	dondeEstaWally.InsertarUltimo(d)
+	dondeEstaWally.InsertarUltimo(c)
+	encontrar := 0
+	dondeEstaWally.Iterar(func(nombre string) bool {
+		encontrar++
+		return nombre != "Wally"
+	})
+	require.Equal(t, 3, encontrar)
+	
+	/*for i := 4; i <= 20; i += 4 {
 		lista.InsertarUltimo(i)
 	}
 	for i := 24; i <= 40; i += 2 {
@@ -210,7 +236,7 @@ func TestIteradorInterno(t *testing.T) {
 	for i := 28; i <= 40; i += 2 {
 		require.EqualValues(t, i, lista.VerPrimero())
 		require.EqualValues(t, i, lista.BorrarPrimero())
-	}
+	}*/
 
 }
 
