@@ -141,9 +141,9 @@ func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 	return iterador
 }
 
-func (lista *listaEnlazada[T]) Iterar(visitar func(*T) bool) {
+func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 	actual := lista.primero
-	for i := 0; i < lista.largo && visitar(&actual.dato); i++ {
+	for i := 0; i < lista.largo && visitar(actual.dato); i++ {
 		actual = actual.siguiente
 	}
 }
