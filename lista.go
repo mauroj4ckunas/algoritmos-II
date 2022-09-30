@@ -50,7 +50,7 @@ type Lista[T any] interface {
 	Largo() int
 
 	// Iterar nos permite aplicarle una funcion que queramos uno por uno a cada elemento de la lista.
-	Iterar(visitar func(*T) bool)
+	Iterar(visitar func(T) bool)
 
 	// Iterador devuelve un iterador que nos permite recorrer todos los elementos de la lista.
 	Iterador() IteradorLista[T]
