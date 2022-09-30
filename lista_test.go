@@ -50,6 +50,73 @@ func TestConVariosElementos(t *testing.T) {
 	require.EqualValues(t, 4, listaStr.Largo())
 }
 
+func TestOrdenDeListado(t *testing.T) {
+	lista := Lista.CrearListaEnlazada[string]()
+	lista.InsertarPrimero("Hola")
+	require.EqualValues(t, 1, lista.Largo())
+	lista.InsertarPrimero("Todo bien")
+	require.EqualValues(t, 2, lista.Largo())
+	lista.InsertarPrimero("Esto")
+	require.EqualValues(t, 3, lista.Largo())
+	lista.InsertarPrimero("Es")
+	require.EqualValues(t, 4, lista.Largo())
+	lista.InsertarPrimero("Una")
+	require.EqualValues(t, 5, lista.Largo())
+	lista.InsertarPrimero("Prueba")
+	require.EqualValues(t, 6, lista.Largo())
+	lista.InsertarPrimero("De")
+	lista.InsertarPrimero("Funcionamiento")
+	require.EqualValues(t, "Funcionamiento", lista.VerPrimero())
+	require.EqualValues(t, "Hola", lista.VerUltimo())
+	lista.InsertarUltimo("Buenas tardes")
+	lista.InsertarUltimo("Este")
+	lista.InsertarUltimo("Es")
+	require.EqualValues(t, 11, lista.Largo())
+	lista.InsertarUltimo("El")
+	require.EqualValues(t, 12, lista.Largo())
+	lista.InsertarUltimo("Ultimo")
+	require.EqualValues(t, 13, lista.Largo())
+	lista.InsertarUltimo("Yey")
+	require.EqualValues(t, 14, lista.Largo())
+	require.EqualValues(t, "Funcionamiento", lista.VerPrimero())
+	require.EqualValues(t, "Yey", lista.VerUltimo())
+	require.EqualValues(t, "Funcionamiento", lista.BorrarPrimero())
+	require.EqualValues(t, "De", lista.VerPrimero())
+	require.EqualValues(t, "Yey", lista.VerUltimo())
+	require.EqualValues(t, "De", lista.BorrarPrimero())
+	require.EqualValues(t, "Prueba", lista.VerPrimero())
+	require.EqualValues(t, "Yey", lista.VerUltimo())
+	require.EqualValues(t, "Prueba", lista.BorrarPrimero())
+	require.EqualValues(t, "Una", lista.VerPrimero())
+	require.EqualValues(t, "Yey", lista.VerUltimo())
+	require.EqualValues(t, "Una", lista.BorrarPrimero())
+	require.EqualValues(t, "Es", lista.VerPrimero())
+	require.EqualValues(t, "Es", lista.BorrarPrimero())
+	require.EqualValues(t, "Esto", lista.VerPrimero())
+	require.EqualValues(t, "Esto", lista.BorrarPrimero())
+	require.EqualValues(t, "Todo bien", lista.VerPrimero())
+	require.EqualValues(t, "Todo bien", lista.BorrarPrimero())
+	require.EqualValues(t, "Hola", lista.VerPrimero())
+	require.EqualValues(t, "Hola", lista.BorrarPrimero())
+	require.EqualValues(t, "Buenas tardes", lista.VerPrimero())
+	require.EqualValues(t, "Buenas tardes", lista.BorrarPrimero())
+	require.EqualValues(t, "Este", lista.VerPrimero())
+	require.EqualValues(t, "Este", lista.BorrarPrimero())
+	require.EqualValues(t, "Es", lista.VerPrimero())
+	require.EqualValues(t, "Es", lista.BorrarPrimero())
+	require.EqualValues(t, "El", lista.VerPrimero())
+	require.EqualValues(t, "El", lista.BorrarPrimero())
+	require.EqualValues(t, "Ultimo", lista.VerPrimero())
+	require.EqualValues(t, "Ultimo", lista.BorrarPrimero())
+	require.EqualValues(t, "Yey", lista.VerPrimero())
+	require.EqualValues(t, "Yey", lista.BorrarPrimero())
+	require.True(t, lista.EstaVacia())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.EqualValues(t, 0, lista.Largo())
+}
+
 func TestVolumen(t *testing.T) {
 	listaInt := TDALista.CrearListaEnlazada[int]()
 
@@ -60,19 +127,20 @@ func TestVolumen(t *testing.T) {
 	require.False(t, listaInt.EstaVacia())
 	require.EqualValues(t, 1, listaInt.VerPrimero())
 	require.EqualValues(t, 5000, listaInt.VerUltimo())
+	require.EqualValues(t, 5000, lista.Largo())
 	for j := 5001; j <= 10000; j++ {
 		listaInt.InsertarUltimo(j)
 		require.EqualValues(t, j, listaInt.VerUltimo())
+		require.EqualValues(t, i, lista.Largo())
 	}
 	require.False(t, listaInt.EstaVacia())
 	require.EqualValues(t, 1, listaInt.VerPrimero())
 	require.EqualValues(t, 10000, listaInt.VerUltimo())
+	require.EqualValues(t, 10000, lista.Largo())
 
 	for k := 1; k <= 10000; k++ {
+		require.EqualValues(t, k, listaInt.VerPrimero())
 		require.EqualValues(t, k, listaInt.BorrarPrimero())
-		if k < 10000 {
-			require.EqualValues(t, k+1, listaInt.VerPrimero())
-		}
 	}
 	validarListaVacia[int](listaInt, t)
 }
@@ -98,6 +166,9 @@ func TestIterarUnElemento(t *testing.T) {
 	require.EqualValues(t, "Segundo", listaStr.VerUltimo())
 	require.EqualValues(t, "Primero", iter.Borrar())
 	require.EqualValues(t, "Segundo", iter.Borrar())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
 	validarListaVacia[string](listaStr, t)
 }
 
@@ -128,6 +199,22 @@ func TestBorrarConElIterador(t *testing.T) {
 	require.EqualValues(t, "Primero luego de eliminar el primero", iter2.Siguiente())
 	require.EqualValues(t, "Anteultimo", iter2.Siguiente())
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter2.Siguiente() })
+}
+
+func TestIteradorExternoConUnElemento(t *testing.T) {
+	lista := Lista.CrearListaEnlazada[int]()
+	iterador := lista.Iterador()
+	iterador.Insertar(1)
+	require.EqualValues(t, 1, iterador.VerActual())
+	require.EqualValues(t, 1, lista.VerPrimero())
+	require.EqualValues(t, 1, lista.VerUltimo())
+	require.EqualValues(t, 1, lista.Largo())
+	require.True(t, iterador.HaySiguiente())
+	require.EqualValues(t, 1, iterador.Siguiente())
+	require.False(t, iterador.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Borrar() })
 }
 
 func TestIteradorExternoPasoPorPaso(t *testing.T) {
@@ -221,22 +308,14 @@ func TestIteradorInterno(t *testing.T) {
 		lista.InsertarUltimo(i)
 	}
 
-	lista.Iterar(func(elem *int) bool {
-		*elem /= 2
-		return *elem%2 == 0
+	suma:=0
+
+	lista.Iterar(func(elem int) bool {
+		suma +=elem
+		return elem % 2 == 0
 	})
-	for i := 4; i <= 24; i += 4 {
-		require.EqualValues(t, i/2, lista.VerPrimero())
-		require.EqualValues(t, i/2, lista.BorrarPrimero())
-	}
-
-	require.EqualValues(t, 13, lista.VerPrimero())
-	require.EqualValues(t, 13, lista.BorrarPrimero())
-
-	for i := 28; i <= 40; i += 2 {
-		require.EqualValues(t, i, lista.VerPrimero())
-		require.EqualValues(t, i, lista.BorrarPrimero())
-	}*/
+	require.EqualValues(t, x, suma)
+	*/
 
 }
 
@@ -245,4 +324,5 @@ func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerPrimero() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerUltimo() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.BorrarPrimero() })
+	require.EqualValues(t, 0, lista.Largo())
 }

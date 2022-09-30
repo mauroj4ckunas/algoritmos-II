@@ -212,6 +212,7 @@ func TestIteradorExterno2(t *testing.T) {
 	require.EqualValues(t, 1, lista.VerPrimero())
 	require.EqualValues(t, 1, lista.VerUltimo())
 	require.EqualValues(t, 1, lista.Largo())
+	require.True(t, iterador.HaySiguiente())
 	require.EqualValues(t, 1, iterador.Siguiente())
 	require.False(t, iterador.HaySiguiente())
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })

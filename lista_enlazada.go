@@ -62,9 +62,6 @@ func (lista *listaEnlazada[T]) VerUltimo() T {
 }
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
 	datoPrimero := lista.VerPrimero()
 	if lista.primero == lista.ultimo {
 		lista.primero = nil
@@ -88,7 +85,9 @@ func CrearListaEnlazada[T any]() Lista[T] {
 /* Primitivas de los iteradores */
 
 func (iter *iteradorExterno[T]) VerActual() T {
-	findeIteracion(iter)
+	if !iter.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
 	return iter.actual.dato
 }
 
@@ -149,12 +148,6 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 }
 
 // Funciones auxiliares
-
-func findeIteracion[T any](iterador *iteradorExterno[T]) {
-	if iterador.actual == nil {
-		panic("El iterador termino de iterar")
-	}
-}
 
 func iniciarLista[T any](listaVacia *listaEnlazada[T], nodo *nodoLista[T]) {
 	listaVacia.primero = nodo
