@@ -32,7 +32,6 @@ func TestInsertarUltimo(t *testing.T) {
 	require.EqualValues(t, 0, listaBool.Largo())
 }
 
-
 func TestChicoDeInserciones(t *testing.T) {
 	listaStr := TDALista.CrearListaEnlazada[string]()
 	var (
@@ -124,7 +123,6 @@ func TestOrdenDeListado(t *testing.T) {
 func TestVolumen(t *testing.T) {
 	listaInt := TDALista.CrearListaEnlazada[int]()
 
-
 	//volumetria agregando al final
 	for i := 0; i < 10000; i++ {
 		listaInt.InsertarUltimo(i)
@@ -138,7 +136,6 @@ func TestVolumen(t *testing.T) {
 	}
 	validarListaVacia[int](listaInt, t)
 
-
 	//Volumetria agregando al principio
 	for i := 0; i < 10000; i++ {
 		listaInt.InsertarPrimero(i)
@@ -151,7 +148,7 @@ func TestVolumen(t *testing.T) {
 		require.EqualValues(t, i, listaInt.BorrarPrimero())
 	}
 	validarListaVacia[int](listaInt, t)
-	
+
 }
 
 /* Test de TDA Lista con Iteradores */
@@ -309,9 +306,6 @@ func TestIteradorVacio(t *testing.T) {
 		return verdadero == elem
 	})
 }
-
-
-
 
 //validadores externos
 
