@@ -14,24 +14,26 @@ func TestListaVacia(t *testing.T) {
 
 /* Test de TDA Lista (sin iteradores) */
 
-func TestConUnElemento(t *testing.T) {
+func TestInsertarPrimero(t *testing.T) {
 	listaBool := TDALista.CrearListaEnlazada[bool]()
 	listaBool.InsertarPrimero(true)
 	require.EqualValues(t, 1, listaBool.Largo())
 	require.EqualValues(t, true, listaBool.VerPrimero())
 	require.EqualValues(t, true, listaBool.VerUltimo())
 	require.EqualValues(t, true, listaBool.BorrarPrimero())
-	validarListaVacia[bool](listaBool, t)
+}
 
+func TestInsertarUltimo(t *testing.T) {
+	listaBool := TDALista.CrearListaEnlazada[bool]()
 	listaBool.InsertarUltimo(false)
 	require.EqualValues(t, false, listaBool.VerPrimero())
 	require.EqualValues(t, false, listaBool.VerUltimo())
 	require.EqualValues(t, false, listaBool.BorrarPrimero())
 	require.EqualValues(t, 0, listaBool.Largo())
-	validarListaVacia[bool](listaBool, t)
 }
 
-func TestConVariosElementos(t *testing.T) {
+
+func TestChicoDeInserciones(t *testing.T) {
 	listaStr := TDALista.CrearListaEnlazada[string]()
 	var (
 		a string = "Primero"
@@ -41,12 +43,18 @@ func TestConVariosElementos(t *testing.T) {
 	)
 
 	listaStr.InsertarPrimero(b)
+	require.EqualValues(t, b, listaStr.VerPrimero())
+	require.EqualValues(t, 1, listaStr.Largo())
 	listaStr.InsertarPrimero(a)
-	listaStr.InsertarUltimo(c)
-	listaStr.InsertarUltimo(d)
-	require.False(t, listaStr.EstaVacia())
+	require.EqualValues(t, b, listaStr.VerUltimo())
 	require.EqualValues(t, a, listaStr.VerPrimero())
+	require.EqualValues(t, 2, listaStr.Largo())
+	listaStr.InsertarUltimo(c)
+	require.EqualValues(t, c, listaStr.VerUltimo())
+	require.EqualValues(t, 3, listaStr.Largo())
+	listaStr.InsertarUltimo(d)
 	require.EqualValues(t, d, listaStr.VerUltimo())
+	require.False(t, listaStr.EstaVacia())
 	require.EqualValues(t, 4, listaStr.Largo())
 }
 
@@ -110,39 +118,40 @@ func TestOrdenDeListado(t *testing.T) {
 	require.EqualValues(t, "Ultimo", lista.BorrarPrimero())
 	require.EqualValues(t, "Yey", lista.VerPrimero())
 	require.EqualValues(t, "Yey", lista.BorrarPrimero())
-	require.True(t, lista.EstaVacia())
-	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
-	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
-	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
-	require.EqualValues(t, 0, lista.Largo())
+	validarListaVacia(lista, t)
 }
 
 func TestVolumen(t *testing.T) {
 	listaInt := TDALista.CrearListaEnlazada[int]()
 
-	for i := 5000; i >= 1; i-- {
-		listaInt.InsertarPrimero(i)
-		require.EqualValues(t, i, listaInt.VerPrimero())
-	}
-	require.False(t, listaInt.EstaVacia())
-	require.EqualValues(t, 1, listaInt.VerPrimero())
-	require.EqualValues(t, 5000, listaInt.VerUltimo())
-	require.EqualValues(t, 5000, listaInt.Largo())
-	for j := 5001; j <= 10000; j++ {
-		listaInt.InsertarUltimo(j)
-		require.EqualValues(t, j, listaInt.VerUltimo())
-		require.EqualValues(t, j, listaInt.Largo())
-	}
-	require.False(t, listaInt.EstaVacia())
-	require.EqualValues(t, 1, listaInt.VerPrimero())
-	require.EqualValues(t, 10000, listaInt.VerUltimo())
-	require.EqualValues(t, 10000, listaInt.Largo())
 
-	for k := 1; k <= 10000; k++ {
-		require.EqualValues(t, k, listaInt.VerPrimero())
-		require.EqualValues(t, k, listaInt.BorrarPrimero())
+	//volumetria agregando al final
+	for i := 0; i < 10000; i++ {
+		listaInt.InsertarUltimo(i)
+		require.EqualValues(t, i, listaInt.VerUltimo())
+		require.False(t, listaInt.EstaVacia())
+		require.EqualValues(t, i+1, listaInt.Largo())
+	}
+	for i := 0; i < 10000; i++ {
+		require.EqualValues(t, i, listaInt.VerPrimero())
+		require.EqualValues(t, i, listaInt.BorrarPrimero())
 	}
 	validarListaVacia[int](listaInt, t)
+
+
+	//Volumetria agregando al principio
+	for i := 0; i < 10000; i++ {
+		listaInt.InsertarPrimero(i)
+		require.EqualValues(t, i, listaInt.VerPrimero())
+		require.False(t, listaInt.EstaVacia())
+		require.EqualValues(t, i+1, listaInt.Largo())
+	}
+	for i := 9999; i >= 0; i-- {
+		require.EqualValues(t, i, listaInt.VerPrimero())
+		require.EqualValues(t, i, listaInt.BorrarPrimero())
+	}
+	validarListaVacia[int](listaInt, t)
+	
 }
 
 /* Test de TDA Lista con Iteradores */
@@ -150,15 +159,13 @@ func TestVolumen(t *testing.T) {
 func TestIterarVacio(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[bool]()
 	iter := lista.Iterador()
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
+	validarIteradorVacio[bool](iter, t)
 }
 
 func TestIterarUnElemento(t *testing.T) {
 	listaStr := TDALista.CrearListaEnlazada[string]()
-	listaStr.InsertarPrimero("Segundo")
 	iter := listaStr.Iterador()
+	iter.Insertar("Segundo")
 	require.EqualValues(t, "Segundo", iter.VerActual())
 	iter.Insertar("Primero")
 	require.True(t, iter.HaySiguiente())
@@ -166,9 +173,7 @@ func TestIterarUnElemento(t *testing.T) {
 	require.EqualValues(t, "Segundo", listaStr.VerUltimo())
 	require.EqualValues(t, "Primero", iter.Borrar())
 	require.EqualValues(t, "Segundo", iter.Borrar())
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
+	validarIteradorVacio[string](iter, t)
 	validarListaVacia[string](listaStr, t)
 }
 
@@ -212,9 +217,7 @@ func TestIteradorExternoConUnElemento(t *testing.T) {
 	require.True(t, iterador.HaySiguiente())
 	require.EqualValues(t, 1, iterador.Siguiente())
 	require.False(t, iterador.HaySiguiente())
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Borrar() })
+	validarIteradorVacio[int](iterador, t)
 }
 
 func TestIteradorExternoPasoPorPaso(t *testing.T) {
@@ -256,9 +259,6 @@ func TestIteradorExternoPasoPorPaso(t *testing.T) {
 	require.EqualValues(t, "Iterador", iterador.Siguiente())
 	require.EqualValues(t, "Externo", iterador.VerActual())
 	require.EqualValues(t, "Externo", iterador.Siguiente())
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Borrar() })
 }
 
 func TestIteradorInterno(t *testing.T) {
@@ -300,24 +300,20 @@ func TestIteradorInterno(t *testing.T) {
 		return nombre != "Wally"
 	})
 	require.Equal(t, 3, encontrar)
-	
-	/*for i := 4; i <= 20; i += 4 {
-		lista.InsertarUltimo(i)
-	}
-	for i := 24; i <= 40; i += 2 {
-		lista.InsertarUltimo(i)
-	}
-
-	suma:=0
-
-	lista.Iterar(func(elem int) bool {
-		suma +=elem
-		return elem % 2 == 0
-	})
-	require.EqualValues(t, x, suma)
-	*/
-
 }
+
+func TestIteradorVacio(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[bool]()
+	var verdadero bool = true
+	lista.Iterar(func(elem bool) bool {
+		return verdadero == elem
+	})
+}
+
+
+
+
+//validadores externos
 
 func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
 	require.True(test, lista.EstaVacia())
@@ -325,4 +321,10 @@ func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerUltimo() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.BorrarPrimero() })
 	require.EqualValues(test, 0, lista.Largo())
+}
+
+func validarIteradorVacio[T any](iter TDALista.IteradorLista[T], test *testing.T) {
+	require.PanicsWithValue(test, "El iterador termino de iterar", func() { iter.VerActual() })
+	require.PanicsWithValue(test, "El iterador termino de iterar", func() { iter.Siguiente() })
+	require.PanicsWithValue(test, "El iterador termino de iterar", func() { iter.Borrar() })
 }
