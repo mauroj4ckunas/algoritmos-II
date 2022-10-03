@@ -8,8 +8,7 @@ type IteradorLista[T any] interface {
 	// VerActual obtiene el valor del elemento en el que este parado el iterador y lo devuelve.
 	VerActual() T
 
-	// HaySiguiente devuelve verdadero si en el siguiente elemento no es vacio, caso contrario
-	// sera falso.
+	// HaySiguiente devuelve verdadero si todavia puedo seguir iterando, caso contrario, llegue al final de la lista y devolvera falso.
 	HaySiguiente() bool
 
 	// Siguiente hace que el iterador pase al siguiente elemento, devolviendo el valor del elemento
@@ -25,7 +24,7 @@ type IteradorLista[T any] interface {
 
 type Lista[T any] interface {
 
-	// EstaVacia devuelve verdadero si la lista no tiene elementos, y falso si no tiene.
+	// EstaVacia devuelve verdadero si la lista no tiene elementos, y falso si tiene.
 	EstaVacia() bool
 
 	// InsertarPrimero agrega un elemento en la primera posicion de la lista.
@@ -49,7 +48,8 @@ type Lista[T any] interface {
 	// Largo develve el valor del largo de la lista.
 	Largo() int
 
-	// Iterar nos permite aplicarle una funcion que queramos uno por uno a cada elemento de la lista.
+	// Iterar recorre la lista elemento por elemento hasta que la funcion pasada por parametro devuelva true
+	// y lo que recibe por parametro la funcion visitar, son los elementos de la lista
 	Iterar(visitar func(T) bool)
 
 	// Iterador devuelve un iterador que nos permite recorrer todos los elementos de la lista.
