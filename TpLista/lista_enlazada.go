@@ -59,7 +59,7 @@ func (lista *listaEnlazada[T]) EstaVacia() bool {
 func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 	nuevo := crearNodo[T](elem)
 	if lista.EstaVacia() {
-		iniciarLista(nuevo)
+		lista.iniciarLista(nuevo)
 	} else {
 		nuevo.siguiente = lista.primero
 		lista.primero = nuevo
@@ -73,7 +73,7 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
 	nuevo := crearNodo[T](elem)
 	if lista.EstaVacia() {
-		iniciarLista(nuevo)
+		lista.iniciarLista(nuevo)
 	} else {
 		lista.ultimo.siguiente = nuevo
 		lista.ultimo = nuevo

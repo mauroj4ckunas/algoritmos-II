@@ -51,7 +51,7 @@ func TestConVariosElementos(t *testing.T) {
 }
 
 func TestOrdenDeListado(t *testing.T) {
-	lista := Lista.CrearListaEnlazada[string]()
+	lista := TDALista.CrearListaEnlazada[string]()
 	lista.InsertarPrimero("Hola")
 	require.EqualValues(t, 1, lista.Largo())
 	lista.InsertarPrimero("Todo bien")
@@ -127,16 +127,16 @@ func TestVolumen(t *testing.T) {
 	require.False(t, listaInt.EstaVacia())
 	require.EqualValues(t, 1, listaInt.VerPrimero())
 	require.EqualValues(t, 5000, listaInt.VerUltimo())
-	require.EqualValues(t, 5000, lista.Largo())
+	require.EqualValues(t, 5000, listaInt.Largo())
 	for j := 5001; j <= 10000; j++ {
 		listaInt.InsertarUltimo(j)
 		require.EqualValues(t, j, listaInt.VerUltimo())
-		require.EqualValues(t, i, lista.Largo())
+		require.EqualValues(t, j, listaInt.Largo())
 	}
 	require.False(t, listaInt.EstaVacia())
 	require.EqualValues(t, 1, listaInt.VerPrimero())
 	require.EqualValues(t, 10000, listaInt.VerUltimo())
-	require.EqualValues(t, 10000, lista.Largo())
+	require.EqualValues(t, 10000, listaInt.Largo())
 
 	for k := 1; k <= 10000; k++ {
 		require.EqualValues(t, k, listaInt.VerPrimero())
@@ -202,7 +202,7 @@ func TestBorrarConElIterador(t *testing.T) {
 }
 
 func TestIteradorExternoConUnElemento(t *testing.T) {
-	lista := Lista.CrearListaEnlazada[int]()
+	lista := TDALista.CrearListaEnlazada[int]()
 	iterador := lista.Iterador()
 	iterador.Insertar(1)
 	require.EqualValues(t, 1, iterador.VerActual())
@@ -324,5 +324,5 @@ func validarListaVacia[T any](lista TDALista.Lista[T], test *testing.T) {
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerPrimero() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.VerUltimo() })
 	require.PanicsWithValue(test, "La lista esta vacia", func() { lista.BorrarPrimero() })
-	require.EqualValues(t, 0, lista.Largo())
+	require.EqualValues(test, 0, lista.Largo())
 }
