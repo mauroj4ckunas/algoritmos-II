@@ -29,7 +29,7 @@ func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
 	}
 }
 
-func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) (string, int) {
+func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	var nombreCandidato string
 	var cantidadVotos int
 	if tipo == 0 {
@@ -42,7 +42,7 @@ func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) (string, in
 		nombreCandidato = partido.intendente.nombre
 		cantidadVotos = partido.intendente.cant_votos
 	}
-	return nombreCandidato, cantidadVotos
+	return fmt.Sprintf("%s: %d votos.", nombreCandidato, cantidadVotos)
 }
 
 func (partido partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
