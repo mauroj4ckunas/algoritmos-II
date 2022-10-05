@@ -2,6 +2,9 @@ package main
 
 import (
 	TDAPila "Pila"
+	Err "errores"
+	"bufio"
+	"fmt"
 	"os"
 )
 
