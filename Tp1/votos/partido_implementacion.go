@@ -45,7 +45,7 @@ func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	return fmt.Sprintf("%s: %d votos.", nombreCandidato, cantidadVotos)
 }
 
-func (partido partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
+func (partido *partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
 	candidatoPres := new(candidatosParaEleccion)
 	candidatoPres.nombre = candidatos[0]
 	partido.presidente = candidatoPres
