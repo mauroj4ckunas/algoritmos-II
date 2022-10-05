@@ -1,5 +1,7 @@
 package votos
 
+import "fmt"
+
 type partidoImplementacion struct {
 	nombre_part string
 	presidente  *candidatosParaEleccion
@@ -29,7 +31,7 @@ func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
 	}
 }
 
-func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) (string, int) {
+func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	var nombreCandidato string
 	var cantidadVotos int
 	if tipo == 0 {
@@ -42,10 +44,10 @@ func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) (string, in
 		nombreCandidato = partido.intendente.nombre
 		cantidadVotos = partido.intendente.cant_votos
 	}
-	return nombreCandidato, cantidadVotos
+	return fmt.Sprintf("%s: %d votos.", nombreCandidato, cantidadVotos)
 }
 
-func (partido partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
+func (partido *partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
 	candidatoPres := new(candidatosParaEleccion)
 	candidatoPres.nombre = candidatos[0]
 	partido.presidente = candidatoPres
