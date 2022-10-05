@@ -18,8 +18,8 @@ const (
 // Si vale 0, es un voto en blanco.
 // Si Impugnado es 'true', entonces no hay que considerar ninguna de las alterantivas señaladas.
 type Voto struct {
-	VotoPorTipo [CANT_VOTACION]int
-	Impugnado   bool
+	VotoPorTipo [CANT_VOTACION]int //array de votos con el numero siendo la lista y la posicion indicando si es el presidente o quien
+	Impugnado   bool  //si esto es true entonces es porque su voto fue anulado
 }
 
 // Votante modela un votante en nuestro sistema de votación
