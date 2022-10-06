@@ -23,11 +23,25 @@ func main() {
 
 	pila := TDAPila.CrearPilaDinamica[string]() // esto es para usarlo para crear los array de los partidos y los participantes
 
+
+	//implementacion array de partidos
+
 	archivoListas, err := os.Open(rutaListas)
 	defer archivoListas.Close()
-	
 	if err != nil { //si la ruta no se puede leer o algo, error
 		var error ErrorLeerArchivo = ErrorLeerArchivo
 		return error.Error()
 	}
+
+
+
+	//implementacion array de votantes
+
+	archivoVotantes, err := os.Open(rutaPadrones)
+	defer archivoVotantes.Close()
+	if err != nil { //si la ruta no se puede leer o algo, error
+		var error ErrorLeerArchivo = ErrorLeerArchivo
+		return error.Error()
+	}
+
 }
