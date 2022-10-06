@@ -16,6 +16,7 @@ func CrearVotante(dni int) Votante {
 	
 	votante := new(votanteImplementacion)
 	votante.dni = dni
+	votante.voto = new(Voto)
 	votante.decisiones = TDAPila.CrearPilaDinamica[[CANT_VOTACION]int]()
 	return votante
 }

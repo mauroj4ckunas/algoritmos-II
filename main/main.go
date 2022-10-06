@@ -3,9 +3,11 @@ package main
 import (
 	TDAPila "Pila"
 	Err "errores"
+	Voto "votos"
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -21,7 +23,7 @@ func main() {
 	rutaListas := parametros[0]    //el primer parametro era el nombre del archivo de las listas
 	rutaPadrones := parametros[1]  //el segundo el de los padrones
 
-	pila := TDAPila.CrearPilaDinamica[string]() // esto es para usarlo para crear los array de los partidos y los participantes
+	
 
 
 	//implementacion array de partidos
@@ -37,11 +39,34 @@ func main() {
 
 	//implementacion array de votantes
 
+	pila := TDAPila.CrearPilaDinamica[string]() // esto es para usarlo para crear los array
+
 	archivoVotantes, err := os.Open(rutaPadrones)
 	defer archivoVotantes.Close()
+	cantidad_votantes := 0
+
 	if err != nil { //si la ruta no se puede leer o algo, error
 		var error ErrorLeerArchivo = ErrorLeerArchivo
-		return error.Error()
+		fmt.Println(error.Error())
+		return
 	}
+
+	padron := bufio.NewScanner(archivoVotantes)
+  	for padron.Scan() {
+  		pila.Apilar(padron.Text())
+     	cantidad_votantes += 1
+  	}
+
+  	error = padron.Err()
+  	if err != nil {
+     	fmt.Println(err)
+  	}
+
+  	votantes := make([cantidad_votantes]Voto.Votante,cantidad_votantes)
+  	for i:= 0 ; i < cantidad_votantes ; i++ {
+  		votantes[i] = Voto.CrearVotante(strconv.Atoi(pila.Desapilar()))
+  	}
+
+
 
 }
