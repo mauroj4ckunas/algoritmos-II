@@ -2,6 +2,11 @@ package errores
 
 import "fmt"
 
+type Errores interface{
+	
+	Error() string
+}
+
 type ErrorLeerArchivo struct{}
 
 func (e ErrorLeerArchivo) Error() string {
