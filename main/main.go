@@ -2,6 +2,7 @@ package main
 
 import (
 	TDAPila "Pila"
+	TDACola "Cola"
 	Err "errores"
 	Voto "votos"
 	"bufio"
@@ -63,10 +64,40 @@ func main() {
 
 	//implementacion array de votantes
   	Votantes, err := PrepararListaVotantes(rutaPadrones)
+
   	if err != nil{
   		fmt.Println(err.Error())
   		return
   	}
+
+
+  	//implementacion de elecciones
+  	filaVotacion := TDACola.CrearColaEnlazada[*Voto.Votante]()
+  	s := bufio.NewScanner(os.Stdin)
+  	for s.Scan() {
+  		comandos := strings.Split(s.Text())
+     	switch comandos[0]{
+     	case "ingresar"{
+     		dni := strconv.Atoi(comandos[1])
+     		if dni <= 0{
+     			err := new(DNIError)
+     			fmt.Println(err.Error())
+     			break
+     		}
+     		posicion := BusquedaVotante(Votantes,dni)
+     		if posicion== -1{
+     			err := new(DNIFueraPadron)
+     			fmt.Println(err.Error())
+     			break
+     		}
+     		filaVotacion.Encolar(&Votantes[posicion])
+     	}
+     	case "votar"{}
+     	case "deshacer"{}
+     	case "fin-votar"{}
+     	default{}
+     	}
+    }
 
 
 }
