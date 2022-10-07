@@ -92,7 +92,27 @@ func main() {
      		}
      		filaVotacion.Encolar(&Votantes[posicion])
      	}
-     	case "votar"{}
+     	case "votar"{
+		if comandos[1] != "Presidente" &&
+		   comandos[1] != "Gobernador" &&
+		   comandos[1] != "Intendente" {
+			ErrorMsj:= new(Err.ErrorTipoVoto)
+			fmt.Println(ErrorMsj.Error())
+		}
+
+		if comandos[2] > len(partido) - 1 || comandos[2] < 0{
+			ErrorMsj:= new(Err.ErrorAlternativaInvalida)
+			fmt.Println(ErrorMsj.Error())
+		} 
+
+		if comandos[1] == "Presidente" {
+			partido[comandos[2]].VotadoPara(0)
+		} else if comandos[1] == "Gobernador" {
+			partido[comandos[2]].VotadoPara(1)
+		} else if comandos[1] == "Intendente" {
+			partido[comandos[2]].VotadoPara(2)
+		}
+	}
      	case "deshacer"{}
      	case "fin-votar"{}
      	default{}
