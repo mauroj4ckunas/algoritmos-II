@@ -83,6 +83,29 @@ func main() {
 		return
 	}
 
+	listaPartidos := bufio.NewScanner(archivoListas)
+	var cantidad_partidos int
+	for listaPartidos.Scan() {
+		cantidad_partidos++ //cuenta la cantidad de partidos que hay para hacer el arreglo
+	}
+	partido := make([]Votos.Partido, cantidad_partidos)
+
+	//Creo el partido que recibira los votos en blanco
+	candVacio := [3]string{"", "", ""}
+	partidoEnBlanco := Votos.CrearPartido("Votos en Blanco", candVacio)
+	partido[0] = partidoEnBlanco
+
+	i := 1
+	for listaPartidos.Scan() {
+		grupo := strings.Split(listaPartidos.Text(), ",")
+		nombrePartido := grupo[0]
+		candidatosPartido := [3]string{grupo[1], grupo[2], grupo[3]}
+
+		nuevoPartido := Votos.CrearPartido(nombrePartido, candidatosPartido)
+		partido[i] = nuevoPartido
+		i++
+	}
+
 
 
 
