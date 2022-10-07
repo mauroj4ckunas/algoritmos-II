@@ -31,6 +31,16 @@ func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
 	}
 }
 
+func (partido *partidoImplementacion) RestarVoto(tipo TipoVoto) {
+	if tipo == 0 {
+		partido.presidente.cant_votos--
+	} else if tipo == 1 {
+		partido.gobernador.cant_votos--
+	} else if tipo == 2 {
+		partido.intendente.cant_votos--
+	}
+}
+
 func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	var nombreCandidato string
 	var cantidadVotos int
