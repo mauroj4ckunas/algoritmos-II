@@ -10,51 +10,6 @@ import (
 	"strconv"
 )
 
-func Merge(izquierda,derecha []int)[]int{
-	array := make([]int, len(izquierda)+len(derecha))
-	k:=0
-	i:=0
-	j:=0
-	for i < len(izquierda) && j < len(derecha){
-		if izquierda[i] <= derecha[j]{
-			array[k] = izquierda[i]
-			i++
-		} else if izquierda[i] > derecha[j] {
-			array[k] = derecha[j]
-			j++
-		}
-		k++
-	}
-	for i < len(izquierda){
-		array[k] = izquierda[i]
-		i++
-		k++
-	}
-	for j < len(derecha){
-		array[k] = derecha[j]
-		j++
-		k++
-	}
-	return array
-
-}
-
-
-func Mergesort(arreglo []int) []int{
-	if len(arreglo) == 1{
-		return arreglo
-	}
-	mitad := len(arreglo)/2
-	izquierda := Mergesort(arreglo[:mitad])
-	derecha := Mergesort(arreglo[mitad:])
-	return Merge(izquierda, derecha)
-}
-
-
-
-
-
-
 
 func main() {
 
@@ -106,52 +61,11 @@ func main() {
 		i++
 	}
 
-
-
-
-
-
-
 	//implementacion array de votantes
-
-	pila := TDAPila.CrearPilaDinamica[int]() // esto es para usarlo para crear los array
-
-	archivoVotantes, err := os.Open(rutaPadrones)
-	defer archivoVotantes.Close()
-	if err != nil { //si la ruta no se puede leer o algo, error
-		ErrorLectura := new(Err.ErrorLeerArchivo)
-		fmt.Println(ErrorLectura.Error())
-		return
-	}
-
-
-
-	padron := bufio.NewScanner(archivoVotantes)
-	cantidad_votantes := 0
-  	for padron.Scan() {
-  		pila.Apilar(strconv.Atoi(padron.Text()))
-     	cantidad_votantes += 1
-  	}
-
-  	/*
-  	err = padron.Err()
-  	if err != nil {
-     	fmt.Println(err)
-  	}*/
-
-
-
-  	array := make([]int,cantidad_votantes)
-  	for i:= 0 ; i < cantidad_votantes ; i++ {
-  		array[i] = pila.Desapilar()
-  	}
-  	array = Mergesort(array[:])
-
-
-
-  	Votantes := make([]Voto.Votante,cantidad_votantes)
-  	for j:= 0 ; j < len(array) ; j++ {
-  		Votantes[j] = Voto.CrearVotante(array[j])
+  	Votantes, err := PrepararListaVotantes(rutaPadrones)
+  	if err != nil{
+  		fmt.Println(err.Error())
+  		return
   	}
 
 
