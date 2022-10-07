@@ -13,8 +13,10 @@ type votanteImplementacion struct {
 }
 
 func CrearVotante(dni int) Votante {
+
 	votante := new(votanteImplementacion)
 	votante.dni = dni
+	votante.voto = new(Voto)
 	votante.decisiones = TDAPila.CrearPilaDinamica[[CANT_VOTACION]int]()
 	return votante
 }
@@ -23,7 +25,7 @@ func (votante votanteImplementacion) LeerDNI() int {
 	return votante.dni
 }
 
-func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) error {
+func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.Errores {
 	if votante.FinDeVoto == true {
 		votante.voto.Impugnado = true
 		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.dni}
@@ -35,7 +37,7 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) erro
 	return nil
 }
 
-func (votante *votanteImplementacion) Deshacer() error {
+func (votante *votanteImplementacion) Deshacer() Err.Errores {
 
 	if votante.FinDeVoto == true {
 		votante.voto.Impugnado = true
@@ -50,7 +52,7 @@ func (votante *votanteImplementacion) Deshacer() error {
 	return nil
 }
 
-func (votante *votanteImplementacion) FinVoto() (Voto, error) {
+func (votante *votanteImplementacion) FinVoto() (Voto, Err.Errores) {
 	if votante.FinDeVoto == true {
 		votante.voto.Impugnado = true
 		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.dni}

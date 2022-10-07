@@ -13,11 +13,31 @@ import (
 
 func Merge(izquierda, derecha []int) []int {
 	array := make([]int, len(izquierda)+len(derecha))
+	k := 0
 	i := 0
 	j := 0
 	for i < len(izquierda) && j < len(derecha) {
-
+		if izquierda[i] <= derecha[j] {
+			array[k] = izquierda[i]
+			i++
+		} else if izquierda[i] > derecha[j] {
+			array[k] = derecha[j]
+			j++
+		}
+		k++
 	}
+	for i < len(izquierda) {
+		array[k] = izquierda[i]
+		i++
+		k++
+	}
+	for j < len(derecha) {
+		array[k] = derecha[j]
+		j++
+		k++
+	}
+	return array
+
 }
 
 func Mergesort(arreglo []int) []int {
@@ -40,7 +60,6 @@ func main() {
 		fmt.Println(ErrorInicial.Error())
 		return
 	}
-
 	rutaListas := parametros[0]   //el primer parametro era el nombre del archivo de las listas
 	rutaPadrones := parametros[1] //el segundo el de los padrones
 
@@ -83,8 +102,6 @@ func main() {
 
 	archivoVotantes, err := os.Open(rutaPadrones)
 	defer archivoVotantes.Close()
-	cantidad_votantes := 0
-
 	if err != nil { //si la ruta no se puede leer o algo, error
 		ErrorLectura := new(Err.ErrorLeerArchivo)
 		fmt.Println(ErrorLectura.Error())
@@ -92,31 +109,27 @@ func main() {
 	}
 
 	padron := bufio.NewScanner(archivoVotantes)
+	cantidad_votantes := 0
 	for padron.Scan() {
 		pila.Apilar(strconv.Atoi(padron.Text()))
 		cantidad_votantes += 1
 	}
 
-	err = padron.Err()
-	if err != nil {
-		fmt.Println(err)
-	}
+	/*
+	  	err = padron.Err()
+	  	if err != nil {
+	     	fmt.Println(err)
+	  	}*/
 
 	array := make([]int, cantidad_votantes)
-
 	for i := 0; i < cantidad_votantes; i++ {
 		array[i] = pila.Desapilar()
 	}
-
 	array = Mergesort(array[:])
 
-	/*
-
-		Votantes := make([]Voto.Votante,cantidad_votantes)
-
-		for i:= 0 ; i < cantidad_votantes ; i++ {
-			Votantes[i] = Voto.CrearVotante(pila.Desapilar())
-		}
-	*/
+	Votantes := make([]Voto.Votante, cantidad_votantes)
+	for j := 0; j < len(array); j++ {
+		Votantes[j] = Voto.CrearVotante(array[j])
+	}
 
 }

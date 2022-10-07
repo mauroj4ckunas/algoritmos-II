@@ -5,10 +5,21 @@ type nodoLista[T any] struct {
 	siguiente *nodoLista[T]
 }
 
+func crearNodo[T any](dato T) *nodoLista[T] {
+	nuevoNodo := new(nodoLista[T])
+	nuevoNodo.dato = dato
+	return nuevoNodo
+}
+
 type listaEnlazada[T any] struct {
 	primero *nodoLista[T]
 	ultimo  *nodoLista[T]
 	largo   int
+}
+
+func CrearListaEnlazada[T any]() Lista[T] {
+	lista := new(listaEnlazada[T])
+	return lista
 }
 
 type iteradorExterno[T any] struct {
@@ -18,17 +29,6 @@ type iteradorExterno[T any] struct {
 }
 
 /* Primitivas de Lista */
-
-func CrearListaEnlazada[T any]() Lista[T] {
-	lista := new(listaEnlazada[T])
-	return lista
-}
-
-func crearNodo[T any](dato T) *nodoLista[T] {
-	nuevoNodo := new(nodoLista[T])
-	nuevoNodo.dato = dato
-	return nuevoNodo
-}
 
 func (lista *listaEnlazada[T]) iniciarLista(nodo *nodoLista[T]) {
 	lista.primero = nodo
