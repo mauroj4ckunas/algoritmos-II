@@ -29,7 +29,7 @@ func CountingSort(array []int, cifra int) []int {
 
 	for i := 0; i < len(sumasAcumuladas)-1; i++ {
 
-		sumasAcumuladas[i+1] = frecuencias[i] + sumasAcumuladas[j]
+		sumasAcumuladas[i+1] = frecuencias[i] + sumasAcumuladas[i]
 
 	}
 

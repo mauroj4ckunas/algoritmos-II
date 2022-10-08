@@ -1,15 +1,5 @@
 package main
 
-import (
-	TDAPila "Pila"
-	"bufio"
-	Err "errores"
-	"fmt"
-	"os"
-	"strconv"
-	Voto "votos"
-)
-
 func Merge(izquierda, derecha []int) []int {
 	array := make([]int, len(izquierda)+len(derecha))
 	k := 0

@@ -2,12 +2,12 @@ package main
 
 import (
 	TDACola "Cola"
-	TDAPila "Pila"
 	"bufio"
 	Err "errores"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	Voto "votos"
 )
 
@@ -40,11 +40,11 @@ func main() {
 	for listaPartidos.Scan() {
 		cantidad_partidos++ //cuenta la cantidad de partidos que hay para hacer el arreglo
 	}
-	partido := make([]Votos.Partido, cantidad_partidos)
+	partido := make([]Voto.Partido, cantidad_partidos)
 
 	//Creo el partido que recibira los votos en blanco
 	candVacio := [3]string{"", "", ""}
-	partidoEnBlanco := Votos.CrearPartido("Votos en Blanco", candVacio)
+	partidoEnBlanco := Voto.CrearPartido("Votos en Blanco", candVacio)
 	partido[0] = partidoEnBlanco
 
 	i := 1
@@ -53,7 +53,7 @@ func main() {
 		nombrePartido := grupo[0]
 		candidatosPartido := [3]string{grupo[1], grupo[2], grupo[3]}
 
-		nuevoPartido := Votos.CrearPartido(nombrePartido, candidatosPartido)
+		nuevoPartido := Voto.CrearPartido(nombrePartido, candidatosPartido)
 		partido[i] = nuevoPartido
 		i++
 	}
@@ -73,10 +73,10 @@ func main() {
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {
 
-		comandos := strings.Split(s.Text())
+		comandos := strings.Split(s.Text(), " ")
 
 		if comandos[0] == "ingresar" {
-			dni := strconv.Atoi(comandos[1])
+			dni, _ := strconv.Atoi(comandos[1])
 			if dni <= 0 {
 
 				err := new(Err.DNIError)
@@ -95,7 +95,7 @@ func main() {
 
 			}
 
-			filaVotacion.Encolar(&Votantes[posicion])
+			filaVotacion.Encolar(Votantes[posicion])
 			fmt.Println("OK")
 			continue
 		}
@@ -120,13 +120,15 @@ func main() {
 
 		case "votar":
 
+			comand2, _ := strconv.Atoi(comandos[2])
+
 			if comandos[1] != "Presidente" && comandos[1] != "Gobernador" && comandos[1] != "Intendente" {
 
 				err := new(Err.ErrorTipoVoto)
 				fmt.Println(err.Error())
 				continue
 
-			} else if comandos[2] > len(partido)-1 || comandos[2] < 0 {
+			} else if comand2 > len(partido)-1 || comand2 < 0 {
 
 				err := new(Err.ErrorAlternativaInvalida)
 				fmt.Println(err.Error())
@@ -137,7 +139,7 @@ func main() {
 			switch comandos[1] {
 
 			case "Presidente":
-				err := filaVotacion.VerPrimero().Votar(PRESIDENTE, comandos[2])
+				err := filaVotacion.VerPrimero().Votar(Voto.PRESIDENTE, comand2)
 				if err != nil {
 
 					filaVotacion.Desencolar()
@@ -147,7 +149,7 @@ func main() {
 				}
 
 			case "Gobernador":
-				err := filaVotacion.VerPrimero().Votar(GOBERNADOR, comandos[2])
+				err := filaVotacion.VerPrimero().Votar(Voto.GOBERNADOR, comand2)
 				if err != nil {
 
 					filaVotacion.Desencolar()
@@ -157,7 +159,7 @@ func main() {
 				}
 
 			case "Intendente":
-				err := filaVotacion.VerPrimero().Votar(GOBERNADOR, comandos[2])
+				err := filaVotacion.VerPrimero().Votar(Voto.INTENDENTE, comand2)
 				if err != nil {
 
 					filaVotacion.Desencolar()
@@ -190,8 +192,8 @@ func main() {
 
 			}
 
-			for puesto := PRESIDENTE; puesto <= INTENDENTE; puesto++ {
-				partido[VotoTerminado[puesto]].VotadoPara(puesto)
+			for puesto := Voto.PRESIDENTE; puesto <= Voto.INTENDENTE; puesto++ {
+				partido[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
 			}
 
 		}
