@@ -12,7 +12,6 @@ import (
 )
 
 func PrepararListaVotantes(rutaPadrones string) []Voto.Votante, Err.Errores {
-	pila := TDAPila.CrearPilaDinamica[int]() // esto es para usarlo para crear los array
 
 	archivoVotantes, err := os.Open(rutaPadrones)
 	defer archivoVotantes.Close()
@@ -25,8 +24,11 @@ func PrepararListaVotantes(rutaPadrones string) []Voto.Votante, Err.Errores {
 
 	padron := bufio.NewScanner(archivoVotantes)
 	cantidad_votantes := 0
+	mayor_numero_digitos := 0 //el numero que tiene mayor cantidad de "cifras/digitos"
   	for padron.Scan() {
-  		pila.Apilar(strconv.Atoi(padron.Text()))
+  		if mayor_numero_digitos < len(padron.Text()) {
+  			mayor_numero_digitos = len(padron.Text())
+  		}
      	cantidad_votantes += 1
   	}
 
@@ -37,12 +39,12 @@ func PrepararListaVotantes(rutaPadrones string) []Voto.Votante, Err.Errores {
   	}*/
 
 
-
+  	padron = bufio.NewScanner(archivoVotantes)
   	array := make([]int,cantidad_votantes)
-  	for i:= 0 ; i < cantidad_votantes ; i++ {
-  		array[i] = pila.Desapilar()
+  	for i := 0 ;padron.Scan(); i++{
+  		array[i] = strconv.Atoi(padron.Text())
   	}
-  	array = Mergesort(array[:])
+  	array = RadixSort(array,mayor_numero_digitos)
 
 
 
