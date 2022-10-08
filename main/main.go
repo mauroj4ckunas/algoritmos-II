@@ -29,6 +29,8 @@ func main() {
 	
 
 
+
+
 	//implementacion array de partidos
 
 	archivoListas, err := os.Open(rutaListas)
@@ -62,6 +64,12 @@ func main() {
 		i++
 	}
 
+
+
+
+
+
+
 	//implementacion array de votantes
   	Votantes, err := PrepararListaVotantes(rutaPadrones)
 
@@ -71,51 +79,183 @@ func main() {
   	}
 
 
+
+
+
+
+
+
   	//implementacion de elecciones
-  	filaVotacion := TDACola.CrearColaEnlazada[*Voto.Votante]()
+
+  	filaVotacion := TDACola.CrearColaEnlazada[Voto.Votante]()
+
+
+
   	s := bufio.NewScanner(os.Stdin)
   	for s.Scan() {
+
   		comandos := strings.Split(s.Text())
+
      	switch comandos[0]{
-     	case "ingresar"{
+
+     	case "ingresar":
+
      		dni := strconv.Atoi(comandos[1])
      		if dni <= 0{
-     			err := new(DNIError)
+
+     			err := new(Err.DNIError)
      			fmt.Println(err.Error())
-     			break
+     			continue
+
      		}
+
      		posicion := BusquedaVotante(Votantes,dni)
+
      		if posicion== -1{
-     			err := new(DNIFueraPadron)
+
+     			err := new(Err.DNIFueraPadron)
      			fmt.Println(err.Error())
-     			break
+     			continue
+
      		}
+
      		filaVotacion.Encolar(&Votantes[posicion])
-     	}
-     	case "votar"{
-		if comandos[1] != "Presidente" &&
-		   comandos[1] != "Gobernador" &&
-		   comandos[1] != "Intendente" {
-			ErrorMsj:= new(Err.ErrorTipoVoto)
-			fmt.Println(ErrorMsj.Error())
-		} else if comandos[2] > len(partido) - 1 || comandos[2] < 0 {
-			ErrorMsj:= new(Err.ErrorAlternativaInvalida)
-			fmt.Println(ErrorMsj.Error())
-			} else {
-				if comandos[1] == "Presidente" {
-					partido[comandos[2]].VotadoPara(0)
-				} else if comandos[1] == "Gobernador" {
-					partido[comandos[2]].VotadoPara(1)
-				} else if comandos[1] == "Intendente" {
-					partido[comandos[2]].VotadoPara(2)
-				}
+     	
+
+
+
+     	case "votar":
+
+     		if filaVotacion.EstaVacia(){
+
+     			err := new(Err.FilaVacia)
+     			fmt.Println(err.Error())
+     			continue
+
+     		} else if comandos[1] != "Presidente" && comandos[1] != "Gobernador" && comandos[1] != "Intendente" {
+
+				err:= new(Err.ErrorTipoVoto)
+				fmt.Println(err.Error())
+				continue
+
+			} else if comandos[2] > len(partido) - 1 || comandos[2] < 0 {
+
+				err:= new(Err.ErrorAlternativaInvalida)
+				fmt.Println(err.Error())
+				continue
+
+			}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
+
+				err := filaVotacion.VerPrimero().Votar(0,0)
+				filaVotacion.Desencolar()
+  				fmt.Println(err.Error())
+
+  				//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
+  				continue
 			}
-		}
-	}
-     	case "deshacer"{}
-     	case "fin-votar"{}
-     	default{}
+
+     		switch comandos[1]{
+
+     		case "Presidente":
+     			err := filaVotacion.VerPrimero().Votar(PRESIDENTE,comandos[2])
+     			if err != nil{
+
+     				filaVotacion.Desencolar()
+  					fmt.Println(err.Error())
+  					continue
+
+  				}
+
+  			case "Gobernador":
+     			err := filaVotacion.VerPrimero().Votar(GOBERNADOR,comandos[2])
+     			if err != nil{
+
+     				filaVotacion.Desencolar()
+  					fmt.Println(err.Error())
+  					continue
+
+  				}
+     		
+
+     		case "Intendente":
+     			err := filaVotacion.VerPrimero().Votar(GOBERNADOR,comandos[2])
+     			if err != nil{
+
+     				filaVotacion.Desencolar()
+  					fmt.Println(err.Error())
+  					continue
+
+  				}
+
+     		}
+
+
+
+
+     	case "deshacer":
+
+     		if filaVotacion.EstaVacia(){
+
+     			err := new(Err.FilaVacia)
+     			fmt.Println(err.Error())
+     			continue
+
+     		}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
+
+				err := filaVotacion.VerPrimero().Votar(0,0)
+				filaVotacion.Desencolar()
+  				fmt.Println(err.Error())
+
+  				//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
+  				continue
+			}
+
+			err := filaVotacion.VerPrimero().Deshacer()
+			if err != nil{
+
+     			filaVotacion.Desencolar()
+  				fmt.Println(err.Error())
+  				continue
+
+  			}
+
+
+
+
+     	case "fin-votar":
+     		
+     		if filaVotacion.EstaVacia(){
+
+     			err := new(Err.FilaVacia)
+     			fmt.Println(err.Error())
+     			continue
+
+     		}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
+
+				err := filaVotacion.VerPrimero().Votar(0,0)
+				filaVotacion.Desencolar()
+  				fmt.Println(err.Error())
+
+  				//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
+  				continue
+			}
+
+			VotoTerminado,err := filaVotacion.VerPrimero().FinVoto()
+			if err != nil{
+
+     			filaVotacion.Desencolar()
+  				fmt.Println(err.Error())
+  				continue
+
+  			}
+
+  			for puesto := PRESIDENTE; puesto < INTENDENTE + 1 ; puesto++ {
+  				partido[VotoTerminado[puesto]].VotadoPara(puesto)
+  			}
+
+
      	}
+
     }
 
 
