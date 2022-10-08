@@ -21,6 +21,10 @@ func CrearVotante(dni int) Votante {
 	return votante
 }
 
+func (votante *votanteImplementacion) HistorialVoto() [CANT_VOTACION]int {
+	return votante.voto.VotoPorTipo
+}
+
 func (votante *votanteImplementacion) FraudulentoPorPrimeraVez() bool {
 	return (votante.FinDeVoto == true) && (votante.voto.Impugnado == false)
 }

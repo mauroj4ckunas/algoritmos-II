@@ -51,7 +51,7 @@ func main() {
 	for listaPartidos.Scan() {
 		grupo := strings.Split(listaPartidos.Text(), ",")
 		nombrePartido := grupo[0]
-		candidatosPartido := [3]string{grupo[1], grupo[2], grupo[3]}
+		candidatosPartido := [Voto.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
 		nuevoPartido := Voto.CrearPartido(nombrePartido, candidatosPartido)
 		partido[i] = nuevoPartido
 		i++
@@ -131,7 +131,12 @@ func main() {
 			filaVotacion.Desencolar()
 			fmt.Println(err.Error())
 
-			//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
+			votosRestados := filaVotacion.VerPrimero().HistorialVoto()
+
+			partido[votosRestados[Voto.PRESIDENTE]].RestarVoto(Voto.PRESIDENTE)
+			partido[votosRestados[Voto.GOBERNADOR]].RestarVoto(Voto.GOBERNADOR)
+			partido[votosRestados[Voto.INTENDENTE]].RestarVoto(Voto.INTENDENTE)
+
 			continue
 		}
 
@@ -202,7 +207,7 @@ func main() {
 
 		case "fin-votar":
 
-			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto() //struct Voto [1,3,5]
+			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto()
 			filaVotacion.Desencolar()
 			if err != nil {
 

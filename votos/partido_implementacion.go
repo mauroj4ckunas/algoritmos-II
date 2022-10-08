@@ -14,7 +14,7 @@ type candidatosParaEleccion struct {
 	cant_votos int
 }
 
-func CrearPartido(nombre string, candidatos [CANT_VOTACION]string) Partido {
+func CrearPartido(nombre string, candidatos [3]string) Partido {
 	nuevoPartido := new(partidoImplementacion)
 	nuevoPartido.nombre_part = nombre
 	nuevoPartido.inscribirCandidatos(candidatos)

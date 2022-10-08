@@ -48,4 +48,6 @@ type Votante interface {
 	FinVoto() (Voto, Err.Errores)
 
 	FraudulentoPorPrimeraVez() bool
+
+	HistorialVoto() [CANT_VOTACION]int
 }
