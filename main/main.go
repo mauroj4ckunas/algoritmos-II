@@ -1,54 +1,17 @@
 package main
 
 import (
-	TDAPila "Pila"
+	TDACola "Cola"
+	"strings"
+
+	//TDAPila "Pila"
 	"bufio"
 	Err "errores"
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
-	Votos "votos"
+	Voto "votos"
 )
-
-func Merge(izquierda, derecha []int) []int {
-	array := make([]int, len(izquierda)+len(derecha))
-	k := 0
-	i := 0
-	j := 0
-	for i < len(izquierda) && j < len(derecha) {
-		if izquierda[i] <= derecha[j] {
-			array[k] = izquierda[i]
-			i++
-		} else if izquierda[i] > derecha[j] {
-			array[k] = derecha[j]
-			j++
-		}
-		k++
-	}
-	for i < len(izquierda) {
-		array[k] = izquierda[i]
-		i++
-		k++
-	}
-	for j < len(derecha) {
-		array[k] = derecha[j]
-		j++
-		k++
-	}
-	return array
-
-}
-
-func Mergesort(arreglo []int) []int {
-	if len(arreglo) == 1 {
-		return arreglo
-	}
-	mitad := len(arreglo) / 2
-	izquierda := Mergesort(arreglo[:mitad])
-	derecha := Mergesort(arreglo[mitad:])
-	return Merge(izquierda, derecha)
-}
 
 func main() {
 
@@ -60,6 +23,7 @@ func main() {
 		fmt.Println(ErrorInicial.Error())
 		return
 	}
+
 	rutaListas := parametros[0]   //el primer parametro era el nombre del archivo de las listas
 	rutaPadrones := parametros[1] //el segundo el de los padrones
 
@@ -78,11 +42,11 @@ func main() {
 	for listaPartidos.Scan() {
 		cantidad_partidos++ //cuenta la cantidad de partidos que hay para hacer el arreglo
 	}
-	partido := make([]Votos.Partido, cantidad_partidos)
+	partido := make([]Voto.Partido, cantidad_partidos)
 
 	//Creo el partido que recibira los votos en blanco
 	candVacio := [3]string{"", "", ""}
-	partidoEnBlanco := Votos.CrearPartido("Votos en Blanco", candVacio)
+	partidoEnBlanco := Voto.CrearPartido("Votos en Blanco", candVacio)
 	partido[0] = partidoEnBlanco
 
 	i := 1
@@ -91,45 +55,166 @@ func main() {
 		nombrePartido := grupo[0]
 		candidatosPartido := [3]string{grupo[1], grupo[2], grupo[3]}
 
-		nuevoPartido := Votos.CrearPartido(nombrePartido, candidatosPartido)
+		nuevoPartido := Voto.CrearPartido(nombrePartido, candidatosPartido)
 		partido[i] = nuevoPartido
 		i++
 	}
 
 	//implementacion array de votantes
+	Votantes, err := PrepararListaVotantes(rutaPadrones)
 
-	pila := TDAPila.CrearPilaDinamica[int]() // esto es para usarlo para crear los array
-
-	archivoVotantes, err := os.Open(rutaPadrones)
-	defer archivoVotantes.Close()
-	if err != nil { //si la ruta no se puede leer o algo, error
-		ErrorLectura := new(Err.ErrorLeerArchivo)
-		fmt.Println(ErrorLectura.Error())
+	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 
-	padron := bufio.NewScanner(archivoVotantes)
-	cantidad_votantes := 0
-	for padron.Scan() {
-		pila.Apilar(strconv.Atoi(padron.Text()))
-		cantidad_votantes += 1
-	}
+	defer func() {
 
-	/*
-	  	err = padron.Err()
-	  	if err != nil {
-	     	fmt.Println(err)
-	  	}*/
+		for k := PRESIDENTE; k <= INTENDENTE; k++ {
+			switch k {
+			case 0:
+				fmt.Println("Presidente: ")
+			case 1:
+				fmt.Println("Gobernador: ")
+			case 2:
+				fmt.Println("Intendente: ")
+			}
+			for p := 0; p < cantidad_partidos; p++ {
+				partido[p].ObtenerResultado(k)
+			}
+		}
 
-	array := make([]int, cantidad_votantes)
-	for i := 0; i < cantidad_votantes; i++ {
-		array[i] = pila.Desapilar()
-	}
-	array = Mergesort(array[:])
+	}()
 
-	Votantes := make([]Voto.Votante, cantidad_votantes)
-	for j := 0; j < len(array); j++ {
-		Votantes[j] = Voto.CrearVotante(array[j])
+	//implementacion de elecciones
+
+	filaVotacion := TDACola.CrearColaEnlazada[Voto.Votante]()
+
+	s := bufio.NewScanner(os.Stdin)
+	for s.Scan() {
+
+		comandos := strings.Split(s.Text())
+
+		if comandos[0] == "ingresar" {
+			dni := strconv.Atoi(comandos[1])
+			if dni <= 0 {
+
+				err := new(Err.DNIError)
+				fmt.Println(err.Error())
+				continue
+
+			}
+
+			posicion := BusquedaVotante(Votantes, dni)
+
+			if posicion == -1 {
+
+				err := new(Err.DNIFueraPadron)
+				fmt.Println(err.Error())
+				continue
+
+			}
+
+			filaVotacion.Encolar(&Votantes[posicion])
+			continue
+		}
+
+		if filaVotacion.EstaVacia() {
+
+			err := new(Err.FilaVacia)
+			fmt.Println(err.Error())
+			continue
+
+		} else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez() {
+
+			err := filaVotacion.VerPrimero().Votar(0, 0)
+			filaVotacion.Desencolar()
+			fmt.Println(err.Error())
+
+			//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
+			continue
+		}
+
+		switch comandos[0] {
+
+		case "votar":
+
+			if comandos[1] != "Presidente" && comandos[1] != "Gobernador" && comandos[1] != "Intendente" {
+
+				err := new(Err.ErrorTipoVoto)
+				fmt.Println(err.Error())
+				continue
+
+			} else if comandos[2] > len(partido)-1 || comandos[2] < 0 {
+
+				err := new(Err.ErrorAlternativaInvalida)
+				fmt.Println(err.Error())
+				continue
+
+			}
+
+			switch comandos[1] {
+
+			case "Presidente":
+				err := filaVotacion.VerPrimero().Votar(PRESIDENTE, comandos[2])
+				if err != nil {
+
+					filaVotacion.Desencolar()
+					fmt.Println(err.Error())
+					continue
+
+				}
+
+			case "Gobernador":
+				err := filaVotacion.VerPrimero().Votar(GOBERNADOR, comandos[2])
+				if err != nil {
+
+					filaVotacion.Desencolar()
+					fmt.Println(err.Error())
+					continue
+
+				}
+
+			case "Intendente":
+				err := filaVotacion.VerPrimero().Votar(GOBERNADOR, comandos[2])
+				if err != nil {
+
+					filaVotacion.Desencolar()
+					fmt.Println(err.Error())
+					continue
+
+				}
+
+			}
+
+		case "deshacer":
+
+			err := filaVotacion.VerPrimero().Deshacer()
+			if err != nil {
+
+				filaVotacion.Desencolar()
+				fmt.Println(err.Error())
+				continue
+
+			}
+
+		case "fin-votar":
+
+			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto()
+			if err != nil {
+
+				filaVotacion.Desencolar()
+				fmt.Println(err.Error())
+				continue
+
+			}
+
+			for puesto := PRESIDENTE; puesto < INTENDENTE+1; puesto++ {
+				partido[VotoTerminado[puesto]].VotadoPara(puesto)
+			}
+
+		}
+		fmt.Println("OK")
 	}
 
 }
