@@ -36,7 +36,7 @@ func PrepararListaVotantes(rutaPadrones string) ([]Voto.Votante, Err.Errores) {
 	padron = bufio.NewScanner(archivoVotantes)
 	array := make([]int, cantidad_votantes)
 	for i := 0; padron.Scan(); i++ {
-		array[i], _ = strconv.Atoi(padron.Text())
+		array[i], err = strconv.Atoi(padron.Text())
 	}
 	array = RadixSort(array, mayor_numero_digitos)
 
