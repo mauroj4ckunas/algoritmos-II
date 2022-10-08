@@ -13,7 +13,7 @@ type votanteImplementacion struct {
 }
 
 func CrearVotante(dni int) Votante {
-	
+
 	votante := new(votanteImplementacion)
 	votante.dni = dni
 	votante.voto = new(Voto)
@@ -21,10 +21,9 @@ func CrearVotante(dni int) Votante {
 	return votante
 }
 
-func (votante *votanteImplementacion) FraudulentoPorPrimeraVez() bool{
-	return votante.FinDeVoto == true && votante.voto.Impugnado = false
+func (votante *votanteImplementacion) FraudulentoPorPrimeraVez() bool {
+	return (votante.FinDeVoto == true) && (votante.voto.Impugnado == false)
 }
-
 
 func (votante votanteImplementacion) LeerDNI() int {
 	return votante.dni

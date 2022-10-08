@@ -2,8 +2,7 @@ package errores
 
 import "fmt"
 
-type Errores interface{
-	
+type Errores interface {
 	Error() string
 }
 
