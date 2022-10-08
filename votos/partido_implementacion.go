@@ -22,21 +22,23 @@ func CrearPartido(nombre string, candidatos [CANT_VOTACION]string) Partido {
 }
 
 func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
-	if tipo == 0 {
+	switch tipo {
+	case 0:
 		partido.presidente.cant_votos++
-	} else if tipo == 1 {
+	case 1:
 		partido.gobernador.cant_votos++
-	} else if tipo == 2 {
+	case 2:
 		partido.intendente.cant_votos++
 	}
 }
 
 func (partido *partidoImplementacion) RestarVoto(tipo TipoVoto) {
-	if tipo == 0 {
+	switch tipo {
+	case 0:
 		partido.presidente.cant_votos--
-	} else if tipo == 1 {
+	case 1:
 		partido.gobernador.cant_votos--
-	} else if tipo == 2 {
+	case 2:
 		partido.intendente.cant_votos--
 	}
 }
@@ -44,17 +46,30 @@ func (partido *partidoImplementacion) RestarVoto(tipo TipoVoto) {
 func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	var nombreCandidato string
 	var cantidadVotos int
-	if tipo == 0 {
+	var palabra string
+
+	switch tipo {
+	case 0:
 		nombreCandidato = partido.presidente.nombre
 		cantidadVotos = partido.presidente.cant_votos
-	} else if tipo == 1 {
+	case 1:
 		nombreCandidato = partido.gobernador.nombre
 		cantidadVotos = partido.gobernador.cant_votos
-	} else if tipo == 2 {
+	case 2:
 		nombreCandidato = partido.intendente.nombre
 		cantidadVotos = partido.intendente.cant_votos
 	}
-	return fmt.Sprintf("%s: %d votos.", nombreCandidato, cantidadVotos)
+
+	if cantidadVotos == 1 {
+		palabra = "voto"
+	} else {
+		palabra = "votos"
+	}
+
+	if partido.nombre_part == "Votos en Blanco" {
+		return fmt.Sprintf("%s: %d %s", partido.nombre_part, cantidadVotos, palabra)
+	}
+	return fmt.Sprintf("%s - %s: %d %s.\n", partido.nombre_part, nombreCandidato, cantidadVotos, palabra)
 }
 
 func (partido *partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {

@@ -71,6 +71,7 @@ func main() {
 	defer func() {
 
 		for k := PRESIDENTE; k <= INTENDENTE; k++ {
+
 			switch k {
 			case 0:
 				fmt.Println("Presidente: ")
@@ -79,6 +80,7 @@ func main() {
 			case 2:
 				fmt.Println("Intendente: ")
 			}
+
 			for p := 0; p < cantidad_partidos; p++ {
 				partido[p].ObtenerResultado(k)
 			}
