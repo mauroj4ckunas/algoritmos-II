@@ -67,7 +67,7 @@ func main() {
 
 	defer func() {
 
-		for k := PRESIDENTE; k <= INTENDENTE; k++ {
+		for k := Voto.PRESIDENTE; k <= Voto.INTENDENTE; k++ {
 
 			switch k {
 			case 0:
