@@ -2,14 +2,13 @@ package main
 
 import (
 	TDACola "Cola"
-	"strings"
-
 	//TDAPila "Pila"
 	"bufio"
 	Err "errores"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	Voto "votos"
 )
 
@@ -42,6 +41,7 @@ func main() {
 	for listaPartidos.Scan() {
 		cantidad_partidos++ //cuenta la cantidad de partidos que hay para hacer el arreglo
 	}
+
 	partido := make([]Voto.Partido, cantidad_partidos)
 
 	//Creo el partido que recibira los votos en blanco
@@ -54,7 +54,6 @@ func main() {
 		grupo := strings.Split(listaPartidos.Text(), ",")
 		nombrePartido := grupo[0]
 		candidatosPartido := [3]string{grupo[1], grupo[2], grupo[3]}
-
 		nuevoPartido := Voto.CrearPartido(nombrePartido, candidatosPartido)
 		partido[i] = nuevoPartido
 		i++
@@ -118,6 +117,7 @@ func main() {
 			}
 
 			filaVotacion.Encolar(&Votantes[posicion])
+			fmt.Println("OK")
 			continue
 		}
 
@@ -202,21 +202,21 @@ func main() {
 
 		case "fin-votar":
 
-			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto()
+			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto() //struct Voto [1,3,5]
+			filaVotacion.Desencolar()
 			if err != nil {
 
-				filaVotacion.Desencolar()
 				fmt.Println(err.Error())
 				continue
 
 			}
 
-			for puesto := PRESIDENTE; puesto < INTENDENTE+1; puesto++ {
+			for puesto := PRESIDENTE; puesto <= INTENDENTE; puesto++ {
 				partido[VotoTerminado[puesto]].VotadoPara(puesto)
 			}
 
 		}
 		fmt.Println("OK")
-	}
 
+	}
 }
