@@ -117,6 +117,8 @@ func main() {
      		}
 
      		filaVotacion.Encolar(&Votantes[posicion])
+     		fmt.Println("OK")
+     		continue
   		}
 
   		if filaVotacion.EstaVacia(){
@@ -207,23 +209,26 @@ func main() {
 
      	case "fin-votar":
 
-			VotoTerminado,err := filaVotacion.VerPrimero().FinVoto()
+			VotoTerminado,err := filaVotacion.VerPrimero().FinVoto()  //struct Voto [1,3,5]
+			filaVotacion.Desencolar()
 			if err != nil{
 
-     			filaVotacion.Desencolar()
   				fmt.Println(err.Error())
   				continue
 
   			}
 
-  			for puesto := PRESIDENTE; puesto < INTENDENTE + 1 ; puesto++ {
+  			for puesto := PRESIDENTE; puesto <= INTENDENTE ; puesto++ {
   				partido[VotoTerminado[puesto]].VotadoPara(puesto)
   			}
 
 
      	}
+     	fmt.Println("OK")
 
     }
+
+    //IMPLEMENTACION DE FINAL DE PARTIDOS 
 
 
 }
