@@ -96,11 +96,8 @@ func main() {
 
   		comandos := strings.Split(s.Text())
 
-     	switch comandos[0]{
-
-     	case "ingresar":
-
-     		dni := strconv.Atoi(comandos[1])
+  		if comandos[0]== "ingresar"{
+  			dni := strconv.Atoi(comandos[1])
      		if dni <= 0{
 
      			err := new(Err.DNIError)
@@ -111,7 +108,7 @@ func main() {
 
      		posicion := BusquedaVotante(Votantes,dni)
 
-     		if posicion== -1{
+     		if posicion == -1{
 
      			err := new(Err.DNIFueraPadron)
      			fmt.Println(err.Error())
@@ -120,19 +117,29 @@ func main() {
      		}
 
      		filaVotacion.Encolar(&Votantes[posicion])
-     	
+  		}
 
+  		if filaVotacion.EstaVacia(){
 
+     		err := new(Err.FilaVacia)
+     		fmt.Println(err.Error())
+     		continue
+
+     	}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
+
+			err := filaVotacion.VerPrimero().Votar(0,0)
+			filaVotacion.Desencolar()
+  			fmt.Println(err.Error())
+
+  			//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
+  			continue
+		}
+
+     	switch comandos[0]{
 
      	case "votar":
 
-     		if filaVotacion.EstaVacia(){
-
-     			err := new(Err.FilaVacia)
-     			fmt.Println(err.Error())
-     			continue
-
-     		} else if comandos[1] != "Presidente" && comandos[1] != "Gobernador" && comandos[1] != "Intendente" {
+     		if comandos[1] != "Presidente" && comandos[1] != "Gobernador" && comandos[1] != "Intendente" {
 
 				err:= new(Err.ErrorTipoVoto)
 				fmt.Println(err.Error())
@@ -144,14 +151,6 @@ func main() {
 				fmt.Println(err.Error())
 				continue
 
-			}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
-
-				err := filaVotacion.VerPrimero().Votar(0,0)
-				filaVotacion.Desencolar()
-  				fmt.Println(err.Error())
-
-  				//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
-  				continue
 			}
 
      		switch comandos[1]{
@@ -194,22 +193,6 @@ func main() {
 
      	case "deshacer":
 
-     		if filaVotacion.EstaVacia(){
-
-     			err := new(Err.FilaVacia)
-     			fmt.Println(err.Error())
-     			continue
-
-     		}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
-
-				err := filaVotacion.VerPrimero().Votar(0,0)
-				filaVotacion.Desencolar()
-  				fmt.Println(err.Error())
-
-  				//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
-  				continue
-			}
-
 			err := filaVotacion.VerPrimero().Deshacer()
 			if err != nil{
 
@@ -223,22 +206,6 @@ func main() {
 
 
      	case "fin-votar":
-     		
-     		if filaVotacion.EstaVacia(){
-
-     			err := new(Err.FilaVacia)
-     			fmt.Println(err.Error())
-     			continue
-
-     		}else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez(){
-
-				err := filaVotacion.VerPrimero().Votar(0,0)
-				filaVotacion.Desencolar()
-  				fmt.Println(err.Error())
-
-  				//IMPLEMENTACION DE RESTAR VOTO A LOS PARTIDOS
-  				continue
-			}
 
 			VotoTerminado,err := filaVotacion.VerPrimero().FinVoto()
 			if err != nil{
