@@ -11,24 +11,20 @@ import (
 	"votos"
 )
 
-func finDeEjecucion(listaPartidos []votos.Partido) {
+func finDeEjecucion(listaPartidos []votos.Partido, candidato votos.TipoVoto) {
 
-	for k := votos.PRESIDENTE; k <= votos.INTENDENTE; k++ {
-
-		switch k {
-		case 0:
-			fmt.Println("Presidente: ")
-		case 1:
-			fmt.Println("Gobernador: ")
-		case 2:
-			fmt.Println("Intendente: ")
-		}
-
-		for p := 0; p < len(listaPartidos); p++ {
-			fmt.Println(listaPartidos[p].ObtenerResultado(k))
-		}
+	switch candidato {
+	case 0:
+		fmt.Println("Presidente: ")
+	case 1:
+		fmt.Println("Gobernador: ")
+	case 2:
+		fmt.Println("Intendente: ")
 	}
-	fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
+	for p := 0; p < len(listaPartidos); p++ {
+		fmt.Println(listaPartidos[p].ObtenerResultado(candidato))
+	}
+
 }
 
 func main() {
@@ -79,7 +75,10 @@ func main() {
 	}
 
 	//implementacion de final de la votacion
-	defer finDeEjecucion(partido)
+	defer fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
+	defer finDeEjecucion(partido, votos.INTENDENTE)
+	defer finDeEjecucion(partido, votos.GOBERNADOR)
+	defer finDeEjecucion(partido, votos.PRESIDENTE)
 
 	//implementacion de elecciones
 
