@@ -19,9 +19,9 @@ func finDeEjecucion(listaPartidos []votos.Partido) {
 		case 0:
 			fmt.Println("Presidente: ")
 		case 1:
-				fmt.Println("Gobernador: ")
-		case 2:	
-				fmt.Println("Intendente: ")
+			fmt.Println("Gobernador: ")
+		case 2:
+			fmt.Println("Intendente: ")
 		}
 
 		for p := 0; p < len(listaPartidos); p++ {
@@ -30,7 +30,6 @@ func finDeEjecucion(listaPartidos []votos.Partido) {
 	}
 	fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
 }
-
 
 func main() {
 
