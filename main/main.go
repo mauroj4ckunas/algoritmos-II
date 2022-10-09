@@ -58,6 +58,7 @@ func main() {
 		return
 	}
 
+	//implementacion de final de la votacion
 	defer func() {
 
 		for k := votos.PRESIDENTE; k <= votos.INTENDENTE; k++ {
@@ -72,7 +73,7 @@ func main() {
 			}
 
 			for p := 0; p < len(partido); p++ {
-				partido[p].ObtenerResultado(k)
+				fmt.Println(partido[p].ObtenerResultado(k))
 			}
 		}
 
@@ -97,7 +98,7 @@ func main() {
 
 			}
 
-			posicion := BusquedaVotante(Votantes, dni)
+			posicion := BusquedaVotante(Votantes, dni, 0, len(Votantes)-1)
 
 			if posicion == -1 {
 
@@ -120,10 +121,10 @@ func main() {
 
 		} else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez() {
 
-			err := filaVotacion.VerPrimero().Votar(0, 0)
+			votosARestar, err := filaVotacion.VerPrimero().FinVoto()
 			fmt.Println(err.Error())
 
-			votosARestar, _ := filaVotacion.VerPrimero().FinVoto()
+
 
 			for resta := votos.PRESIDENTE; resta <= votos.INTENDENTE; resta++ {
 				partido[votosARestar.VotoPorTipo[resta]].RestarVoto(resta)
@@ -157,42 +158,33 @@ func main() {
 
 			case "Presidente":
 				err := filaVotacion.VerPrimero().Votar(votos.PRESIDENTE, comand2)
-				if err != nil {
 
-					filaVotacion.Desencolar()
-					fmt.Println(err.Error())
-					continue
-
-				}
 
 			case "Gobernador":
 				err := filaVotacion.VerPrimero().Votar(votos.GOBERNADOR, comand2)
-				if err != nil {
 
-					filaVotacion.Desencolar()
-					fmt.Println(err.Error())
-					continue
-
-				}
 
 			case "Intendente":
 				err := filaVotacion.VerPrimero().Votar(votos.INTENDENTE, comand2)
-				if err != nil {
+
+			}
+
+			if err != nil {
 
 					filaVotacion.Desencolar()
 					fmt.Println(err.Error())
 					continue
 
 				}
-
-			}
 
 		case "deshacer":
 
 			err := filaVotacion.VerPrimero().Deshacer()
 			if err != nil {
-
-				filaVotacion.Desencolar()
+				if err.Error() != "ERROR: Sin voto a deshacer" {
+					filaVotacion.Desencolar()
+				}
+				
 				fmt.Println(err.Error())
 				continue
 

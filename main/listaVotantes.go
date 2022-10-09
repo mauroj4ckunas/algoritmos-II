@@ -18,13 +18,14 @@ func PrepararListaVotantes(rutaPadrones string) ([]Voto.Votante, Err.Errores) {
 	}
 
 	padron := bufio.NewScanner(archivoVotantes)
-	cantidad_votantes := 0
+	array := make([]int, 0 , 10)
 	mayor_numero_digitos := 0 //el numero que tiene mayor cantidad de "cifras/digitos"
 	for padron.Scan() {
 		if mayor_numero_digitos < len(padron.Text()) {
 			mayor_numero_digitos = len(padron.Text())
 		}
-		cantidad_votantes += 1
+		dni, _ = strconv.Atoi(padron.Text())
+		array = array.append(dni)
 	}
 
 	/*
@@ -32,15 +33,10 @@ func PrepararListaVotantes(rutaPadrones string) ([]Voto.Votante, Err.Errores) {
 	  	if err != nil {
 	     	fmt.Println(err)
 	  	}*/
-
-	padron = bufio.NewScanner(archivoVotantes)
-	array := make([]int, cantidad_votantes)
-	for i := 0; padron.Scan(); i++ {
-		array[i], err = strconv.Atoi(padron.Text())
-	}
+	  	
 	array = RadixSort(array, mayor_numero_digitos)
 
-	Votantes := make([]Voto.Votante, cantidad_votantes)
+	Votantes := make([]Voto.Votante, len(array))
 	for j := 0; j < len(array); j++ {
 		Votantes[j] = Voto.CrearVotante(array[j])
 	}

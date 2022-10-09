@@ -4,16 +4,16 @@ import (
 	Voto "votos"
 )
 
-func BusquedaVotante(lista []Voto.Votante, dni int) int {
-	if len(lista) == 0 {
+func BusquedaVotante(lista []Voto.Votante, dni int, inicio int, fin int) int {
+	if inicio > fin {
 		return -1
 	}
-	mitad := len(lista) / 2
+	mitad := (inicio + fin)/2
 	if lista[mitad].LeerDNI() == dni {
 		return mitad
 	} else if lista[mitad].LeerDNI() < dni {
-		return mitad + 1 + BusquedaVotante(lista[mitad+1:], dni)
+		return BusquedaVotante(lista, dni , mitad , fin)
 	} else {
-		return BusquedaVotante(lista[:mitad], dni)
+		return BusquedaVotante(lista, dni, inicio , mitad)
 	}
 }
