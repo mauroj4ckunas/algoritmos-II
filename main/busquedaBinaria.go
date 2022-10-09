@@ -12,8 +12,8 @@ func BusquedaVotante(lista []Voto.Votante, dni int, inicio int, fin int) int {
 	if lista[mitad].LeerDNI() == dni {
 		return mitad
 	} else if lista[mitad].LeerDNI() < dni {
-		return BusquedaVotante(lista, dni , mitad , fin)
+		return BusquedaVotante(lista, dni , mitad+1 , fin)
 	} else {
-		return BusquedaVotante(lista, dni, inicio , mitad)
+		return BusquedaVotante(lista, dni, inicio , mitad-1)
 	}
 }
