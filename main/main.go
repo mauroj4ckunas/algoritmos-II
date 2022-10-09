@@ -131,12 +131,6 @@ func main() {
 			filaVotacion.Desencolar()
 			fmt.Println(err.Error())
 
-			votosRestados := filaVotacion.VerPrimero().HistorialVoto()
-
-			partido[votosRestados[Voto.PRESIDENTE]].RestarVoto(Voto.PRESIDENTE)
-			partido[votosRestados[Voto.GOBERNADOR]].RestarVoto(Voto.GOBERNADOR)
-			partido[votosRestados[Voto.INTENDENTE]].RestarVoto(Voto.INTENDENTE)
-
 			continue
 		}
 
