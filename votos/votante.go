@@ -6,6 +6,8 @@ import (
 
 type TipoVoto int
 
+var LISTA_IMPUGNA int = 0
+
 const (
 	PRESIDENTE TipoVoto = iota
 	GOBERNADOR
@@ -14,7 +16,6 @@ const (
 
 const (
 	CANT_VOTACION = INTENDENTE + 1
-	LISTA_IMPUGNA = 0
 )
 
 // Voto tiene guardada la información de un voto emitido, por cada tipo de voto posible.

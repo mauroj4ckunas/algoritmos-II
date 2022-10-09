@@ -76,6 +76,7 @@ func main() {
 				fmt.Println(partido[p].ObtenerResultado(k))
 			}
 		}
+		fmt.Printf("Votos Impugnados: %d ",votos.LISTA_IMPUGNA)
 
 	}()
 
@@ -123,6 +124,7 @@ func main() {
 
 			votosARestar, err := filaVotacion.VerPrimero().FinVoto()
 			fmt.Println(err.Error())
+			votos.LISTA_IMPUGNA += 1
 
 
 
