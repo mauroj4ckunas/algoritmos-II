@@ -77,7 +77,6 @@ func main() {
 			}
 		}
 		fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
-
 	}()
 
 	//implementacion de elecciones

@@ -69,7 +69,7 @@ func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	if partido.nombre_part == "Votos en Blanco" {
 		return fmt.Sprintf("%s: %d %s", partido.nombre_part, cantidadVotos, palabra)
 	}
-	return fmt.Sprintf("%s - %s: %d %s.\n", partido.nombre_part, nombreCandidato, cantidadVotos, palabra)
+	return fmt.Sprintf("%s - %s: %d %s", partido.nombre_part, nombreCandidato, cantidadVotos, palabra)
 }
 
 func (partido *partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
