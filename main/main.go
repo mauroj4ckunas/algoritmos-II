@@ -76,7 +76,7 @@ func main() {
 				fmt.Println(partido[p].ObtenerResultado(k))
 			}
 		}
-		fmt.Printf("Votos Impugnados: %d ",votos.LISTA_IMPUGNA)
+		fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
 
 	}()
 
@@ -126,8 +126,6 @@ func main() {
 			fmt.Println(err.Error())
 			votos.LISTA_IMPUGNA += 1
 
-
-
 			for resta := votos.PRESIDENTE; resta <= votos.INTENDENTE; resta++ {
 				partido[votosARestar.VotoPorTipo[resta]].RestarVoto(resta)
 			}
@@ -159,25 +157,23 @@ func main() {
 			switch comandos[1] {
 
 			case "Presidente":
-				err := filaVotacion.VerPrimero().Votar(votos.PRESIDENTE, comand2)
-
+				err = filaVotacion.VerPrimero().Votar(votos.PRESIDENTE, comand2)
 
 			case "Gobernador":
-				err := filaVotacion.VerPrimero().Votar(votos.GOBERNADOR, comand2)
-
+				err = filaVotacion.VerPrimero().Votar(votos.GOBERNADOR, comand2)
 
 			case "Intendente":
-				err := filaVotacion.VerPrimero().Votar(votos.INTENDENTE, comand2)
+				err = filaVotacion.VerPrimero().Votar(votos.INTENDENTE, comand2)
 
 			}
 
 			if err != nil {
 
-					filaVotacion.Desencolar()
-					fmt.Println(err.Error())
-					continue
+				filaVotacion.Desencolar()
+				fmt.Println(err.Error())
+				continue
 
-				}
+			}
 
 		case "deshacer":
 
@@ -186,7 +182,7 @@ func main() {
 				if err.Error() != "ERROR: Sin voto a deshacer" {
 					filaVotacion.Desencolar()
 				}
-				
+
 				fmt.Println(err.Error())
 				continue
 
