@@ -8,7 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	Voto "votos"
+	"votos"
 )
 
 func main() {
@@ -36,25 +36,18 @@ func main() {
 	}
 
 	listaPartidos := bufio.NewScanner(archivoListas)
-	var cantidad_partidos int
-	for listaPartidos.Scan() {
-		cantidad_partidos++ //cuenta la cantidad de partidos que hay para hacer el arreglo
-	}
-	partido := make([]Voto.Partido, cantidad_partidos)
 
-	//Creo el partido que recibira los votos en blanco
+	partido := make([]votos.Partido, 1)
 	candVacio := [3]string{"", "", ""}
-	partidoEnBlanco := Voto.CrearPartido("Votos en Blanco", candVacio)
+	partidoEnBlanco := votos.CrearPartido("Votos en Blanco", candVacio)
 	partido[0] = partidoEnBlanco
 
-	i := 1
 	for listaPartidos.Scan() {
 		grupo := strings.Split(listaPartidos.Text(), ",")
 		nombrePartido := grupo[0]
-		candidatosPartido := [Voto.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
-		nuevoPartido := Voto.CrearPartido(nombrePartido, candidatosPartido)
-		partido[i] = nuevoPartido
-		i++
+		candidatosPartido := [votos.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
+		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)
+		partido = append(partido, nuevoPartido)
 	}
 
 	//implementacion array de votantes
@@ -67,7 +60,7 @@ func main() {
 
 	defer func() {
 
-		for k := Voto.PRESIDENTE; k <= Voto.INTENDENTE; k++ {
+		for k := votos.PRESIDENTE; k <= votos.INTENDENTE; k++ {
 
 			switch k {
 			case 0:
@@ -78,7 +71,7 @@ func main() {
 				fmt.Println("Intendente: ")
 			}
 
-			for p := 0; p < cantidad_partidos; p++ {
+			for p := 0; p < len(partido); p++ {
 				partido[p].ObtenerResultado(k)
 			}
 		}
@@ -87,7 +80,7 @@ func main() {
 
 	//implementacion de elecciones
 
-	filaVotacion := TDACola.CrearColaEnlazada[Voto.Votante]()
+	filaVotacion := TDACola.CrearColaEnlazada[votos.Votante]()
 
 	s := bufio.NewScanner(os.Stdin)
 	for s.Scan() {
@@ -128,9 +121,15 @@ func main() {
 		} else if filaVotacion.VerPrimero().FraudulentoPorPrimeraVez() {
 
 			err := filaVotacion.VerPrimero().Votar(0, 0)
-			filaVotacion.Desencolar()
 			fmt.Println(err.Error())
 
+			votosARestar, _ := filaVotacion.VerPrimero().FinVoto()
+
+			for resta := votos.PRESIDENTE; resta <= votos.INTENDENTE; resta++ {
+				partido[votosARestar.VotoPorTipo[resta]].RestarVoto(resta)
+			}
+
+			filaVotacion.Desencolar()
 			continue
 		}
 
@@ -157,7 +156,7 @@ func main() {
 			switch comandos[1] {
 
 			case "Presidente":
-				err := filaVotacion.VerPrimero().Votar(Voto.PRESIDENTE, comand2)
+				err := filaVotacion.VerPrimero().Votar(votos.PRESIDENTE, comand2)
 				if err != nil {
 
 					filaVotacion.Desencolar()
@@ -167,7 +166,7 @@ func main() {
 				}
 
 			case "Gobernador":
-				err := filaVotacion.VerPrimero().Votar(Voto.GOBERNADOR, comand2)
+				err := filaVotacion.VerPrimero().Votar(votos.GOBERNADOR, comand2)
 				if err != nil {
 
 					filaVotacion.Desencolar()
@@ -177,7 +176,7 @@ func main() {
 				}
 
 			case "Intendente":
-				err := filaVotacion.VerPrimero().Votar(Voto.INTENDENTE, comand2)
+				err := filaVotacion.VerPrimero().Votar(votos.INTENDENTE, comand2)
 				if err != nil {
 
 					filaVotacion.Desencolar()
@@ -210,7 +209,7 @@ func main() {
 
 			}
 
-			for puesto := Voto.PRESIDENTE; puesto <= Voto.INTENDENTE; puesto++ {
+			for puesto := votos.PRESIDENTE; puesto <= votos.INTENDENTE; puesto++ {
 				partido[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
 			}
 
