@@ -11,6 +11,27 @@ import (
 	"votos"
 )
 
+func finDeEjecucion(listaPartidos []votos.Partido) {
+
+	for k := votos.PRESIDENTE; k <= votos.INTENDENTE; k++ {
+
+		switch k {
+		case 0:
+			fmt.Println("Presidente: ")
+		case 1:
+				fmt.Println("Gobernador: ")
+		case 2:	
+				fmt.Println("Intendente: ")
+		}
+
+		for p := 0; p < len(listaPartidos); p++ {
+			fmt.Println(listaPartidos[p].ObtenerResultado(k))
+		}
+	}
+	fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
+}
+
+
 func main() {
 
 	parametros := os.Args[1:] //recibe los nombres de los archivos pasados por parametro en un array
@@ -59,25 +80,7 @@ func main() {
 	}
 
 	//implementacion de final de la votacion
-	defer func() {
-
-		for k := votos.PRESIDENTE; k <= votos.INTENDENTE; k++ {
-
-			switch k {
-			case 0:
-				fmt.Println("Presidente: ")
-			case 1:
-				fmt.Println("Gobernador: ")
-			case 2:
-				fmt.Println("Intendente: ")
-			}
-
-			for p := 0; p < len(partido); p++ {
-				fmt.Println(partido[p].ObtenerResultado(k))
-			}
-		}
-		fmt.Printf("Votos Impugnados: %d ", votos.LISTA_IMPUGNA)
-	}()
+	defer finDeEjecucion(partido)
 
 	//implementacion de elecciones
 
