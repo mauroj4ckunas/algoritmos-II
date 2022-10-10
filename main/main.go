@@ -70,7 +70,14 @@ func main() {
 	//implementacion de final de la votacion
 
 	//PODRIAMOS MEJORARLO Y REHACERLO EN UNA FUNCION
-	defer fmt.Printf("Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
+	defer func(){
+		if votos.LISTA_IMPUGNA == 1{
+			fmt.Printf("Votos Impugnados: %d voto\n", votos.LISTA_IMPUGNA)
+		}else {
+			fmt.Printf("Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
+		}
+		
+	}()
 	defer finDeEjecucion(partido)
 
 	//implementacion de elecciones
