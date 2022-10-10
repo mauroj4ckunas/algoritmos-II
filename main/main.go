@@ -15,11 +15,11 @@ func finDeEjecucion(listaPartidos []votos.Partido, candidato votos.TipoVoto) {
 
 	switch candidato {
 	case 0:
-		fmt.Println("Presidente: ")
+		fmt.Println("Presidente:")
 	case 1:
-		fmt.Println("Gobernador: ")
+		fmt.Println("Gobernador:")
 	case 2:
-		fmt.Println("Intendente: ")
+		fmt.Println("Intendente:")
 	}
 	for p := 0; p < len(listaPartidos); p++ {
 		fmt.Println((listaPartidos)[p].ObtenerResultado(candidato))
