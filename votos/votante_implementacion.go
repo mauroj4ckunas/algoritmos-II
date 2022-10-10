@@ -6,14 +6,11 @@ import (
 )
 
 type votanteImplementacion struct {
-	dni        	int
-	voto       	*Voto
-	decisiones 	TDAPila.Pila[Voto]
-	FinDeVoto  	bool
+	dni        int
+	voto       *Voto
+	decisiones TDAPila.Pila[Voto]
+	FinDeVoto  bool
 }
-
-
-
 
 func CrearVotante(dni int) Votante {
 
@@ -24,21 +21,18 @@ func CrearVotante(dni int) Votante {
 	return votante
 }
 
-
-
-
-
-
 func (votante votanteImplementacion) LeerDNI() int {
 	return votante.dni
 }
 
-
-
-
-
-
 func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.Errores {
+
+	if votante.FinDeVoto == true {
+
+		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
+		return error
+
+	}
 
 	if alternativa == 0 {
 
@@ -48,7 +42,7 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.
 
 		}
 		votante.voto.Impugnado = true
-		
+
 		return nil
 
 	} else if tipo != PRESIDENTE && tipo != GOBERNADOR && tipo != INTENDENTE {
@@ -56,22 +50,12 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.
 		error := new(Err.ErrorTipoVoto)
 		return error
 
-	} else if votante.FinDeVoto == true {
-
-		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
-		return error
-		
 	}
 
 	votante.decisiones.Apilar(*votante.voto)
 	votante.voto.VotoPorTipo[tipo] = alternativa
 	return nil
 }
-
-
-
-
-
 
 func (votante *votanteImplementacion) Deshacer() Err.Errores {
 
@@ -91,14 +75,10 @@ func (votante *votanteImplementacion) Deshacer() Err.Errores {
 		LISTA_IMPUGNA -= 1
 
 	}
-	
+
 	*votante.voto = votante.decisiones.Desapilar()
 	return nil
 }
-
-
-
-
 
 func (votante *votanteImplementacion) FinVoto() (Voto, Err.Errores) {
 

@@ -111,7 +111,7 @@ func main() {
 
 		if filaVotacion.EstaVacia() {
 
-			err = new(Err.FilaVacia)
+			err := new(Err.FilaVacia)
 			fmt.Println(err.Error())
 			continue
 
@@ -142,9 +142,8 @@ func main() {
 			case "Intendente":
 				err = filaVotacion.VerPrimero().Votar(votos.INTENDENTE, comand2)
 
-			default :
-				err = filaVotacion.VerPrimero().Votar(0, comand2)
-
+			default:
+				err = filaVotacion.VerPrimero().Votar(4, comand2)
 			}
 
 			if err != nil {
@@ -187,6 +186,7 @@ func main() {
 
 			} else if VotoTerminado.Impugnado == true {
 
+				fmt.Println("OK")
 				continue
 
 			}
