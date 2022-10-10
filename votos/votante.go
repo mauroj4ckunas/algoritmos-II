@@ -23,7 +23,7 @@ const (
 // Si vale 0, es un voto en blanco.
 // Si Impugnado es 'true', entonces no hay que considerar ninguna de las alterantivas señaladas.
 type Voto struct {
-	VotoPorTipo [3]int
+	VotoPorTipo [CANT_VOTACION]int
 	Impugnado   bool
 }
 

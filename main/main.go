@@ -144,18 +144,10 @@ func main() {
 
 			comand2, _ := strconv.Atoi(comandos[2])
 
-			if comandos[1] != "Presidente" && comandos[1] != "Gobernador" && comandos[1] != "Intendente" {
-
-				err := new(Err.ErrorTipoVoto)
+			if comand2 > len(partido)-1 || comand2 < 0 {
+				err = new(Err.ErrorAlternativaInvalida)
 				fmt.Println(err.Error())
 				continue
-
-			} else if comand2 > len(partido)-1 || comand2 < 0 {
-
-				err := new(Err.ErrorAlternativaInvalida)
-				fmt.Println(err.Error())
-				continue
-
 			}
 
 			switch comandos[1] {
