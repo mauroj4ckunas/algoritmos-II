@@ -15,11 +15,11 @@ func finDeEjecucion(listaPartidos []votos.Partido, candidato votos.TipoVoto) {
 
 	switch candidato {
 	case 0:
-		fmt.Println("Presidente: ")
+		fmt.Println("Presidente:")
 	case 1:
-		fmt.Println("Gobernador: ")
+		fmt.Println("Gobernador:")
 	case 2:
-		fmt.Println("Intendente: ")
+		fmt.Println("Intendente:")
 	}
 	for p := 0; p < len(listaPartidos); p++ {
 		fmt.Println((listaPartidos)[p].ObtenerResultado(candidato))
@@ -43,27 +43,11 @@ func main() {
 
 	//implementacion array de partidos
 
-	archivoListas, err := os.Open(rutaListas)
-	defer archivoListas.Close()
-	if err != nil { //si la ruta no se puede leer o algo, error
-		ErrorLectura := new(Err.ErrorLeerArchivo)
-		fmt.Println(ErrorLectura.Error())
+	partido, errPartido := PrepararListaPartidos(rutaListas)
+
+	if errPartido != nil {
+		fmt.Println(errPartido.Error())
 		return
-	}
-
-	listaPartidos := bufio.NewScanner(archivoListas)
-
-	partido := make([]votos.Partido, 1)
-	candVacio := [3]string{"", "", ""}
-	partidoEnBlanco := votos.CrearPartido("Votos en Blanco", candVacio)
-	partido[0] = partidoEnBlanco
-
-	for listaPartidos.Scan() {
-		grupo := strings.Split(listaPartidos.Text(), ",")
-		nombrePartido := grupo[0]
-		candidatosPartido := [votos.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
-		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)
-		partido = append(partido, nuevoPartido)
 	}
 
 	//implementacion array de votantes
