@@ -6,7 +6,7 @@ import (
 
 type TipoVoto int
 
-var LISTA_IMPUGNA int = 0
+var LISTA_IMPUGNA = 0
 
 const (
 	PRESIDENTE TipoVoto = iota
@@ -48,5 +48,4 @@ type Votante interface {
 	//obtenido de las diferentes aplicaciones de Votar y Deshacer.
 	FinVoto() (Voto, Err.Errores)
 
-	FraudulentoPorPrimeraVez() bool
 }

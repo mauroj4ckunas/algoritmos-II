@@ -12,6 +12,9 @@ type votanteImplementacion struct {
 	FinDeVoto  	bool
 }
 
+
+
+
 func CrearVotante(dni int) Votante {
 
 	votante := new(votanteImplementacion)
@@ -21,47 +24,91 @@ func CrearVotante(dni int) Votante {
 	return votante
 }
 
+
+
+
+
+
 func (votante votanteImplementacion) LeerDNI() int {
 	return votante.dni
 }
 
+
+
+
+
+
 func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.Errores {
-	if tipo != "Presidente" && tipo != "Gobernador" && tipo != "Intendente" {
+
+	if alternativa == 0 {
+
+		if votante.voto.Impugnado == false {
+
+			LISTA_IMPUGNA += 1
+
+		}
+		votante.voto.Impugnado = true
+		
+		return nil
+
+	} else if tipo != PRESIDENTE && tipo != GOBERNADOR && tipo != INTENDENTE {
 
 		error := new(Err.ErrorTipoVoto)
 		return error
 
 	} else if votante.FinDeVoto == true {
+
 		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 		return error
+		
 	}
 
-	votante.decisiones.Apilar(votante.voto.VotoPorTipo)
+	votante.decisiones.Apilar(*votante.voto)
 	votante.voto.VotoPorTipo[tipo] = alternativa
 	return nil
 }
 
+
+
+
+
+
 func (votante *votanteImplementacion) Deshacer() Err.Errores {
 
 	if votante.FinDeVoto == true {
-		votante.voto.Impugnado = true
-		var error1 Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.dni}
+
+		var error1 Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 		return error1
+
 	} else if votante.decisiones.EstaVacia() {
+
 		error2 := new(Err.ErrorNoHayVotosAnteriores)
 		return error2
 	}
 
-	votante.voto.VotoPorTipo = votante.decisiones.Desapilar()
+	if votante.voto.Impugnado == true && votante.decisiones.VerTope().Impugnado == false {
+
+		LISTA_IMPUGNA -= 1
+
+	}
+	
+	*votante.voto = votante.decisiones.Desapilar()
 	return nil
 }
 
+
+
+
+
 func (votante *votanteImplementacion) FinVoto() (Voto, Err.Errores) {
+
 	if votante.FinDeVoto == true {
-		votante.voto.Impugnado = true
+
 		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.dni}
-		return *votante.voto, error
+		return Voto{}, error
+
 	}
+
 	votante.FinDeVoto = true
 	return *votante.voto, nil
 }

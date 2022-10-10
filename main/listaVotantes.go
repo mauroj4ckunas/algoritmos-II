@@ -24,15 +24,17 @@ func PrepararListaVotantes(rutaPadrones string) ([]Voto.Votante, Err.Errores) {
 		if mayor_numero_digitos < len(padron.Text()) {
 			mayor_numero_digitos = len(padron.Text())
 		}
-		dni, _ := strconv.Atoi(padron.Text())
+		dni, err := strconv.Atoi(padron.Text())
+
+		if err != nil {
+			ErrorLectura := new(Err.ErrorLeerArchivo)
+			return []Voto.Votante{}, ErrorLectura
+		}
+
 		array = append(array, dni)
 	}
 
-	/*
-	  	err = padron.Err()
-	  	if err != nil {
-	     	fmt.Println(err)
-	  	}*/
+	
 
 	array = RadixSort(array, mayor_numero_digitos)
 

@@ -25,6 +25,10 @@ func PrepararListaPartidos(ruta string) ([]votos.Partido, Err.Errores) {
 
 	for listaPartidos.Scan() {
 		grupo := strings.Split(listaPartidos.Text(), ",")
+		if len(grupo) != 4  {
+			ErrorLectura := new(Err.ErrorLeerArchivo)
+			return []votos.Partido{}, ErrorLectura
+		}
 		nombrePartido := grupo[0]
 		candidatosPartido := [votos.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
 		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)
