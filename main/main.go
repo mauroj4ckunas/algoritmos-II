@@ -195,13 +195,15 @@ func main() {
 		case "fin-votar":
 
 			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto()
-			filaVotacion.Desencolar()
+			El_q_voto := filaVotacion.Desencolar()
 			if err != nil {
 
 				fmt.Println(err.Error())
 				continue
 
 			}
+			fmt.Println(VotoTerminado)
+			fmt.Println(El_q_voto.LeerDNI())
 
 			for puesto := votos.PRESIDENTE; puesto <= votos.INTENDENTE; puesto++ {
 				partido[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
