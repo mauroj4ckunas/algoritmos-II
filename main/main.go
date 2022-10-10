@@ -142,6 +142,9 @@ func main() {
 			case "Intendente":
 				err = filaVotacion.VerPrimero().Votar(votos.INTENDENTE, comand2)
 
+			default :
+				err = filaVotacion.VerPrimero().Votar(0, comand2)
+
 			}
 
 			if err != nil {
