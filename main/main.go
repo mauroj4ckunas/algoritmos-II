@@ -77,8 +77,11 @@ func main() {
 	//implementacion de final de la votacion
 
 	defer fmt.Printf("Votos Impugnados: %d \n", votos.LISTA_IMPUGNA)
+	defer fmt.Println()
 	defer finDeEjecucion(partido, votos.INTENDENTE)
+	defer fmt.Println()
 	defer finDeEjecucion(partido, votos.GOBERNADOR)
+	defer fmt.Println()
 	defer finDeEjecucion(partido, votos.PRESIDENTE)
 
 	//implementacion de elecciones
@@ -209,10 +212,6 @@ func main() {
 
 	}
 	if !filaVotacion.EstaVacia() {
-		for !filaVotacion.EstaVacia() {
-			filaVotacion.Desencolar()
-			votos.LISTA_IMPUGNA += 1
-		}
 		err = new(Err.ErrorCiudadanosSinVotar)
 		fmt.Println(err.Error())
 	}
