@@ -41,8 +41,8 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.
 			LISTA_IMPUGNA += 1
 
 		}
+		votante.decisiones.Apilar(*votante.voto)
 		votante.voto.Impugnado = true
-
 		return nil
 
 	} else if tipo != PRESIDENTE && tipo != GOBERNADOR && tipo != INTENDENTE {

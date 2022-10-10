@@ -39,6 +39,12 @@ func main() {
 	parametros := os.Args[1:] //recibe los nombres de los archivos pasados por parametro en un array
 	// el [1:] es para sacar el nombre del archivo (main)
 
+	if len(parametros) == 0 {
+		ErrorInicial := new(Err.ErrorParametros)
+		fmt.Println(ErrorInicial.Error())
+		return
+	}
+
 	//implementacion array de partidos
 
 	rutaListas := parametros[0] //el primer parametro era el nombre del archivo de las listas
@@ -70,13 +76,13 @@ func main() {
 	//implementacion de final de la votacion
 
 	//PODRIAMOS MEJORARLO Y REHACERLO EN UNA FUNCION
-	defer func(){
-		if votos.LISTA_IMPUGNA == 1{
+	defer func() {
+		if votos.LISTA_IMPUGNA == 1 {
 			fmt.Printf("Votos Impugnados: %d voto\n", votos.LISTA_IMPUGNA)
-		}else {
+		} else {
 			fmt.Printf("Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
 		}
-		
+
 	}()
 	defer finDeEjecucion(partido)
 
@@ -128,9 +134,9 @@ func main() {
 
 		case "votar":
 
-			comand2, _ := strconv.Atoi(comandos[2])
+			comand2, err := strconv.Atoi(comandos[2])
 
-			if comand2 > len(partido)-1 || comand2 < 0 {
+			if err != nil || comand2 > len(partido)-1 || comand2 < 0 {
 
 				err = new(Err.ErrorAlternativaInvalida)
 				fmt.Println(err.Error())
@@ -197,7 +203,6 @@ func main() {
 				continue
 
 			}
-
 			for puesto := votos.PRESIDENTE; puesto <= votos.INTENDENTE; puesto++ {
 				partido[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
 			}

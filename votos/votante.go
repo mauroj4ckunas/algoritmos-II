@@ -23,7 +23,7 @@ const (
 // Si vale 0, es un voto en blanco.
 // Si Impugnado es 'true', entonces no hay que considerar ninguna de las alterantivas señaladas.
 type Voto struct {
-	VotoPorTipo [CANT_VOTACION]int
+	VotoPorTipo [3]int
 	Impugnado   bool
 }
 
@@ -47,5 +47,4 @@ type Votante interface {
 	//anteriormente con el proceso de votación, devolverá el error correspondiente. Sino, el voto en el estado final
 	//obtenido de las diferentes aplicaciones de Votar y Deshacer.
 	FinVoto() (Voto, Err.Errores)
-
 }
