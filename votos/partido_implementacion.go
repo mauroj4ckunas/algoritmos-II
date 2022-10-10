@@ -79,7 +79,7 @@ func (partido *partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTAC
 
 	candidatoGob := new(candidatosParaEleccion)
 	candidatoGob.nombre = candidatos[1]
-	partido.presidente = candidatoGob
+	partido.gobernador = candidatoGob
 
 	candidatoInt := new(candidatosParaEleccion)
 	candidatoInt.nombre = candidatos[2]
