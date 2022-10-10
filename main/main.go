@@ -11,12 +11,9 @@ import (
 	"votos"
 )
 
-
 func finDeEjecucion(listaPartidos []votos.Partido) {
 
 	for candidato := votos.PRESIDENTE; candidato <= votos.INTENDENTE; candidato++ {
-
-		fmt.Println()
 
 		switch candidato {
 		case 0:
@@ -32,8 +29,8 @@ func finDeEjecucion(listaPartidos []votos.Partido) {
 			fmt.Println((listaPartidos)[p].ObtenerResultado(candidato))
 
 		}
+		fmt.Println()
 	}
-		
 
 }
 
@@ -41,10 +38,6 @@ func main() {
 
 	parametros := os.Args[1:] //recibe los nombres de los archivos pasados por parametro en un array
 	// el [1:] es para sacar el nombre del archivo (main)
-
-
-
-
 
 	//implementacion array de partidos
 
@@ -57,19 +50,11 @@ func main() {
 		return
 	}
 
-
-
-
-
-
 	if len(parametros) != 2 { //si los parametros son mas chicos que dos, error
 		ErrorInicial := new(Err.ErrorParametros)
 		fmt.Println(ErrorInicial.Error())
 		return
 	}
-
-
-
 
 	//implementacion array de votantes
 
@@ -82,14 +67,10 @@ func main() {
 		return
 	}
 
-
-
-
 	//implementacion de final de la votacion
 
-
 	//PODRIAMOS MEJORARLO Y REHACERLO EN UNA FUNCION
-	defer fmt.Printf("Votos Impugnados: %d \n", votos.LISTA_IMPUGNA)
+	defer fmt.Printf("Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
 	defer finDeEjecucion(partido)
 
 	//implementacion de elecciones
@@ -147,7 +128,7 @@ func main() {
 				err = new(Err.ErrorAlternativaInvalida)
 				fmt.Println(err.Error())
 				continue
-				
+
 			}
 
 			switch comandos[1] {
@@ -164,12 +145,12 @@ func main() {
 			}
 
 			if err != nil {
-				if err.Error() == fmt.Sprintf("ERROR: Votante FRAUDULENTO: %d", filaVotacion.VerPrimero().LeerDNI()){
+				if err.Error() == fmt.Sprintf("ERROR: Votante FRAUDULENTO: %d", filaVotacion.VerPrimero().LeerDNI()) {
 
 					filaVotacion.Desencolar()
 
 				}
-				
+
 				fmt.Println(err.Error())
 				continue
 
@@ -180,7 +161,7 @@ func main() {
 			err = filaVotacion.VerPrimero().Deshacer()
 			if err != nil {
 
-				if err.Error() == fmt.Sprintf("ERROR: Votante FRAUDULENTO: %d", filaVotacion.VerPrimero().LeerDNI()){
+				if err.Error() == fmt.Sprintf("ERROR: Votante FRAUDULENTO: %d", filaVotacion.VerPrimero().LeerDNI()) {
 
 					filaVotacion.Desencolar()
 
@@ -201,7 +182,7 @@ func main() {
 				fmt.Println(err.Error())
 				continue
 
-			}else if VotoTerminado.Impugnado == true {
+			} else if VotoTerminado.Impugnado == true {
 
 				continue
 
