@@ -43,27 +43,11 @@ func main() {
 
 	//implementacion array de partidos
 
-	archivoListas, err := os.Open(rutaListas)
-	defer archivoListas.Close()
-	if err != nil { //si la ruta no se puede leer o algo, error
-		ErrorLectura := new(Err.ErrorLeerArchivo)
-		fmt.Println(ErrorLectura.Error())
+	partido, errPartido := PrepararListaPartidos(rutaListas)
+
+	if errPartido != nil {
+		fmt.Println(errPartido.Error())
 		return
-	}
-
-	listaPartidos := bufio.NewScanner(archivoListas)
-
-	partido := make([]votos.Partido, 1)
-	candVacio := [3]string{"", "", ""}
-	partidoEnBlanco := votos.CrearPartido("Votos en Blanco", candVacio)
-	partido[0] = partidoEnBlanco
-
-	for listaPartidos.Scan() {
-		grupo := strings.Split(listaPartidos.Text(), ",")
-		nombrePartido := grupo[0]
-		candidatosPartido := [votos.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
-		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)
-		partido = append(partido, nuevoPartido)
 	}
 
 	//implementacion array de votantes
@@ -77,8 +61,11 @@ func main() {
 	//implementacion de final de la votacion
 
 	defer fmt.Printf("Votos Impugnados: %d \n", votos.LISTA_IMPUGNA)
+	defer fmt.Println()
 	defer finDeEjecucion(partido, votos.INTENDENTE)
+	defer fmt.Println()
 	defer finDeEjecucion(partido, votos.GOBERNADOR)
+	defer fmt.Println()
 	defer finDeEjecucion(partido, votos.PRESIDENTE)
 
 	//implementacion de elecciones
@@ -192,13 +179,15 @@ func main() {
 		case "fin-votar":
 
 			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto()
-			filaVotacion.Desencolar()
+			El_q_voto := filaVotacion.Desencolar()
 			if err != nil {
 
 				fmt.Println(err.Error())
 				continue
 
 			}
+			fmt.Println(VotoTerminado)
+			fmt.Println(El_q_voto.LeerDNI())
 
 			for puesto := votos.PRESIDENTE; puesto <= votos.INTENDENTE; puesto++ {
 				partido[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
@@ -209,10 +198,6 @@ func main() {
 
 	}
 	if !filaVotacion.EstaVacia() {
-		for !filaVotacion.EstaVacia() {
-			filaVotacion.Desencolar()
-			votos.LISTA_IMPUGNA += 1
-		}
 		err = new(Err.ErrorCiudadanosSinVotar)
 		fmt.Println(err.Error())
 	}

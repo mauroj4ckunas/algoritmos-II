@@ -5,7 +5,7 @@ import (
 )
 
 func BusquedaVotante(lista []Voto.Votante, dni int, inicio int, fin int) int {
-	if inicio >= fin {
+	if inicio > fin {
 		return -1
 	}
 	mitad := (inicio + fin) / 2
