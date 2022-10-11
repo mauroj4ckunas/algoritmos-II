@@ -1,7 +1,7 @@
 package votos
 
 import (
-	Err "errores"
+	Err "rerepolez/errores"
 )
 
 type TipoVoto int

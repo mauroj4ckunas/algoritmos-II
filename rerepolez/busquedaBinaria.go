@@ -1,7 +1,7 @@
 package main
 
 import (
-	Voto "votos"
+	Voto "rerepolez/votos"
 )
 
 func BusquedaVotante(lista []Voto.Votante, dni int, inicio int, fin int) int {

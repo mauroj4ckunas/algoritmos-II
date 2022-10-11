@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
-	Err "errores"
+	Err "rerepolez/errores"
 	"os"
 	"strings"
-	"votos"
+	votos "rerepolez/votos"
 )
 
 func PrepararListaPartidos(ruta string) ([]votos.Partido, Err.Errores) {

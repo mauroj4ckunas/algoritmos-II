@@ -1,14 +1,14 @@
 package main
 
 import (
-	TDACola "Cola"
+	TDACola "rerepolez/Cola"
 	"bufio"
-	Err "errores"
+	Err "rerepolez/errores"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-	"votos"
+	votos "rerepolez/votos"
 )
 
 func finDeEjecucion(listaPartidos []votos.Partido) {

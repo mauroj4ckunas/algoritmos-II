@@ -1,8 +1,8 @@
 package votos
 
 import (
-	TDAPila "Pila"
-	Err "errores"
+	TDAPila "rerepolez/Pila"
+	Err "rerepolez/errores"
 )
 
 type votanteImplementacion struct {
