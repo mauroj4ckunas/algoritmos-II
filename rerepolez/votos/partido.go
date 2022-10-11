@@ -10,6 +10,4 @@ type Partido interface {
 	//conveniente para ser mostrado.
 	ObtenerResultado(tipo TipoVoto) string
 
-	//RestarVoto indica que el voto dado para un Partido fue desecho o cancelado por fraudolento. Que lastima!
-	RestarVoto(tipo TipoVoto)
 }

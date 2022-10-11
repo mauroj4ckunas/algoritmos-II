@@ -8,32 +8,41 @@ import (
 	votos "rerepolez/votos"
 )
 
-func PrepararListaPartidos(ruta string) ([]votos.Partido, Err.Errores) {
+func PrepararListaPartidos(ruta string) ([]votos.Partido, error) {
+
 	archivoListas, err := os.Open(ruta)
 	defer archivoListas.Close()
+
 	if err != nil { //si la ruta no se puede leer o algo, error
+
 		ErrorLectura := new(Err.ErrorLeerArchivo)
 		return []votos.Partido{}, ErrorLectura
+
 	}
 
 	listaPartidos := bufio.NewScanner(archivoListas)
 
-	partido := make([]votos.Partido, 1)
+	Partidos := make([]votos.Partido, 1)
 	candVacio := [3]string{"", "", ""}
 	partidoEnBlanco := votos.CrearPartido("Votos en Blanco", candVacio)
-	partido[0] = partidoEnBlanco
+	Partidos[0] = partidoEnBlanco
 
 	for listaPartidos.Scan() {
-		grupo := strings.Split(listaPartidos.Text(), ",")
-		if len(grupo) != 4  {
+
+		boleta := strings.Split(listaPartidos.Text(), ",")
+
+		if len(boleta) != 4  { //si el archivo no esta escrito como se debe o es el archivo de votantes
+
 			ErrorLectura := new(Err.ErrorLeerArchivo)
 			return []votos.Partido{}, ErrorLectura
+
 		}
-		nombrePartido := grupo[0]
-		candidatosPartido := [votos.CANT_VOTACION]string{grupo[1], grupo[2], grupo[3]}
+		
+		nombrePartido := boleta[0]
+		candidatosPartido := [votos.CANT_VOTACION]string{boleta[1], boleta[2], boleta[3]}
 		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)
-		partido = append(partido, nuevoPartido)
+		Partidos = append(Partidos, nuevoPartido)
 	}
 
-	return partido, nil
+	return Partidos, nil
 }

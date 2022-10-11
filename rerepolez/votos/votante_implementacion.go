@@ -6,10 +6,12 @@ import (
 )
 
 type votanteImplementacion struct {
-	dni        int
-	voto       *Voto
-	decisiones TDAPila.Pila[Voto]
-	FinDeVoto  bool
+
+	dni        			int
+	voto       			*Voto
+	votosAnteriores 	TDAPila.Pila[Voto]
+	finalizoSuVoto 		bool
+
 }
 
 func CrearVotante(dni int) Votante {
@@ -17,7 +19,7 @@ func CrearVotante(dni int) Votante {
 	votante := new(votanteImplementacion)
 	votante.dni = dni
 	votante.voto = new(Voto)
-	votante.decisiones = TDAPila.CrearPilaDinamica[Voto]()
+	votante.votosAnteriores = TDAPila.CrearPilaDinamica[Voto]()
 	return votante
 }
 
@@ -25,9 +27,9 @@ func (votante votanteImplementacion) LeerDNI() int {
 	return votante.dni
 }
 
-func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.Errores {
+func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) error {
 
-	if votante.FinDeVoto == true {
+	if votante.finalizoSuVoto == true {
 
 		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 		return error
@@ -36,59 +38,61 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) Err.
 
 	if alternativa == 0 {
 
-		if votante.voto.Impugnado == false {
+		votante.votosAnteriores.Apilar(*votante.voto)
 
+		if votante.voto.Impugnado == false { //se impugna su voto por primera vez
+
+			votante.voto.Impugnado = true
 			LISTA_IMPUGNA += 1
 
 		}
-		votante.decisiones.Apilar(*votante.voto)
-		votante.voto.Impugnado = true
+		
 		return nil
 
-	} else if tipo != PRESIDENTE && tipo != GOBERNADOR && tipo != INTENDENTE {
+	} else if tipo == CUALQUIERCOSA {
 
 		error := new(Err.ErrorTipoVoto)
 		return error
 
 	}
 
-	votante.decisiones.Apilar(*votante.voto)
+	votante.votosAnteriores.Apilar(*votante.voto)
 	votante.voto.VotoPorTipo[tipo] = alternativa
 	return nil
 }
 
-func (votante *votanteImplementacion) Deshacer() Err.Errores {
+func (votante *votanteImplementacion) Deshacer() error {
 
-	if votante.FinDeVoto == true {
+	if votante.finalizoSuVoto == true {
 
 		var error1 Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 		return error1
 
-	} else if votante.decisiones.EstaVacia() {
+	} else if votante.votosAnteriores.EstaVacia() {
 
 		error2 := new(Err.ErrorNoHayVotosAnteriores)
 		return error2
 	}
 
-	if votante.voto.Impugnado == true && votante.decisiones.VerTope().Impugnado == false {
+	if votante.voto.Impugnado == true && votante.votosAnteriores.VerTope().Impugnado == false {
 
 		LISTA_IMPUGNA -= 1
 
 	}
 
-	*votante.voto = votante.decisiones.Desapilar()
+	*votante.voto = votante.votosAnteriores.Desapilar()
 	return nil
 }
 
-func (votante *votanteImplementacion) FinVoto() (Voto, Err.Errores) {
+func (votante *votanteImplementacion) FinVoto() (Voto, error) {
 
-	if votante.FinDeVoto == true {
+	if votante.finalizoSuVoto == true {
 
-		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.dni}
+		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 		return Voto{}, error
 
 	}
 
-	votante.FinDeVoto = true
+	votante.finalizoSuVoto = true
 	return *votante.voto, nil
 }

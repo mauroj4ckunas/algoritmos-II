@@ -15,10 +15,12 @@ type candidatosParaEleccion struct {
 }
 
 func CrearPartido(nombre string, candidatos [3]string) Partido {
+
 	nuevoPartido := new(partidoImplementacion)
 	nuevoPartido.nombre_part = nombre
 	nuevoPartido.inscribirCandidatos(candidatos)
 	return nuevoPartido
+
 }
 
 func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
@@ -29,17 +31,6 @@ func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
 		partido.gobernador.cant_votos++
 	case 2:
 		partido.intendente.cant_votos++
-	}
-}
-
-func (partido *partidoImplementacion) RestarVoto(tipo TipoVoto) {
-	switch tipo {
-	case 0:
-		partido.presidente.cant_votos--
-	case 1:
-		partido.gobernador.cant_votos--
-	case 2:
-		partido.intendente.cant_votos--
 	}
 }
 
