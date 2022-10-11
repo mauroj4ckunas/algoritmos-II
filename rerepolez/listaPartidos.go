@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
-	Err "rerepolez/errores"
 	"os"
-	"strings"
+	Err "rerepolez/errores"
 	votos "rerepolez/votos"
+	"strings"
 )
 
 func PrepararListaPartidos(ruta string) ([]votos.Partido, error) {
@@ -31,13 +31,13 @@ func PrepararListaPartidos(ruta string) ([]votos.Partido, error) {
 
 		boleta := strings.Split(listaPartidos.Text(), ",")
 
-		if len(boleta) != 4  { //si el archivo no esta escrito como se debe o es el archivo de votantes
+		if len(boleta) != 4 { //si el archivo no esta escrito como se debe o es el archivo de votantes
 
 			ErrorLectura := new(Err.ErrorLeerArchivo)
 			return []votos.Partido{}, ErrorLectura
 
 		}
-		
+
 		nombrePartido := boleta[0]
 		candidatosPartido := [votos.CANT_VOTACION]string{boleta[1], boleta[2], boleta[3]}
 		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)

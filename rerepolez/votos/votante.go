@@ -5,7 +5,7 @@ type TipoVoto int
 var LISTA_IMPUGNA = 0
 
 const (
-	PRESIDENTE 		TipoVoto = iota
+	PRESIDENTE TipoVoto = iota
 	GOBERNADOR
 	INTENDENTE
 	CUALQUIERCOSA

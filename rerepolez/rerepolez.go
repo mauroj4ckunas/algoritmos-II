@@ -1,14 +1,14 @@
 package main
 
 import (
-	TDACola "rerepolez/Cola"
 	"bufio"
-	Err "rerepolez/errores"
 	"fmt"
 	"os"
+	TDACola "rerepolez/Cola"
+	Err "rerepolez/errores"
+	votos "rerepolez/votos"
 	"strconv"
 	"strings"
-	votos "rerepolez/votos"
 )
 
 func impresionFinalDeLaVotacion(lista []votos.Partido) {
@@ -34,19 +34,19 @@ func impresionFinalDeLaVotacion(lista []votos.Partido) {
 
 	if votos.LISTA_IMPUGNA == 1 {
 
-			fmt.Fprintf(os.Stdout, "Votos Impugnados: %d voto\n", votos.LISTA_IMPUGNA)
+		fmt.Fprintf(os.Stdout, "Votos Impugnados: %d voto\n", votos.LISTA_IMPUGNA)
 
-		} else {
+	} else {
 
-			fmt.Fprintf(os.Stdout, "Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
+		fmt.Fprintf(os.Stdout, "Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
 
-		}
+	}
 
 }
 
 func main() {
 
-	parametros := os.Args[1:] 
+	parametros := os.Args[1:]
 
 	if len(parametros) == 0 { //si no hay parametros tira error
 
@@ -56,7 +56,6 @@ func main() {
 
 	}
 
-
 	rutaListas := parametros[0]
 
 	listaDeLosPartidos, err := PrepararListaPartidos(rutaListas)
@@ -65,7 +64,6 @@ func main() {
 		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
 		return
 	}
-	
 
 	if len(parametros) != 2 { //si los parametros no terminan de ser suficientes
 
@@ -75,7 +73,6 @@ func main() {
 
 	}
 
-
 	rutaPadrones := parametros[1]
 
 	Votantes, err := PrepararListaVotantes(rutaPadrones)
@@ -84,15 +81,10 @@ func main() {
 
 		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
 		return
-		
+
 	}
 
-
-
-
 	defer impresionFinalDeLaVotacion(listaDeLosPartidos)
-
-
 
 	//implementacion de elecciones
 
@@ -210,11 +202,10 @@ func main() {
 			} else if VotoTerminado.Impugnado != true {
 
 				for puesto := votos.PRESIDENTE; puesto <= votos.INTENDENTE; puesto++ {
-				listaDeLosPartidos[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
+					listaDeLosPartidos[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
 				}
 
 			}
-			
 
 		}
 

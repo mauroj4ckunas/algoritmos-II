@@ -9,5 +9,4 @@ type Partido interface {
 	//ObtenerResultado permite obtener el resultado de este Partido para el TipoVoto indicado. El formato será el
 	//conveniente para ser mostrado.
 	ObtenerResultado(tipo TipoVoto) string
-
 }

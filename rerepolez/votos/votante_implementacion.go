@@ -6,12 +6,10 @@ import (
 )
 
 type votanteImplementacion struct {
-
-	dni        			int
-	voto       			*Voto
-	votosAnteriores 	TDAPila.Pila[Voto]
-	finalizoSuVoto 		bool
-
+	dni             int
+	voto            *Voto
+	votosAnteriores TDAPila.Pila[Voto]
+	finalizoSuVoto  bool
 }
 
 func CrearVotante(dni int) Votante {
@@ -46,7 +44,7 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) erro
 			LISTA_IMPUGNA += 1
 
 		}
-		
+
 		return nil
 
 	} else if tipo == CUALQUIERCOSA {

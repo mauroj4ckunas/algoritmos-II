@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
-	Err "rerepolez/errores"
 	"os"
-	"strconv"
+	Err "rerepolez/errores"
 	Voto "rerepolez/votos"
+	"strconv"
 )
 
 func PrepararListaVotantes(rutaPadrones string) ([]Voto.Votante, error) {
@@ -41,8 +41,6 @@ func PrepararListaVotantes(rutaPadrones string) ([]Voto.Votante, error) {
 
 		arrayDeDnis = append(arrayDeDnis, dni)
 	}
-
-	
 
 	arrayDeDnis = RadixSort(arrayDeDnis, mayorNumeroDeCifras) //ordenamiento de Dnis
 
