@@ -6,10 +6,18 @@ import (
 	"fmt"
 )
 
+type ESTADO string
+
+const (
+	ocupado ESTADO = "OCUPADO"
+	borrado ESTADO = "BORRADO"
+)
+
 type elementos[K comparable, V any] struct {
 	clave     K
 	valor     V
 	ubicacion int
+	estado    ESTADO
 }
 
 type diccionario_implementacion[K comparable, V any] struct {
@@ -41,10 +49,19 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 	ubicacion := hashear[K](clave) % len(dicc.array)
 	paraGuardar := crearElemento[K, V](clave, dato, ubicacion)
 	var i int
-	for i = ubicacion; i < (ubicacion + 3); i++ {
-		if dicc.array[i] == nil {
-			dicc.array[i] = paraGuardar
-			break
+
+	if dicc.largo == 0 || dicc.array[ubicacion].estado == borrado {
+		dicc.array[ubicacion] = *paraGuardar
+		dicc.array[ubicacion].estado = ocupado
+		dicc.largo++
+	} else if dicc.array[ubicacion].estado == ocupado {
+		for i = ubicacion; i < (ubicacion + 3); i++ {
+			if dicc.array[i].estado == "" || dicc.array[i].estado == borrado {
+				dicc.array[i] = *paraGuardar
+				dicc.array[ubicacion].estado = ocupado
+				dicc.largo++
+				break
+			}
 		}
 	}
 
