@@ -51,6 +51,48 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 		espacio = 3
 	}
 
+	if indice+espacio > uint64(len(dicc.array))-1 {
+		var indiceABuscar uint64
+		switch {
+		case indice == uint64(len(dicc.array))-2:
+			for i := 1; i <= 3; i++ {
+				switch i {
+				case 1:
+					indiceABuscar = indice
+				case 2:
+					indiceABuscar = indice + 1
+				case 3:
+					indiceABuscar = 0
+				}
+
+				if dicc.array[indiceABuscar].conValor == false {
+					dicc.array[i].ubicacion = indiceABuscar
+					return indiceABuscar, false
+				}
+			}
+
+		case indice == uint64(len(dicc.array))-1:
+
+			for i := 1; i <= 3; i++ {
+				switch i {
+				case 1:
+					indiceABuscar = indice
+				case 2:
+					indiceABuscar = 0
+				case 3:
+					indiceABuscar = 1
+				}
+
+				if dicc.array[indiceABuscar].conValor == false {
+					dicc.array[i].ubicacion = indiceABuscar
+					return indiceABuscar, false
+				}
+
+			}
+		}
+		return 0, true
+	}
+
 	for i := indice; i < (indice + espacio); i++ {
 		if dicc.array[i].conValor == false {
 			dicc.array[i].ubicacion = i
@@ -71,9 +113,6 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 	return 0, true
 }
 
-// En caso que algun espacio este vacio, entra en el primer if y termina el for con un break
-// pero si tiene algun valor, no entrara al if y no terminara el ciclo, por ende en ultimo caso
-// que seria indice+2 antes que cierra el for, se llamara a una funcion.
 func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 	indice := hashear[K](clave) % uint64(len(dicc.array))
 	paraGuardar := crearElemento[K, V](clave, dato, indice)
