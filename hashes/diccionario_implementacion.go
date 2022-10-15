@@ -37,6 +37,7 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 }
 
 func buscarPrimo(inicio uint64) uint64 {
+	//Buscamos si existe un numero primo en los siguientes 25 numeros de la nueva capacidad.
 	const rango uint64 = 25
 
 	for r := inicio; r < inicio+rango; r++ {
@@ -89,10 +90,12 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 				case 3:
 					indiceABuscar = 0
 				}
+				if dicc.array[indiceABuscar] == nil {
+					return indiceABuscar, false
+				}
 			}
 
 		case indice == uint64(len(dicc.array))-1:
-
 			for i := 1; i <= 3; i++ {
 				switch i {
 				case 1:
@@ -102,14 +105,10 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 				case 3:
 					indiceABuscar = 1
 				}
-
 				if dicc.array[indiceABuscar] == nil {
 					return indiceABuscar, false
 				}
 			}
-		}
-		if dicc.array[indiceABuscar] == nil {
-			return indiceABuscar, false
 		}
 		return 0, true
 	}
@@ -250,4 +249,26 @@ func (iterr *iterador_externo[K, V]) Siguiente() K {
 		break
 	}
 	return devolver
+}
+
+// Iterador Interno
+
+func (dicc *diccionario_implementacion[K, V]) Iterar(f func(clave K, valor V) bool) {
+	var elemento elementos[K, V]
+	for _, elem := range dicc.array {
+		if elem != nil {
+			elemento = *elem
+			break
+		}
+	}
+
+	for iter := 0; iter < dicc.largo || f(elemento.clave, elemento.valor); iter++ {
+		for i := elemento.ubicacion; i < uint64(len(dicc.array)); i++ {
+			if dicc.array[i] != nil {
+				elemento = *dicc.array[i]
+				break
+			}
+		}
+	}
+
 }
