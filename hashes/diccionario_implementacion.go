@@ -206,7 +206,7 @@ func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
 // iterador externo del diccionario
 type iterador_externo[K comparable, V any] struct {
 	actual int
-	dicc   []elementos[K, V]
+	dicc   []*elementos[K, V]
 }
 
 // creador de iterador externo
@@ -214,10 +214,10 @@ func crearIteradorExterno[K comparable, V any](dicc diccionario_implementacion[K
 	iterr := new(iterador_externo[K, V])
 	iterr.dicc = dicc.array
 	for iterr.actual < len(iterr.dicc) {
-		if dicc.array[iterr.actual] == nil {
-			iterr.actual++
+		if dicc.array[iterr.actual] != nil {
+			break
 		}
-		break
+		iterr.actual++
 	}
 	return iterr
 }
