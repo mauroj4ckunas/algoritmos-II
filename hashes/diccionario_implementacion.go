@@ -243,7 +243,7 @@ func (iterr *iterador_externo[K, V]) Siguiente() K {
 	devolver := iterr.dicc[iterr.actual].clave
 	iterr.actual++
 	for iterr.HaySiguiente() {
-		if dicc.array[iterr.actual] == nil {
+		if iterr.dicc[iterr.actual] == nil {
 			iterr.actual++
 		}
 		break
