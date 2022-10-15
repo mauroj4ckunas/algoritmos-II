@@ -38,8 +38,35 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 	return dato
 }
 
-func (dicc *diccionario_implementacion[K, V]) redimensionar() {
+func buscarPrimo(inicio uint64) uint64 {
+	const rango uint64 = 25
 
+	for r := inicio; r < inicio+rango; r++ {
+		isPrimo := true
+		for k := 2; k <= 19; k++ {
+			if (r % uint64(k)) == 0 {
+				isPrimo = false
+				break
+			}
+		}
+		if isPrimo {
+			return r
+		}
+	}
+	return inicio
+}
+
+func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam uint64) {
+	nuevoArray := make([]elementos[K, V], nuevoTam)
+	for _, elemento := range dicc.array {
+		if elemento.conValor {
+			nuevoIndice := hashear[K](elemento.clave) % nuevoTam
+			nuevoElemento := crearElemento[K, V](elemento.clave, elemento.valor, nuevoIndice)
+
+			nuevoArray[nuevoIndice] = *nuevoElemento
+		}
+	}
+	dicc.array = nuevoArray
 }
 
 func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint64, bool) {
@@ -87,7 +114,6 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 					dicc.array[i].ubicacion = indiceABuscar
 					return indiceABuscar, false
 				}
-
 			}
 		}
 		return 0, true
@@ -141,7 +167,8 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 	}
 
 	if hayRedimension {
-		dicc.redimensionar()
+		tamNuevo := buscarPrimo(uint64(len(dicc.array)) * 2)
+		dicc.redimensionar(tamNuevo)
 	} else {
 		dicc.array[i] = *paraGuardar
 		dicc.largo++
