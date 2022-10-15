@@ -202,6 +202,12 @@ func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
 	return dicc.largo
 }
 
+func CrearHash[K comparable, V any]() Diccionario[K, V] {
+	diccio := new(diccionario_implementacion[K, V])
+	(*diccio).array = make([]*elementos[K, V], 500)
+	return diccio
+}
+
 // iterador externo del diccionario
 type iterador_externo[K comparable, V any] struct {
 	actual int
