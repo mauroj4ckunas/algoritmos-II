@@ -30,9 +30,9 @@ func hashear[K comparable](clave K) uint64 {
 
 func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) *elementos[K, V] {
 	dato := new(elementos[K, V])
-	dato.clave = clave
-	dato.valor = valor
-	dato.ubicacion = ubicacionHash
+	(*dato).clave = clave
+	(*dato).valor = valor
+	(*dato).ubicacion = ubicacionHash
 	return dato
 }
 
@@ -137,19 +137,19 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 	paraGuardar := crearElemento[K, V](clave, dato, indice)
 	var i uint64
 	var hayRedimension bool
-
 	for ind := indice; ind < (indice + 3); ind++ {
+		if dicc.array[ind] == nil {
+			continue
+		}
 		if (*dicc.array[ind]).clave == clave {
-			(*dicc.array[ind]).valor = dato
+			dicc.array[ind].valor = dato
 			return
 		}
 	}
 
 	switch {
-	case dicc.largo == 0:
+	case dicc.largo == 0 || dicc.array[indice] == nil:
 		i = indice
-		hayRedimension = false
-
 	case dicc.array[indice] != nil:
 		i, hayRedimension = dicc.hacerEspacio(indice)
 	}
@@ -162,13 +162,14 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 		(*dicc.array[i]).ubicacion = i
 		dicc.largo++
 	}
-
 }
 
 func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if (*dicc.array[i]).clave == clave {
+		if dicc.array[i] == nil {
+			continue
+		} else if (*dicc.array[i]).clave == clave {
 			return true
 		}
 	}
@@ -178,7 +179,9 @@ func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if (*dicc.array[i]).clave == clave {
+		if dicc.array[i] == nil {
+			continue
+		} else if (*dicc.array[i]).clave == clave {
 			return (*dicc.array[i]).valor
 		}
 	}
@@ -188,7 +191,9 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if (*dicc.array[i]).clave == clave {
+		if dicc.array[i] == nil {
+			continue
+		} else if (*dicc.array[i]).clave == clave {
 			devolver := (*dicc.array[i]).valor
 			dicc.array[i] = nil
 			dicc.largo--
@@ -215,7 +220,8 @@ type iterador_externo[K comparable, V any] struct {
 }
 
 // creador de iterador externo
-func crearIteradorExterno[K comparable, V any](dicc diccionario_implementacion[K, V]) IterDiccionario[K, V] {
+
+func (dicc *diccionario_implementacion[K, V]) Iterador() IterDiccionario[K, V] {
 	iterr := new(iterador_externo[K, V])
 	iterr.dicc = dicc.array
 	for iterr.actual < len(iterr.dicc) {
@@ -227,10 +233,6 @@ func crearIteradorExterno[K comparable, V any](dicc diccionario_implementacion[K
 	return iterr
 }
 
-func (dicc *diccionario_implementacion[K, V]) Iterador() IterDiccionario[K, V] {
-	return crearIteradorExterno[K, V](*dicc)
-}
-
 func (iterr *iterador_externo[K, V]) HaySiguiente() bool {
 	return iterr.actual < len(iterr.dicc)
 }
@@ -239,6 +241,7 @@ func (iterr *iterador_externo[K, V]) VerActual() (K, V) {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
+	//fmt.Println(iterr.dicc[iterr.actual].clave)
 	return iterr.dicc[iterr.actual].clave, iterr.dicc[iterr.actual].valor
 }
 
@@ -246,7 +249,7 @@ func (iterr *iterador_externo[K, V]) Siguiente() K {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
-	devolver := iterr.dicc[iterr.actual].clave
+	devolver := (*iterr.dicc[iterr.actual]).clave
 	iterr.actual++
 	for iterr.HaySiguiente() {
 		if iterr.dicc[iterr.actual] == nil {
@@ -268,8 +271,8 @@ func (dicc *diccionario_implementacion[K, V]) Iterar(f func(clave K, valor V) bo
 		}
 	}
 
-	for iter := 0; iter < dicc.largo || f(elemento.clave, elemento.valor); iter++ {
-		for i := elemento.ubicacion; i < uint64(len(dicc.array)); i++ {
+	for iter := 0; iter < dicc.largo && f(elemento.clave, elemento.valor); iter++ {
+		for i := elemento.ubicacion + 1; i < uint64(len(dicc.array)); i++ {
 			if dicc.array[i] != nil {
 				elemento = *dicc.array[i]
 				break
