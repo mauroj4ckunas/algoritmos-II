@@ -202,3 +202,51 @@ func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
 	return dicc.largo
 }
+
+// iterador externo del diccionario
+type iterador_externo[K comparable, V any] struct {
+	actual int
+	dicc   []elementos[K, V]
+}
+
+// creador de iterador externo
+func crearIteradorExterno[K comparable, V any](dicc diccionario_implementacion[K, V]) IterDiccionario[K, V] {
+	iterr := new(iterador_externo[K, V])
+	iterr.dicc = dicc.array
+	for iterr.actual < len(iterr.dicc) {
+		if dicc.array[iterr.actual] == nil {
+			iterr.actual++
+		}
+		break
+	}
+	return iterr
+}
+
+func (dicc *diccionario_implementacion) Iterador() IterDiccionario[K, V] {
+	return crearIteradorExterno[K, V](dicc)
+}
+
+func (iterr *iterador_externo) HaySiguiente() bool {
+	return iterr.actual < len(iterr.dicc)
+}
+
+func (iterr *iterador_externo) VerActual() (K, V) {
+	if !iterr.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	return iterr.dicc[iterr.actual].clave, iterr.dicc[iterr.actual].valor
+}
+
+func (iterr *iterador_externo) Siguiente() K {
+	if !iterr.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	devolver := iterr.dicc[iterr.actual].clave
+	iterr.actual++
+	for iterr.HaySiguiente() {
+		if dicc.array[iterr.actual] == nil {
+			iterr.actual++
+		}
+		break
+	}
+}
