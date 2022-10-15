@@ -10,11 +10,10 @@ type elementos[K comparable, V any] struct {
 	clave     K
 	valor     V
 	ubicacion uint64
-	conValor  bool
 }
 
 type diccionario_implementacion[K comparable, V any] struct {
-	array []elementos[K, V]
+	array []*elementos[K, V]
 	largo int
 }
 
@@ -33,7 +32,6 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 	dato := new(elementos[K, V])
 	dato.clave = clave
 	dato.valor = valor
-	dato.conValor = true
 	dato.ubicacion = ubicacionHash
 	return dato
 }
@@ -57,13 +55,13 @@ func buscarPrimo(inicio uint64) uint64 {
 }
 
 func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam uint64) {
-	nuevoArray := make([]elementos[K, V], nuevoTam)
+	nuevoArray := make([]*elementos[K, V], nuevoTam)
 	for _, elemento := range dicc.array {
-		if elemento.conValor {
+		if elemento == nil {
 			nuevoIndice := hashear[K](elemento.clave) % nuevoTam
 			nuevoElemento := crearElemento[K, V](elemento.clave, elemento.valor, nuevoIndice)
 
-			nuevoArray[nuevoIndice] = *nuevoElemento
+			nuevoArray[nuevoIndice] = nuevoElemento
 		}
 	}
 	dicc.array = nuevoArray
@@ -72,9 +70,9 @@ func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam uint64) {
 func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint64, bool) {
 
 	var espacio uint64
-	if dicc.array[indice].ubicacion > indice {
-		espacio = dicc.array[indice].ubicacion - indice
-	} else if dicc.array[indice].ubicacion == indice {
+	if (*dicc.array[indice]).ubicacion > indice {
+		espacio = (*dicc.array[indice]).ubicacion - indice
+	} else if (*dicc.array[indice]).ubicacion == indice {
 		espacio = 3
 	}
 
@@ -91,11 +89,6 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 				case 3:
 					indiceABuscar = 0
 				}
-
-				if dicc.array[indiceABuscar].conValor == false {
-					dicc.array[i].ubicacion = indiceABuscar
-					return indiceABuscar, false
-				}
 			}
 
 		case indice == uint64(len(dicc.array))-1:
@@ -110,18 +103,20 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 					indiceABuscar = 1
 				}
 
-				if dicc.array[indiceABuscar].conValor == false {
-					dicc.array[i].ubicacion = indiceABuscar
+				if dicc.array[indiceABuscar] == nil {
 					return indiceABuscar, false
 				}
 			}
+		}
+		if dicc.array[indiceABuscar] == nil {
+			return indiceABuscar, false
 		}
 		return 0, true
 	}
 
 	for i := indice; i < (indice + espacio); i++ {
-		if dicc.array[i].conValor == false {
-			dicc.array[i].ubicacion = i
+		if dicc.array[i] == nil {
+			(*dicc.array[i]).ubicacion = i
 			return i, false
 		}
 	}
@@ -129,10 +124,9 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64) (uint6
 	for j := indice + 1; j < (indice + espacio); j++ {
 		k, cambioDeLugar := dicc.hacerEspacio(j)
 		if !cambioDeLugar {
-			dicc.array[k].clave = dicc.array[j].clave
-			dicc.array[k].valor = dicc.array[j].valor
-			dicc.array[k].conValor = true
-			dicc.array[k].ubicacion = k
+			(*dicc.array[k]).clave = (*dicc.array[j]).clave
+			(*dicc.array[k]).valor = (*dicc.array[j]).valor
+			(*dicc.array[k]).ubicacion = k
 			return j, false
 		}
 	}
@@ -146,13 +140,8 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 	var hayRedimension bool
 
 	for ind := indice; ind < (indice + 3); ind++ {
-		if dicc.array[ind].clave == clave {
-			dicc.array[ind].valor = dato
-			// En el caso que se borre un elemento, simplemente debe ver el conValor para saber si se puede sobreescribir otro elemento.
-			// Pero que pasa si se quiere guardar el mismo elemento despues de haberlo borrado? Se debe devuelta agregar true al conValor.
-			if !dicc.array[ind].conValor {
-				dicc.array[ind].conValor = true
-			}
+		if (*dicc.array[ind]).clave == clave {
+			(*dicc.array[ind]).valor = dato
 			return
 		}
 	}
@@ -162,7 +151,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 		i = indice
 		hayRedimension = false
 
-	case dicc.array[indice].conValor == true:
+	case dicc.array[indice] != nil:
 		i, hayRedimension = dicc.hacerEspacio(indice)
 	}
 
@@ -170,7 +159,8 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 		tamNuevo := buscarPrimo(uint64(len(dicc.array)) * 2)
 		dicc.redimensionar(tamNuevo)
 	} else {
-		dicc.array[i] = *paraGuardar
+		dicc.array[i] = paraGuardar
+		(*dicc.array[i]).ubicacion = i
 		dicc.largo++
 	}
 
@@ -179,7 +169,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if dicc.array[i].clave == clave {
+		if (*dicc.array[i]).clave == clave {
 			return true
 		}
 	}
@@ -189,8 +179,8 @@ func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if dicc.array[i].clave == clave {
-			return dicc.array[i].valor
+		if (*dicc.array[i]).clave == clave {
+			return (*dicc.array[i]).valor
 		}
 	}
 	panic("La clave no pertenece al diccionario")
@@ -199,9 +189,9 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if dicc.array[i].clave == clave {
-			devolver := dicc.array[i].valor
-			dicc.array[i].conValor = false
+		if (*dicc.array[i]).clave == clave {
+			devolver := (*dicc.array[i]).valor
+			dicc.array[i] = nil
 			dicc.largo--
 			return devolver
 		}
