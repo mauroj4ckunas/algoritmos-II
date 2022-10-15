@@ -222,22 +222,22 @@ func crearIteradorExterno[K comparable, V any](dicc diccionario_implementacion[K
 	return iterr
 }
 
-func (dicc *diccionario_implementacion) Iterador() IterDiccionario[K, V] {
-	return crearIteradorExterno[K, V](dicc)
+func (dicc *diccionario_implementacion[K, V]) Iterador() IterDiccionario[K, V] {
+	return crearIteradorExterno[K, V](*dicc)
 }
 
-func (iterr *iterador_externo) HaySiguiente() bool {
+func (iterr *iterador_externo[K, V]) HaySiguiente() bool {
 	return iterr.actual < len(iterr.dicc)
 }
 
-func (iterr *iterador_externo) VerActual() (K, V) {
+func (iterr *iterador_externo[K, V]) VerActual() (K, V) {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
 	return iterr.dicc[iterr.actual].clave, iterr.dicc[iterr.actual].valor
 }
 
-func (iterr *iterador_externo) Siguiente() K {
+func (iterr *iterador_externo[K, V]) Siguiente() K {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
@@ -249,4 +249,5 @@ func (iterr *iterador_externo) Siguiente() K {
 		}
 		break
 	}
+	return devolver
 }
