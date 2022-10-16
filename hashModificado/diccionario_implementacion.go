@@ -33,8 +33,6 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 	return dato
 }
 
-
-
 func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	nuevoArray := make([]*elementos[K, V], nuevoTam)
 	arrayViejo := dicc.array
@@ -47,7 +45,7 @@ func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	}
 }
 
-func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarNecesario uint64) (uint64,bool) {
+func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarNecesario uint64) (uint64, bool) {
 	if indice < lugarNecesario+3 {
 		return indice, false
 	}
@@ -67,7 +65,7 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarN
 	}
 
 	dicc.redimensionar(cap(dicc.array) * 2)
-	return 0 , true
+	return 0, true
 }
 
 func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
@@ -85,22 +83,21 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 	if dicc.Pertenece(clave) {
 		for posicion = indiceHash; posicion < (indiceHash + 3); posicion++ {
 
-			if (*dicc.array[posicion % uint64(len(dicc.array))]).clave == clave {
+			if (*dicc.array[posicion%uint64(len(dicc.array))]).clave == clave {
 
-				dicc.array[posicion % uint64(len(dicc.array))].valor = dato
+				dicc.array[posicion%uint64(len(dicc.array))].valor = dato
 				return
 
 			}
 		}
 	}
 
-
 	for posicion = indiceHash; posicion < (indiceHash + 3); posicion++ {
 
-		if dicc.array[posicion % uint64(len(dicc.array))] == nil {
+		if dicc.array[posicion%uint64(len(dicc.array))] == nil {
 
 			paraGuardar := crearElemento[K, V](clave, dato, indiceHash)
-			dicc.array[posicion % uint64(len(dicc.array))] = paraGuardar
+			dicc.array[posicion%uint64(len(dicc.array))] = paraGuardar
 			dicc.largo++
 			return
 
@@ -121,7 +118,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 		posicionNueva, redimension := dicc.hacerEspacio(posicion, indiceHash)
 
-		if redimension == true {
+		if redimension {
 
 			dicc.Guardar(clave, dato)
 
@@ -133,7 +130,6 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 		}
 	}
-	
 
 }
 
@@ -142,9 +138,9 @@ func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 
 	for i := ubicacion; i < (ubicacion + 3); i++ {
-		if dicc.array[i % uint64(len(dicc.array))] == nil {
+		if dicc.array[i%uint64(len(dicc.array))] == nil {
 			continue
-		} else if (*dicc.array[i % uint64(len(dicc.array))]).clave == clave {
+		} else if (*dicc.array[i%uint64(len(dicc.array))]).clave == clave {
 			return true
 		}
 	}
@@ -157,10 +153,10 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 
 	for i := ubicacion; i < (ubicacion + 3); i++ {
 
-		if dicc.array[i % uint64(len(dicc.array))] == nil {
+		if dicc.array[i%uint64(len(dicc.array))] == nil {
 			continue
-		} else if (*dicc.array[i % uint64(len(dicc.array))]).clave == clave {
-			return (*dicc.array[i % uint64(len(dicc.array))]).valor
+		} else if (*dicc.array[i%uint64(len(dicc.array))]).clave == clave {
+			return (*dicc.array[i%uint64(len(dicc.array))]).valor
 		}
 	}
 	panic("La clave no pertenece al diccionario")
@@ -180,14 +176,14 @@ func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 
 	for i := ubicacion; i < (ubicacion + 3); i++ {
 
-		if dicc.array[i % uint64(len(dicc.array))] == nil {
+		if dicc.array[i%uint64(len(dicc.array))] == nil {
 
 			continue
 
-		} else if (*dicc.array[i % uint64(len(dicc.array))]).clave == clave {
+		} else if (*dicc.array[i%uint64(len(dicc.array))]).clave == clave {
 
-			devolver := (*dicc.array[i % uint64(len(dicc.array))]).valor
-			dicc.array[i % uint64(len(dicc.array))] = nil
+			devolver := (*dicc.array[i%uint64(len(dicc.array))]).valor
+			dicc.array[i%uint64(len(dicc.array))] = nil
 			dicc.largo--
 			return devolver
 		}
@@ -256,11 +252,11 @@ func (iterr *iterador_externo[K, V]) Siguiente() K {
 
 func (dicc *diccionario_implementacion[K, V]) Iterar(f func(clave K, valor V) bool) {
 
-	for i := 0 ; i < len(dicc.array) ; i++ {
+	for i := 0; i < len(dicc.array); i++ {
 		if dicc.array[i] == nil {
 			continue
 		}
-		if !f(dicc.array[i].clave,dicc.array[i].valor){
+		if !f(dicc.array[i].clave, dicc.array[i].valor) {
 			break
 		}
 	}
