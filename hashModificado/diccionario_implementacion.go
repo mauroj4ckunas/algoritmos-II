@@ -1,7 +1,7 @@
 package diccionario
 
 import (
-	"crypto/md5"
+	"crypto/sha1"
 	"encoding/binary"
 	"fmt"
 )
@@ -15,12 +15,12 @@ type elementos[K comparable, V any] struct {
 type diccionario_implementacion[K comparable, V any] struct {
 	array       []*elementos[K, V]
 	largo       int
-	factorCarga float64
+	factorCarga int
 }
 
 func hashear[K comparable](clave K) uint64 {
 	elementoHasheable := []byte(fmt.Sprintf("%v", clave))
-	hasheado := md5.Sum(elementoHasheable)
+	hasheado := sha1.Sum(elementoHasheable)
 	var arrayUint64 []byte = hasheado[:]
 	return binary.BigEndian.Uint64(arrayUint64)
 }
@@ -47,37 +47,32 @@ func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	}
 }
 
+
+
 func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarNecesario uint64) (uint64,bool) {
 	if indice < lugarNecesario+3 {
 		return indice, false
 	}
 
-	if (*dicc.array[indice-2]).ubicacion+1 == indice || (*dicc.array[indice-2]).ubicacion+2 == indice {
+	if (*dicc.array[(uint64(len(dicc.array))+indice-2) % uint64(len(dicc.array))]).ubicacion+1 == indice || (*dicc.array[(uint64(len(dicc.array))+indice-2) % uint64(len(dicc.array))]).ubicacion+2 == indice {
 
-		dicc.array[indice-2], dicc.array[indice] = dicc.array[indice], dicc.array[indice-2]
+		dicc.array[(uint64(len(dicc.array))+indice-2) % uint64(len(dicc.array))], dicc.array[indice] = dicc.array[indice], dicc.array[(uint64(len(dicc.array))+indice-2) % uint64(len(dicc.array))]
 
-		return dicc.hacerEspacio(indice-2, lugarNecesario)
+		return dicc.hacerEspacio((uint64(len(dicc.array))+indice-2) % uint64(len(dicc.array)), lugarNecesario)
 
-	} else if (*dicc.array[indice-1]).ubicacion+1 == indice || (*dicc.array[indice-1]).ubicacion+2 == indice {
+	} else if (*dicc.array[(uint64(len(dicc.array))+indice-1) % uint64(len(dicc.array))]).ubicacion+1 == indice || (*dicc.array[(uint64(len(dicc.array))+indice-1) % uint64(len(dicc.array))]).ubicacion+2 == indice {
 
-		dicc.array[indice-1], dicc.array[indice] = dicc.array[indice], dicc.array[indice-1]
+		dicc.array[(uint64(len(dicc.array))+indice-1) % uint64(len(dicc.array))], dicc.array[indice] = dicc.array[indice], dicc.array[(uint64(len(dicc.array))+indice-1) % uint64(len(dicc.array))]
 
-		return dicc.hacerEspacio(indice-1, lugarNecesario)
+		return dicc.hacerEspacio((uint64(len(dicc.array))+indice-1) % uint64(len(dicc.array)), lugarNecesario)
 
 	}
 
-	dicc.redimensionar(cap(dicc.array) * 2)
+	dicc.redimensionar(cap(dicc.array) * 3)
 	return 0 , true
 }
 
 func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
-	dicc.factorCarga = float64(dicc.Cantidad()) / float64(cap(dicc.array))
-
-	if dicc.factorCarga >= 0.7 {
-
-		dicc.redimensionar(cap(dicc.array) * 2)
-
-	}
 
 	indiceHash := hashear[K](clave) % uint64(len(dicc.array))
 	var posicion uint64
@@ -111,7 +106,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 		for true {
 
-			if dicc.array[posicion] == nil {
+			if dicc.array[posicion % uint64(len(dicc.array))] == nil {
 
 				break
 
@@ -119,7 +114,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 			posicion = (posicion + 1) % uint64(len(dicc.array))
 		}
 
-		posicionNueva, redimension := dicc.hacerEspacio(posicion, indiceHash)
+		posicion, redimension := dicc.hacerEspacio(posicion, indiceHash)
 
 		if redimension == true {
 
@@ -128,7 +123,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 		} else {
 
 			paraGuardar := crearElemento[K, V](clave, dato, indiceHash)
-			dicc.array[posicionNueva] = paraGuardar
+			dicc.array[posicion] = paraGuardar
 			dicc.largo++
 
 		}
@@ -168,14 +163,6 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 
 func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 
-	dicc.factorCarga = float64(dicc.Cantidad()) / float64(cap(dicc.array))
-
-	if dicc.factorCarga < 0.1 {
-
-		dicc.redimensionar(cap(dicc.array) / 2)
-
-	}
-
 	ubicacion := hashear[K](clave) % uint64(len(dicc.array))
 
 	for i := ubicacion; i < (ubicacion + 3); i++ {
@@ -201,7 +188,7 @@ func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
 
 func CrearHash[K comparable, V any]() Diccionario[K, V] {
 	diccio := new(diccionario_implementacion[K, V])
-	(*diccio).array = make([]*elementos[K, V], 100)
+	(*diccio).array = make([]*elementos[K, V], 87)
 	return diccio
 }
 
