@@ -163,7 +163,7 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 
 	ubicacion := hashear[K](clave) % CAPACIDAD
-
+	//Redimension en Borrar
 	if dicc.Cantidad() < int(CAPACIDAD)/2 && dicc.Cantidad() > int(CAPACIDAD)/4 {
 		dicc.redimensionar(int(CAPACIDAD) / 2)
 	}
