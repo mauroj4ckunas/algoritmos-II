@@ -63,7 +63,7 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarN
 
 	}
 
-	dicc.redimensionar(cap(dicc.array) * 3)
+	dicc.redimensionar(cap(dicc.array) * 2)
 	return 0, true
 }
 
@@ -180,7 +180,7 @@ func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
 
 func CrearHash[K comparable, V any]() Diccionario[K, V] {
 	diccio := new(diccionario_implementacion[K, V])
-	(*diccio).array = make([]*elementos[K, V], 87)
+	(*diccio).array = make([]*elementos[K, V], 97)
 	return diccio
 }
 
