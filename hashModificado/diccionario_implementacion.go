@@ -41,7 +41,7 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 
 func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	CAPACIDAD = uint64(nuevoTam)
-	nuevoArray := make([]*elementos[K, V], nuevoTam)
+	nuevoArray := crearArrayHash[K, V](CAPACIDAD)
 	arrayViejo := dicc.array
 	dicc.array = nuevoArray
 	dicc.largo = 0
@@ -185,9 +185,14 @@ func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
 	return dicc.largo
 }
 
+func crearArrayHash[K comparable, V any](tam uint64) []*elementos[K, V] {
+	nuevoArray := make([]*elementos[K, V], tam)
+	return nuevoArray
+}
+
 func CrearHash[K comparable, V any]() Diccionario[K, V] {
 	diccio := new(diccionario_implementacion[K, V])
-	(*diccio).array = make([]*elementos[K, V], CAPACIDAD)
+	(*diccio).array = crearArrayHash[K, V](CAPACIDAD)
 	return diccio
 }
 
