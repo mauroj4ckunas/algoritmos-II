@@ -164,6 +164,10 @@ func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 
 	ubicacion := hashear[K](clave) % CAPACIDAD
 
+	if dicc.Cantidad() < int(CAPACIDAD)/2 && dicc.Cantidad() > int(CAPACIDAD)/4 {
+		dicc.redimensionar(int(CAPACIDAD) / 2)
+	}
+
 	for i := ubicacion; i < (ubicacion + POSICIONESHABILES); i++ {
 
 		if dicc.array[i%CAPACIDAD] == nil {
