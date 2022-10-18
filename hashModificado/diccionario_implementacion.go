@@ -1,9 +1,7 @@
 package diccionario
 
 import (
-	"crypto/sha1"
-	"encoding/binary"
-	"fmt"
+	FuncHash "FuncHash"
 )
 
 var CAPACIDAD = uint64(87)
@@ -22,13 +20,6 @@ type elementos[K comparable, V any] struct {
 type diccionario_implementacion[K comparable, V any] struct {
 	array []*elementos[K, V]
 	largo int
-}
-
-func hashear[K comparable](clave K) uint64 {
-	elementoHasheable := []byte(fmt.Sprintf("%v", clave))
-	hasheado := sha1.Sum(elementoHasheable)
-	var arrayUint64 []byte = hasheado[:]
-	return binary.BigEndian.Uint64(arrayUint64)
 }
 
 func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) *elementos[K, V] {
@@ -77,7 +68,7 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarN
 
 func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
-	indiceHash := hashear[K](clave) % CAPACIDAD
+	indiceHash := FuncHash.Hashear[K](clave) % CAPACIDAD
 	var posicion uint64
 
 	if dicc.Pertenece(clave) {
@@ -134,7 +125,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 
-	ubicacion := hashear[K](clave) % CAPACIDAD
+	ubicacion := FuncHash.Hashear[K](clave) % CAPACIDAD
 
 	for i := ubicacion; i < (ubicacion + POSICIONESHABILES); i++ {
 		if dicc.array[i%CAPACIDAD] == nil {
@@ -148,7 +139,7 @@ func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
 
 func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 
-	ubicacion := hashear[K](clave) % CAPACIDAD
+	ubicacion := FuncHash.Hashear[K](clave) % CAPACIDAD
 
 	for i := ubicacion; i < (ubicacion + POSICIONESHABILES); i++ {
 		if dicc.array[i%CAPACIDAD] == nil {
@@ -162,8 +153,8 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 
 func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 
-	ubicacion := hashear[K](clave) % CAPACIDAD
-	//Redimension en Borrar
+	ubicacion := FuncHash.Hashear[K](clave) % CAPACIDAD
+
 	if dicc.Cantidad() < int(CAPACIDAD)/2 && dicc.Cantidad() > int(CAPACIDAD)/4 {
 		dicc.redimensionar(int(CAPACIDAD) / 2)
 	}
