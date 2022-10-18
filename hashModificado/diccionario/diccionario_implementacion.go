@@ -1,7 +1,7 @@
 package diccionario
 
 import (
-	FuncHash "FuncHash"
+	FuncHash "diccionario/FuncHash"
 )
 
 var CAPACIDAD = uint64(87)
