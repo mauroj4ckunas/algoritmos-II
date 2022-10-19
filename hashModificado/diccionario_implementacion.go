@@ -32,8 +32,8 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 
 func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	CAPACIDAD = uint64(nuevoTam)
-	dicc.array = crearArrayHash[K, V](CAPACIDAD)
 	arrayViejo := dicc.array
+	dicc.array = crearArrayHash[K, V](CAPACIDAD)
 	dicc.largo = 0
 	for i := 0; i < len(arrayViejo); i++ {
 		if arrayViejo[i] != nil {
@@ -47,18 +47,19 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarN
 		return indice % CAPACIDAD, false
 	}
 
-	if (*dicc.array[(CAPACIDAD+indice-2)%CAPACIDAD]).ubicacion+1 == indice || (*dicc.array[(CAPACIDAD+indice-2)%CAPACIDAD]).ubicacion+2 == indice {
+	if (*dicc.array[(CAPACIDAD+indice-2)%CAPACIDAD]).ubicacion+1 == indice ||
+		(*dicc.array[(CAPACIDAD+indice-2)%CAPACIDAD]).ubicacion+2 == indice {
 
 		dicc.array[(CAPACIDAD+indice-2)%CAPACIDAD], dicc.array[indice] = dicc.array[indice], dicc.array[(CAPACIDAD+indice-2)%CAPACIDAD]
 
 		return dicc.hacerEspacio(((CAPACIDAD + indice - 2) % CAPACIDAD), lugarNecesario)
 
-	} else if (*dicc.array[(CAPACIDAD+indice-1)%CAPACIDAD]).ubicacion+1 == indice || (*dicc.array[(CAPACIDAD+indice-1)%CAPACIDAD]).ubicacion+2 == indice {
+	} else if (*dicc.array[(CAPACIDAD+indice-1)%CAPACIDAD]).ubicacion+1 == indice ||
+		(*dicc.array[(CAPACIDAD+indice-1)%CAPACIDAD]).ubicacion+2 == indice {
 
 		dicc.array[(CAPACIDAD+indice-1)%CAPACIDAD], dicc.array[indice] = dicc.array[indice], dicc.array[(CAPACIDAD+indice-1)%CAPACIDAD]
 
 		return dicc.hacerEspacio(((CAPACIDAD + indice - 1) % CAPACIDAD), lugarNecesario)
-
 	}
 
 	dicc.redimensionar(cap(dicc.array) * MULTIPLICADOR_DE_CAPACIDAD)
@@ -72,25 +73,19 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 	if dicc.Pertenece(clave) {
 		for posicion = indiceHash; posicion < (indiceHash + POSICIONESHABILES); posicion++ {
-
 			if (*dicc.array[posicion%CAPACIDAD]).clave == clave {
-
 				dicc.array[posicion%CAPACIDAD].valor = dato
 				return
-
 			}
 		}
 	}
 
 	for posicion = indiceHash; posicion < (indiceHash + POSICIONESHABILES); posicion++ {
-
 		if dicc.array[posicion%CAPACIDAD] == nil {
-
 			paraGuardar := crearElemento[K, V](clave, dato, indiceHash)
 			dicc.array[posicion%CAPACIDAD] = paraGuardar
 			dicc.largo++
 			return
-
 		}
 	}
 
@@ -98,9 +93,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 		for true {
 			if dicc.array[posicion%CAPACIDAD] == nil {
-
 				break
-
 			}
 			posicion = (posicion + 1) % CAPACIDAD
 		}
@@ -190,13 +183,11 @@ func CrearHash[K comparable, V any]() Diccionario[K, V] {
 	return diccio
 }
 
-// iterador externo del diccionario
+// Iterador Externo
 type iterador_externo[K comparable, V any] struct {
 	actual int
 	dicc   []*elementos[K, V]
 }
-
-// creador de iterador externo
 
 func (dicc *diccionario_implementacion[K, V]) Iterador() IterDiccionario[K, V] {
 	iterr := new(iterador_externo[K, V])
@@ -218,7 +209,6 @@ func (iterr *iterador_externo[K, V]) VerActual() (K, V) {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
-	//fmt.Println(iterr.dicc[iterr.actual].clave)
 	return (*iterr.dicc[iterr.actual]).clave, (*iterr.dicc[iterr.actual]).valor
 }
 
