@@ -1,4 +1,4 @@
-package FuncHash
+package funcionHash
 
 import (
 	"crypto/sha1"

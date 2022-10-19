@@ -1,4 +1,4 @@
-module diccionario
+module hashModificado
 
 go 1.19
 
