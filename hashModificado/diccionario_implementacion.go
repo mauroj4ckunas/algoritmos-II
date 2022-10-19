@@ -1,7 +1,7 @@
 package diccionario
 
 import (
-	FuncHash "diccionario/funcionHash"
+	FuncHash "FuncionHash"
 )
 
 var CAPACIDAD = uint64(87)
@@ -32,9 +32,8 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 
 func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	CAPACIDAD = uint64(nuevoTam)
-	nuevoArray := crearArrayHash[K, V](CAPACIDAD)
+	dicc.array = crearArrayHash[K, V](CAPACIDAD)
 	arrayViejo := dicc.array
-	dicc.array = nuevoArray
 	dicc.largo = 0
 	for i := 0; i < len(arrayViejo); i++ {
 		if arrayViejo[i] != nil {
