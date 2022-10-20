@@ -22,6 +22,7 @@ func crearHoja[K comparable, V any] (clave K, dato V) *hojas[K, V] {
 	
 }
 
+
 func (hoja *hojas[K,V]) borrar(compara func(K, K) int ,clave K ) (**hojas[K,V],string) {
 
 	if compara(clave,hoja.clave) < 0 {
@@ -30,7 +31,7 @@ func (hoja *hojas[K,V]) borrar(compara func(K, K) int ,clave K ) (**hojas[K,V],s
 			return nil,"La clave no pertenece al diccionario"
 
 		} else if compara(clave,hoja.hijoIzq.clave) == 0 {
-
+			
 			return &hoja.hijoIzq,""
 
 		}
@@ -81,47 +82,53 @@ func (arbol *arbolBinario[K,V]) Borrar(clave K) V {
 
 	}
 
+	arbol.cantidad--
+
 	var devolver V
 
 	for true {
 
-		if (*borrar).hijoDer == nil && (*borrar).hijoIzq == nil {
+		if (*(*borrar)).hijoDer == nil && (*(*borrar)).hijoIzq == nil {
 
+		
 			devolver = (*borrar).valor
 			*borrar = nil
-			break
+			return devolver
 
 		}
 
 		//caso 1 hijo
-		if (*borrar).hijoDer == nil && (*borrar).hijoIzq != nil {
+		if (*(*borrar)).hijoDer == nil && (*(*borrar)).hijoIzq != nil {
 
+		
 			devolver = (*borrar).valor
 			*borrar = (*borrar).hijoIzq
-			break
+			return devolver
 
-		} else if (*borrar).hijoDer != nil && (*borrar).hijoIzq == nil {
+		} else if (*(*borrar)).hijoDer != nil && (*(*borrar)).hijoIzq == nil {
 
+		
 			devolver = (*borrar).valor
 			*borrar = (*borrar).hijoDer
-			break
+			return devolver
 
 		}
 
 		//caso 2 hijos
-		if (*borrar).hijoDer != nil && (*borrar).hijoIzq != nil {
+		if (*(*borrar)).hijoDer != nil && (*(*borrar)).hijoIzq != nil {
 
-			reemplazante := (*borrar).hijoDer
+		
+			reemplazante := &(*borrar).hijoDer
 
-			for reemplazante.hijoIzq != nil {
+			for (*reemplazante).hijoIzq != nil {
 				
-				reemplazante = reemplazante.hijoIzq
+				reemplazante = &(*reemplazante).hijoIzq
 
 			}
 
-			(*borrar).clave , reemplazante.clave = reemplazante.clave , (*borrar).clave
-			(*borrar).valor , reemplazante.valor = reemplazante.valor , (*borrar).valor
-			borrar , reemplazante = &reemplazante , *borrar
+			(*borrar).clave , (*reemplazante).clave = (*reemplazante).clave , (*borrar).clave
+			(*borrar).valor , (*reemplazante).valor = (*reemplazante).valor , (*borrar).valor
+			borrar = reemplazante
 		}
 	}
 
@@ -129,7 +136,7 @@ func (arbol *arbolBinario[K,V]) Borrar(clave K) V {
 
 }
 
-func (hoja *hojas[K,V]) guardar(compara func(K, K) int ,hojaNueva *hojas[K,V] ) {
+func (hoja *hojas[K,V]) guardar(compara func(K, K) int ,hojaNueva *hojas[K,V],cantidad *int) {
 	resultado := compara(hojaNueva.clave,hoja.clave)
 	switch {
 
@@ -138,20 +145,22 @@ func (hoja *hojas[K,V]) guardar(compara func(K, K) int ,hojaNueva *hojas[K,V] ) 
 		if hoja.hijoIzq == nil {
 
 			hoja.hijoIzq = hojaNueva
+			*cantidad++
 
 		}
 
-		hoja.hijoIzq.guardar(compara,hojaNueva)
+		hoja.hijoIzq.guardar(compara,hojaNueva,cantidad)
 
 	case resultado > 0:
 
 		if hoja.hijoDer == nil {
 
 			hoja.hijoDer = hojaNueva
+			*cantidad++
 
 		}
 
-		hoja.hijoDer.guardar(compara,hojaNueva)
+		hoja.hijoDer.guardar(compara,hojaNueva,cantidad)
 
 	default:
 
@@ -257,17 +266,20 @@ func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdena
 func (arbol *arbolBinario[K,V]) Guardar(clave K, dato V){
 
 	hoja := crearHoja[K,V](clave,dato)
-	arbol.cantidad++
+	
 
 	if arbol.raiz == nil {
 
 		arbol.raiz = hoja
+		arbol.cantidad++
 
 	} else {
 
-		arbol.raiz.guardar(arbol.comparador,hoja)
+		arbol.raiz.guardar(arbol.comparador,hoja,&arbol.cantidad)
 
 	}
+
+
 }
 
 func (arbol *arbolBinario[K,V]) Pertenece(clave K) bool{
