@@ -22,6 +22,113 @@ func crearHoja[K comparable, V any] (clave K, dato V) *hojas[K, V] {
 	
 }
 
+func (hoja *hojas[K,V]) borrar(compara func(K, K) int ,clave K ) (**hojas[K,V],string) {
+
+	if compara(clave,hoja.clave) < 0 {
+		if hoja.hijoIzq == nil {
+
+			return nil,"La clave no pertenece al diccionario"
+
+		} else if compara(clave,hoja.hijoIzq.clave) == 0 {
+
+			return &hoja.hijoIzq,""
+
+		}
+
+		return hoja.hijoIzq.borrar(compara,clave)
+
+	} else {
+
+		if hoja.hijoDer == nil{
+
+			return nil,"La clave no pertenece al diccionario"
+
+		} else if compara(clave,hoja.hijoDer.clave) == 0{
+
+			return &hoja.hijoDer,""
+
+		}
+
+		return hoja.hijoDer.borrar(compara,clave)
+	}
+		
+		
+}
+
+func (arbol *arbolBinario[K,V]) Borrar(clave K) V {
+
+	var err string
+	var borrar **hojas[K,V]
+
+	if arbol.raiz == nil {
+
+		panic("La clave no pertenece al diccionario")
+
+	} else if arbol.raiz.clave == clave {
+
+		borrar = &arbol.raiz
+
+	} else {
+
+		borrar, err = arbol.raiz.borrar(arbol.comparador,clave)
+
+	}
+	
+
+	if borrar == nil {
+
+		panic(err)
+
+	}
+
+	var devolver V
+
+	for true {
+
+		if (*borrar).hijoDer == nil && (*borrar).hijoIzq == nil {
+
+			devolver = (*borrar).valor
+			*borrar = nil
+			break
+
+		}
+
+		//caso 1 hijo
+		if (*borrar).hijoDer == nil && (*borrar).hijoIzq != nil {
+
+			devolver = (*borrar).valor
+			*borrar = (*borrar).hijoIzq
+			break
+
+		} else if (*borrar).hijoDer != nil && (*borrar).hijoIzq == nil {
+
+			devolver = (*borrar).valor
+			*borrar = (*borrar).hijoDer
+			break
+
+		}
+
+		//caso 2 hijos
+		if (*borrar).hijoDer != nil && (*borrar).hijoIzq != nil {
+
+			reemplazante := (*borrar).hijoDer
+
+			for reemplazante.hijoIzq != nil {
+				
+				reemplazante = reemplazante.hijoIzq
+
+			}
+
+			(*borrar).clave , reemplazante.clave = reemplazante.clave , (*borrar).clave
+			(*borrar).valor , reemplazante.valor = reemplazante.valor , (*borrar).valor
+			borrar , reemplazante = &reemplazante , *borrar
+		}
+	}
+
+	return devolver
+
+}
+
 func (hoja *hojas[K,V]) guardar(compara func(K, K) int ,hojaNueva *hojas[K,V] ) {
 	resultado := compara(hojaNueva.clave,hoja.clave)
 	switch {
@@ -73,12 +180,6 @@ func (hoja *hojas[K,V]) encontrarClave(compara func(K, K) int ,clave K ) (*hojas
 
 		}
 
-		if compara(clave,hoja.hijoIzq.clave) == 0 {
-
-			return hoja.hijoIzq, ""
-
-		}
-
 		return hoja.hijoIzq.encontrarClave(compara,clave)
 
 		
@@ -88,12 +189,6 @@ func (hoja *hojas[K,V]) encontrarClave(compara func(K, K) int ,clave K ) (*hojas
 		if hoja.hijoDer == nil {
 
 			return nil,"La clave no pertenece al diccionario"
-
-		}
-
-		if compara(clave,hoja.hijoDer.clave) == 0 {
-
-			return hoja.hijoDer, ""
 
 		}
 
@@ -175,7 +270,6 @@ func (arbol *arbolBinario[K,V]) Guardar(clave K, dato V){
 	}
 }
 
-
 func (arbol *arbolBinario[K,V]) Pertenece(clave K) bool{
 
 	resultado, _ := arbol.raiz.encontrarClave(arbol.comparador,clave)
@@ -196,67 +290,11 @@ func (arbol *arbolBinario[K,V]) Obtener(clave K) V {
 	return resultado.valor
 }
 
-func (arbol *arbolBinario[K,V]) Borrar(clave K) V {
-
-	borrar, err := arbol.raiz.encontrarClave(arbol.comparador,clave)
-
-	if borrar == nil {
-
-		panic(err)
-
-	}
-
-	var devolver V
-
-	for true {
-
-		if borrar.hijoDer == nil && borrar.hijoIzq == nil {
-
-			devolver = borrar.valor
-			borrar = nil
-			break
-
-		}
-
-		//caso 1 hijo
-		if borrar.hijoDer == nil && borrar.hijoIzq != nil {
-
-			devolver = borrar.valor
-			borrar = borrar.hijoIzq
-			break
-
-		} else if borrar.hijoDer != nil && borrar.hijoIzq == nil {
-
-			devolver = borrar.valor
-			borrar = borrar.hijoDer
-			break
-
-		}
-
-		//caso 2 hijos
-		if borrar.hijoDer != nil && borrar.hijoIzq != nil {
-
-			reemplazante := borrar.hijoDer
-
-			for reemplazante.hijoIzq != nil {
-				
-				reemplazante = reemplazante.hijoIzq
-
-			}
-
-			borrar.clave , reemplazante.clave = reemplazante.clave , borrar.clave
-			borrar.valor , reemplazante.valor = reemplazante.valor , borrar.valor
-			borrar , reemplazante = reemplazante , borrar
-		}
-	}
-
-	return devolver
-
-}
 
 func (arbol *arbolBinario[K,V]) Cantidad() int{
 	return arbol.cantidad
 }
+
 
 func (arbol *arbolBinario[K,V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
 
@@ -300,7 +338,6 @@ func (arbol *arbolBinario[K,V]) IterarRango(desde *K, hasta *K, visitar func(cla
 	
 }
 
-
 func (arbol *arbolBinario[K,V]) Iterar(f func(clave K, dato V) bool){
 	
 	arbol.IterarRango(nil,nil,f)
@@ -324,7 +361,7 @@ func (arbol *arbolBinario[K,V]) IteradorRango(desde *K, hasta *K) IterDiccionari
 
 	if desde != nil {
 
-		todoIzquierda, err= arbol.raiz.encontrarClave(arbol.comparador,*desde)
+		todoIzquierda, err = arbol.raiz.encontrarClave(arbol.comparador,*desde)
 
 	} else {
 
@@ -341,18 +378,18 @@ func (arbol *arbolBinario[K,V]) IteradorRango(desde *K, hasta *K) IterDiccionari
 	if hasta != nil {
 
 		termina, err = arbol.raiz.encontrarClave(arbol.comparador,*hasta)
+		if err != "" {
 
-	}
-
-	if err != "" {
-
-		panic(err)
+			panic(err)
+		
+		}
+		iterr.hasta = termina.clave
 		
 	}
 
-	iterr.hasta = termina.clave
+	
 
-	for todoIzquierda != nil && todoIzquierda.clave != termina.clave {
+	for todoIzquierda != nil && todoIzquierda.clave != *hasta {
 
 		iterr.pilaRecursiva.Apilar(todoIzquierda)
 		todoIzquierda = todoIzquierda.hijoIzq
