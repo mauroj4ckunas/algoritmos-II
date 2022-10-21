@@ -411,3 +411,33 @@ func TestConClavesStructs(t *testing.T) {
 	require.EqualValues(t, 2, dic.Obtener(a3))
 
 }
+
+func TestIteradorExternoSinElementos(t *testing.T) {
+	funcionComparable := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+	probarIter := TDADiccionario.CrearABB[int, string](funcionComparable)
+
+	iterVacio := probarIter.Iterador()
+	require.False(t, iterVacio.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio.Siguiente() })
+
+	probarIter.Guardar(1, "")
+	probarIter.Guardar(2, "")
+	probarIter.Guardar(3, "")
+
+	require.EqualValues(t, "", probarIter.Borrar(1))
+	require.EqualValues(t, "", probarIter.Borrar(2))
+	require.EqualValues(t, "", probarIter.Borrar(3))
+
+	iterVacio2 := probarIter.Iterador()
+	require.False(t, iterVacio.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio2.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio2.Siguiente() })
+}
