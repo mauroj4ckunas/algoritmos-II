@@ -424,9 +424,7 @@ func TestIteradorExternoSinElementos(t *testing.T) {
 	probarIter := TDADiccionario.CrearABB[int, string](funcionComparable)
 
 	iterVacio := probarIter.Iterador()
-	require.False(t, iterVacio.HaySiguiente())
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio.Siguiente() })
+	verificarIterVacio(iterVacio, t)
 
 	probarIter.Guardar(1, "")
 	probarIter.Guardar(2, "")
@@ -437,7 +435,11 @@ func TestIteradorExternoSinElementos(t *testing.T) {
 	require.EqualValues(t, "", probarIter.Borrar(3))
 
 	iterVacio2 := probarIter.Iterador()
-	require.False(t, iterVacio.HaySiguiente())
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio2.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterVacio2.Siguiente() })
+	verificarIterVacio(iterVacio2, t)
+}
+
+func verificarIterVacio[K comparable, V any](iter TDADiccionario.IterDiccionario[K, V], t *testing.T) {
+	require.False(t, iter.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
 }
