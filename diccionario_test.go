@@ -443,3 +443,51 @@ func verificarIterVacio[K comparable, V any](iter TDADiccionario.IterDiccionario
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
 }
+
+func TestIteradorRangos(t *testing.T) {
+	funcionComparable := func(clave1 string, clave2 string) int {
+		if clave1[0] < clave2[0] {
+			return -1
+		} else if clave1[0] > clave2[0] {
+			return 1
+		}
+		return 0
+	}
+	clave1 := "Rawson"
+	clave2 := "Jackunas"
+	clave3 := "Gerez"
+	clave4 := "Navarro"
+	clave5 := "Alberti"
+	clave6 := "Fernandez"
+	valor1 := 10
+	valor2 := 2
+	valor3 := 7
+	valor4 := 4
+	valor5 := 6
+	valor6 := 1
+	claves := []string{clave1, clave2, clave3, clave4, clave5, clave6}
+	valores := []int{valor1, valor2, valor3, valor4, valor5, valor6}
+	dic := TDADiccionario.CrearABB[string, int](funcionComparable)
+	dic.Guardar(claves[0], valores[0])
+	dic.Guardar(claves[1], valores[1])
+	dic.Guardar(claves[2], valores[2])
+	dic.Guardar(claves[3], valores[3])
+	dic.Guardar(claves[4], valores[4])
+	dic.Guardar(claves[5], valores[5])
+	ptrClave3 := &clave3
+	ptrClave4 := &clave4
+	iter := dic.IteradorRango(ptrClave3, ptrClave4)
+
+	require.True(t, iter.HaySiguiente())
+	resClave1, resValor1 := iter.VerActual()
+	require.EqualValues(t, resClave1, clave3)
+	require.EqualValues(t, resValor1, valor3)
+	require.EqualValues(t, resClave1, iter.Siguiente())
+
+	require.True(t, iter.HaySiguiente())
+	resClave2, resValor2 := iter.VerActual()
+	require.EqualValues(t, resClave2, clave2)
+	require.EqualValues(t, resValor2, valor2)
+	require.EqualValues(t, resClave2, iter.Siguiente())
+
+}
