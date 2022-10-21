@@ -262,7 +262,7 @@ func TestConClavesStructs(t *testing.T) {
 func TestIterarRango(t *testing.T) {
 
 	type fechas int
-	const (
+	var (
 		fecha1  fechas = 1910
 		fecha2  fechas = 2022
 		fecha3  fechas = 1916
@@ -311,6 +311,8 @@ func TestIterarRango(t *testing.T) {
 	lineaDeTiempo.Guardar(fecha9, acon9)
 	lineaDeTiempo.Guardar(fecha10, acon10)
 
-	iterLinea := lineaDeTiempo.IteradorRango(fecha1)
+	ptrFecha1 := &fecha1
+	ptrFecha7 := &fecha7
+	iterLinea := lineaDeTiempo.IteradorRango(ptrFecha1, ptrFecha7)
 
 }
