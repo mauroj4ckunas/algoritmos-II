@@ -261,35 +261,33 @@ func TestConClavesStructs(t *testing.T) {
 
 func TestIterarRango(t *testing.T) {
 
-	type fechas int
 	var (
-		fecha1  fechas = 1910
-		fecha2  fechas = 2022
-		fecha3  fechas = 1916
-		fecha4  fechas = 1986
-		fecha5  fechas = 1810
-		fecha6  fechas = 1806
-		fecha7  fechas = 2010
-		fecha8  fechas = 1807
-		fecha9  fechas = 1816
-		fecha10 fechas = 1978
+		fecha1  int = 1910
+		fecha2  int = 2022
+		fecha3  int = 1916
+		fecha4  int = 1986
+		fecha5  int = 1810
+		fecha6  int = 1806
+		fecha7  int = 2010
+		fecha8  int = 1807
+		fecha9  int = 1816
+		fecha10 int = 1978
 	)
 
-	type acontecimiento string
 	const (
-		acon1  acontecimiento = "Centenario"
-		acon2  acontecimiento = "Actualidad"
-		acon3  acontecimiento = "Presidencia Yrigoyen"
-		acon4  acontecimiento = "Mundial"
-		acon5  acontecimiento = "Revolucion de Mayo"
-		acon6  acontecimiento = "Primera Invasion Inglesa"
-		acon7  acontecimiento = "Bicentenario"
-		acon8  acontecimiento = "Segunda Invasion Inglesa"
-		acon9  acontecimiento = "Independencia"
-		acon10 acontecimiento = "Mundial"
+		acon1  string = "Centenario"
+		acon2  string = "Actualidad"
+		acon3  string = "Presidencia Yrigoyen"
+		acon4  string = "Mundial"
+		acon5  string = "Revolucion de Mayo"
+		acon6  string = "Primera Invasion Inglesa"
+		acon7  string = "Bicentenario"
+		acon8  string = "Segunda Invasion Inglesa"
+		acon9  string = "Independencia"
+		acon10 string = "Mundial"
 	)
 
-	funcionComparable := func(clave1 fechas, clave2 fechas) int {
+	funcionComparable := func(clave1 int, clave2 int) int {
 		if clave1 < clave2 {
 			return -1
 		} else if clave1 > clave2 {
@@ -298,7 +296,7 @@ func TestIterarRango(t *testing.T) {
 		return 0
 	}
 
-	lineaDeTiempo := TDADiccionario.CrearABB[fechas, acontecimiento](funcionComparable)
+	lineaDeTiempo := TDADiccionario.CrearABB[int, string](funcionComparable)
 
 	lineaDeTiempo.Guardar(fecha1, acon1)
 	lineaDeTiempo.Guardar(fecha2, acon2)
@@ -311,8 +309,37 @@ func TestIterarRango(t *testing.T) {
 	lineaDeTiempo.Guardar(fecha9, acon9)
 	lineaDeTiempo.Guardar(fecha10, acon10)
 
+	ptrFecha6 := &fecha6
 	ptrFecha1 := &fecha1
-	ptrFecha7 := &fecha7
-	iterLinea := lineaDeTiempo.IteradorRango(ptrFecha1, ptrFecha7)
+	var contadorMundiales int
+	lineaDeTiempo.IterarRango(ptrFecha6, ptrFecha1, func(year int, acon string) bool {
+		if acon == "Mundial" {
+			contadorMundiales++
+		}
+		return true
+	})
+	require.EqualValues(t, 0, contadorMundiales)
 
+	ptrFecha4 := &fecha4
+	ptrFecha7 := &fecha7
+	contadorMundiales = 0
+	lineaDeTiempo.IterarRango(ptrFecha4, ptrFecha7, func(year int, acon string) bool {
+		if acon == "Mundial" {
+			fmt.Println(year)
+			fmt.Println("Llega")
+			contadorMundiales++
+		}
+		return true
+	})
+	require.EqualValues(t, 1, contadorMundiales)
+
+	contadorMundiales = 0
+	lineaDeTiempo.IterarRango(nil, nil, func(year int, acon string) bool {
+		if acon == "Mundial" {
+			contadorMundiales++
+		}
+		return true
+	})
+	require.EqualValues(t, 2, contadorMundiales)
 }
+
