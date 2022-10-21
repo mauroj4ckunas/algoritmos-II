@@ -221,44 +221,6 @@ func TestDeBorrados(t *testing.T) {
 	require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { diccio.Obtener("bastaDeTesteos") })
 }
 
-/*
-func TestConClavesStructs(t *testing.T) {
-	type basico struct {
-		a string
-		b int
-	}
-	type avanzado struct {
-		w int
-		x basico
-		y basico
-		z string
-	}
-
-	dic := TDADiccionario.CrearHash[avanzado, int]()
-
-	a1 := avanzado{w: 10, z: "hola", x: basico{a: "mundo", b: 8}, y: basico{a: "!", b: 10}}
-	a2 := avanzado{w: 10, z: "aloh", x: basico{a: "odnum", b: 14}, y: basico{a: "!", b: 5}}
-	a3 := avanzado{w: 10, z: "hello", x: basico{a: "world", b: 8}, y: basico{a: "!", b: 4}}
-
-	dic.Guardar(a1, 0)
-	dic.Guardar(a2, 1)
-	dic.Guardar(a3, 2)
-
-	require.True(t, dic.Pertenece(a1))
-	require.True(t, dic.Pertenece(a2))
-	require.True(t, dic.Pertenece(a3))
-	require.EqualValues(t, 0, dic.Obtener(a1))
-	require.EqualValues(t, 1, dic.Obtener(a2))
-	require.EqualValues(t, 2, dic.Obtener(a3))
-	dic.Guardar(a1, 5)
-	require.EqualValues(t, 5, dic.Obtener(a1))
-	require.EqualValues(t, 2, dic.Obtener(a3))
-	require.EqualValues(t, 5, dic.Borrar(a1))
-	require.False(t, dic.Pertenece(a1))
-	require.EqualValues(t, 2, dic.Obtener(a3))
-
-}*/
-
 func TestIterarRango(t *testing.T) {
 
 	var (
@@ -343,3 +305,109 @@ func TestIterarRango(t *testing.T) {
 	require.EqualValues(t, 2, contadorMundiales)
 }
 
+func TestIteradorInterno(t *testing.T) {
+	type letras string
+	const (
+		a letras = "A"
+		b letras = "B"
+		c letras = "C"
+		d letras = "D"
+		e letras = "E"
+	)
+
+	type palabra string
+	const (
+		primera palabra = "Debería"
+		segunda palabra = " salir"
+		tercera palabra = " este"
+		cuarta  palabra = " mensaje"
+		quinta  palabra = " correctamente."
+	)
+
+	funcionComparable := func(clave1 letras, clave2 letras) int {
+		if clave1[0] < clave2[0] {
+			return -1
+		} else if clave1[0] > clave2[0] {
+			return 1
+		}
+		return 0
+	}
+
+	abc := TDADiccionario.CrearABB[letras, palabra](funcionComparable)
+
+	abc.Guardar(a, primera)
+	require.EqualValues(t, primera, abc.Obtener(a))
+	abc.Guardar(b, segunda)
+	require.EqualValues(t, segunda, abc.Obtener(b))
+	abc.Guardar(c, tercera)
+	require.EqualValues(t, tercera, abc.Obtener(c))
+	abc.Guardar(d, cuarta)
+	require.EqualValues(t, cuarta, abc.Obtener(d))
+	abc.Guardar(e, quinta)
+	require.EqualValues(t, quinta, abc.Obtener(e))
+
+	var abecedario letras
+	ptrAbecedario := &abecedario
+	var frase palabra
+	ptrFrase := &frase
+
+	abc.Iterar(func(clave letras, valor palabra) bool {
+		*ptrAbecedario += clave
+		*ptrFrase += valor
+		return true
+	})
+
+	require.EqualValues(t, "ABCDE", abecedario)
+	require.EqualValues(t, "Debería salir este mensaje correctamente.", frase)
+}
+
+func TestConClavesStructs(t *testing.T) {
+
+	type basico struct {
+		a string
+		b int
+	}
+	type avanzado struct {
+		w int
+		x basico
+		y basico
+		z string
+	}
+
+	funcionComparable := func(clave1 avanzado, clave2 avanzado) int {
+		if clave1.w < clave2.w {
+
+			return -1
+
+		} else if clave1.w > clave2.w {
+
+			return 1
+
+		}
+		return 0
+	}
+
+	dic := TDADiccionario.CrearABB[avanzado, int](funcionComparable)
+
+	a1 := avanzado{w: 13, z: "hola", x: basico{a: "mundo", b: 8}, y: basico{a: "!", b: 10}}
+	a2 := avanzado{w: 15, z: "aloh", x: basico{a: "odnum", b: 14}, y: basico{a: "!", b: 5}}
+	a3 := avanzado{w: 10, z: "hello", x: basico{a: "world", b: 8}, y: basico{a: "!", b: 4}}
+
+	dic.Guardar(a1, 0)
+	dic.Guardar(a2, 1)
+	dic.Guardar(a3, 2)
+
+	require.True(t, dic.Pertenece(a1))
+	require.True(t, dic.Pertenece(a2))
+	require.True(t, dic.Pertenece(a3))
+	require.EqualValues(t, 0, dic.Obtener(a1))
+	require.EqualValues(t, 1, dic.Obtener(a2))
+	require.EqualValues(t, 2, dic.Obtener(a3))
+	dic.Guardar(a1, 5)
+	require.EqualValues(t, 5, dic.Obtener(a1))
+	require.EqualValues(t, 2, dic.Obtener(a3))
+	require.EqualValues(t, 5, dic.Borrar(a1))
+	require.False(t, dic.Pertenece(a1))
+	require.EqualValues(t, 2, dic.Obtener(a3))
+
+}
