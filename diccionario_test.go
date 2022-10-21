@@ -9,9 +9,9 @@ import (
 
 func TestDiccVacio(t *testing.T) {
 
-	funcionComparable := func(clave1 string,clave2 string) int {
+	funcionComparable := func(clave1 string, clave2 string) int {
 
-		if clave1[0] < clave2[0]{
+		if clave1[0] < clave2[0] {
 
 			return -1
 
@@ -32,9 +32,9 @@ func TestDiccVacio(t *testing.T) {
 }
 
 func TestConUnElemento(t *testing.T) {
-	funcionComparable := func(clave1 int,clave2 int) int {
+	funcionComparable := func(clave1 int, clave2 int) int {
 
-		if clave1 < clave2{
+		if clave1 < clave2 {
 
 			return -1
 
@@ -59,9 +59,9 @@ func TestConUnElemento(t *testing.T) {
 }
 
 func TestDeGuardado(t *testing.T) {
-	funcionComparable := func(clave1 string,clave2 string) int {
+	funcionComparable := func(clave1 string, clave2 string) int {
 
-		if clave1[0] < clave2[0]{
+		if clave1[0] < clave2[0] {
 
 			return -1
 
@@ -75,14 +75,14 @@ func TestDeGuardado(t *testing.T) {
 	}
 	diccio := TDADiccionario.CrearABB[string, string](funcionComparable)
 	require.False(t, diccio.Pertenece("papa"))
-	diccio.Guardar("papa","tierra")
+	diccio.Guardar("papa", "tierra")
 	require.True(t, diccio.Pertenece("papa"))
 	require.True(t, diccio.Pertenece("papa"))
 	require.EqualValues(t, 1, diccio.Cantidad())
 	require.EqualValues(t, "tierra", diccio.Obtener("papa"))
-	
+
 	require.False(t, diccio.Pertenece("galletitas"))
-	diccio.Guardar("galletitas","industria")
+	diccio.Guardar("galletitas", "industria")
 	require.True(t, diccio.Pertenece("galletitas"))
 	require.True(t, diccio.Pertenece("galletitas"))
 	require.EqualValues(t, 2, diccio.Cantidad())
@@ -91,7 +91,7 @@ func TestDeGuardado(t *testing.T) {
 	require.EqualValues(t, "tierra", diccio.Obtener("papa"))
 
 	require.True(t, diccio.Pertenece("galletitas"))
-	diccio.Guardar("galletitas","desayuno")
+	diccio.Guardar("galletitas", "desayuno")
 	require.True(t, diccio.Pertenece("galletitas"))
 	require.True(t, diccio.Pertenece("galletitas"))
 	require.EqualValues(t, 2, diccio.Cantidad())
@@ -100,7 +100,7 @@ func TestDeGuardado(t *testing.T) {
 	require.EqualValues(t, "tierra", diccio.Obtener("papa"))
 
 	require.False(t, diccio.Pertenece("labrador"))
-	diccio.Guardar("labrador","nocomestible")
+	diccio.Guardar("labrador", "nocomestible")
 	require.True(t, diccio.Pertenece("labrador"))
 	require.True(t, diccio.Pertenece("labrador"))
 	require.EqualValues(t, 3, diccio.Cantidad())
@@ -111,7 +111,7 @@ func TestDeGuardado(t *testing.T) {
 	require.EqualValues(t, "desayuno", diccio.Obtener("galletitas"))
 
 	require.False(t, diccio.Pertenece("michi"))
-	diccio.Guardar("michi","ungatito")
+	diccio.Guardar("michi", "ungatito")
 	require.True(t, diccio.Pertenece("michi"))
 	require.True(t, diccio.Pertenece("michi"))
 	require.EqualValues(t, 4, diccio.Cantidad())
@@ -124,7 +124,7 @@ func TestDeGuardado(t *testing.T) {
 	require.EqualValues(t, "nocomestible", diccio.Obtener("labrador"))
 
 	require.True(t, diccio.Pertenece("michi"))
-	diccio.Guardar("michi","elVerdaderoGatito")
+	diccio.Guardar("michi", "elVerdaderoGatito")
 	require.True(t, diccio.Pertenece("michi"))
 	require.True(t, diccio.Pertenece("michi"))
 	require.EqualValues(t, 4, diccio.Cantidad())
@@ -137,7 +137,7 @@ func TestDeGuardado(t *testing.T) {
 	require.EqualValues(t, "nocomestible", diccio.Obtener("labrador"))
 
 	require.False(t, diccio.Pertenece("bastaDeTesteos"))
-	diccio.Guardar("bastaDeTesteos","plottwist")
+	diccio.Guardar("bastaDeTesteos", "plottwist")
 	require.True(t, diccio.Pertenece("bastaDeTesteos"))
 	require.True(t, diccio.Pertenece("bastaDeTesteos"))
 	require.EqualValues(t, 5, diccio.Cantidad())
@@ -151,13 +151,12 @@ func TestDeGuardado(t *testing.T) {
 	require.True(t, diccio.Pertenece("michi"))
 	require.EqualValues(t, "elVerdaderoGatito", diccio.Obtener("michi"))
 
-	
 }
 
 func TestDeBorrados(t *testing.T) {
-	funcionComparable := func(clave1 string,clave2 string) int {
+	funcionComparable := func(clave1 string, clave2 string) int {
 
-		if clave1[0] < clave2[0]{
+		if clave1[0] < clave2[0] {
 
 			return -1
 
@@ -170,12 +169,12 @@ func TestDeBorrados(t *testing.T) {
 		return 0
 	}
 	diccio := TDADiccionario.CrearABB[string, string](funcionComparable)
-	diccio.Guardar("labrador","nocomestible")
-	diccio.Guardar("papa","tierra")
-	diccio.Guardar("bastaDeTesteos","plottwist")
-	diccio.Guardar("galletitas","desayuno")
-	diccio.Guardar("michi","elVerdaderoGatito")
-	
+	diccio.Guardar("labrador", "nocomestible")
+	diccio.Guardar("papa", "tierra")
+	diccio.Guardar("bastaDeTesteos", "plottwist")
+	diccio.Guardar("galletitas", "desayuno")
+	diccio.Guardar("michi", "elVerdaderoGatito")
+
 	require.True(t, diccio.Pertenece("papa"))
 	require.EqualValues(t, "tierra", diccio.Obtener("papa"))
 	require.EqualValues(t, 5, diccio.Cantidad())
@@ -259,3 +258,59 @@ func TestConClavesStructs(t *testing.T) {
 	require.EqualValues(t, 2, dic.Obtener(a3))
 
 }*/
+
+func TestIterarRango(t *testing.T) {
+
+	type fechas int
+	const (
+		fecha1  fechas = 1910
+		fecha2  fechas = 2022
+		fecha3  fechas = 1916
+		fecha4  fechas = 1986
+		fecha5  fechas = 1810
+		fecha6  fechas = 1806
+		fecha7  fechas = 2010
+		fecha8  fechas = 1807
+		fecha9  fechas = 1816
+		fecha10 fechas = 1978
+	)
+
+	type acontecimiento string
+	const (
+		acon1  acontecimiento = "Centenario"
+		acon2  acontecimiento = "Actualidad"
+		acon3  acontecimiento = "Presidencia Yrigoyen"
+		acon4  acontecimiento = "Mundial"
+		acon5  acontecimiento = "Revolucion de Mayo"
+		acon6  acontecimiento = "Primera Invasion Inglesa"
+		acon7  acontecimiento = "Bicentenario"
+		acon8  acontecimiento = "Segunda Invasion Inglesa"
+		acon9  acontecimiento = "Independencia"
+		acon10 acontecimiento = "Mundial"
+	)
+
+	funcionComparable := func(clave1 fechas, clave2 fechas) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+
+	lineaDeTiempo := TDADiccionario.CrearABB[fechas, acontecimiento](funcionComparable)
+
+	lineaDeTiempo.Guardar(fecha1, acon1)
+	lineaDeTiempo.Guardar(fecha2, acon2)
+	lineaDeTiempo.Guardar(fecha3, acon3)
+	lineaDeTiempo.Guardar(fecha4, acon4)
+	lineaDeTiempo.Guardar(fecha5, acon5)
+	lineaDeTiempo.Guardar(fecha6, acon6)
+	lineaDeTiempo.Guardar(fecha7, acon7)
+	lineaDeTiempo.Guardar(fecha8, acon8)
+	lineaDeTiempo.Guardar(fecha9, acon9)
+	lineaDeTiempo.Guardar(fecha10, acon10)
+
+	iterLinea := lineaDeTiempo.IteradorRango(fecha1)
+
+}
