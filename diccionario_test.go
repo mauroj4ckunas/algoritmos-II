@@ -4,7 +4,6 @@ import (
 	TDADiccionario "diccionario"
 	"fmt"
 	"testing"
-	"fmt"
 
 	"github.com/stretchr/testify/require"
 )
@@ -426,7 +425,7 @@ func TestIteradorExternoSinElementos(t *testing.T) {
 	probarIter := TDADiccionario.CrearABB[int, string](funcionComparable)
 
 	iterVacio := probarIter.Iterador()
-	verificarIterVacio(iterVacio, t)
+	verificarIterVacio(&iterVacio, t)
 
 	probarIter.Guardar(1, "")
 	probarIter.Guardar(2, "")
@@ -437,13 +436,13 @@ func TestIteradorExternoSinElementos(t *testing.T) {
 	require.EqualValues(t, "", probarIter.Borrar(3))
 
 	iterVacio2 := probarIter.Iterador()
-	verificarIterVacio(iterVacio2, t)
+	verificarIterVacio(&iterVacio2, t)
 }
 
-func verificarIterVacio[K comparable, V any](iter TDADiccionario.IterDiccionario[K, V], t *testing.T) {
-	require.False(t, iter.HaySiguiente())
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
+func verificarIterVacio[K comparable, V any](iter *TDADiccionario.IterDiccionario[K, V], t *testing.T) {
+	require.False(t, (*iter).HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { (*iter).VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { (*iter).Siguiente() })
 }
 
 func TestIteradorRangos(t *testing.T) {
