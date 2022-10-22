@@ -270,33 +270,35 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 
 	var todoIzquierda **hojas[K, V]
 
-	if desde == nil {
+	if arbol.raiz != nil {
+		if desde == nil {
 
-		todoIzquierda, _ = arbol.encontrarClave(arbol.raiz.clave)
+			todoIzquierda, _ = arbol.encontrarClave(arbol.raiz.clave)
 
-	} else {
+		} else {
 
-		if hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
+			if hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
 
-			return iterr
+				return iterr
 
-		}
+			}
 
-		todoIzquierda, _ = arbol.encontrarClave(*desde)
-
-	}
-
-	for todoIzquierda != nil {
-
-		if hasta != nil && (*todoIzquierda).clave == *hasta {
-
-			break
+			todoIzquierda, _ = arbol.encontrarClave(*desde)
 
 		}
 
-		iterr.pilaRecursiva.Apilar(*todoIzquierda)
-		todoIzquierda = &(*todoIzquierda).hijoIzq
+		for todoIzquierda != nil {
 
+			if hasta != nil && (*todoIzquierda).clave == *hasta {
+
+				break
+
+			}
+
+			iterr.pilaRecursiva.Apilar(*todoIzquierda)
+			todoIzquierda = &(*todoIzquierda).hijoIzq
+
+		}
 	}
 
 	return iterr
