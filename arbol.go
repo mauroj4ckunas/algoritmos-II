@@ -92,6 +92,10 @@ func (hoja *hojas[K,V]) iterar(comparador func(K, K) int,f func(clave K, dato V)
 		return
 	}
 
+	
+
+	hoja.hijoIzq.iterar(comparador,f,desde,hasta)
+	
 	if hasta != nil {
 		if hoja.clave == *hasta {
 
@@ -99,8 +103,6 @@ func (hoja *hojas[K,V]) iterar(comparador func(K, K) int,f func(clave K, dato V)
 
 		}
 	}
-
-	hoja.hijoIzq.iterar(comparador,f,desde,hasta)
 
 	if comparador(hoja.clave,*desde) >= 0 {
 
