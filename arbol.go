@@ -273,39 +273,27 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 	iterr.pilaRecursiva = TDApila.CrearPilaDinamica[*hojas[K, V]]()
 	iterr.hasta = hasta
 
-	var todoIzquierda **hojas[K, V]
+	if hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
 
-	if arbol.raiz != nil {
-		if desde == nil {
+		return iterr
 
-			todoIzquierda, _ = arbol.encontrarClave(arbol.raiz.clave)
-
-		} else {
-
-			if hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
-
-				return iterr
-
-			}
-
-			todoIzquierda, _ = arbol.encontrarClave(*desde)
-
-		}
-
-		for todoIzquierda != nil {
-
-			if hasta != nil && (*todoIzquierda).clave == *hasta {
-
-				break
-
-			}
-
-			iterr.pilaRecursiva.Apilar(*todoIzquierda)
-			todoIzquierda = &(*todoIzquierda).hijoIzq
-
-		}
 	}
 
+	todoIzquierda := arbol.raiz
+
+	for todoIzquierda != nil {
+		if (hasta != nil && arbol.comparador(*hasta, todoIzquierda.clave) > 0) || hasta == nil {
+			iterr.pilaRecursiva.Apilar(todoIzquierda)
+		}
+		todoIzquierda = todoIzquierda.hijoIzq
+
+	}
+	if desde != nil {
+		for arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) > 0 {
+			iterr.Siguiente()
+		}
+	}
+	
 	return iterr
 }
 
