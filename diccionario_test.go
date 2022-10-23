@@ -221,89 +221,87 @@ func TestDeBorrados(t *testing.T) {
 	require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { diccio.Obtener("bastaDeTesteos") })
 }
 
-// func TestIterarRango(t *testing.T) {
+func TestIterarRango(t *testing.T) {
 
-// 	var (
-// 		fecha1  int = 1910
-// 		fecha2  int = 2022
-// 		fecha3  int = 1916
-// 		fecha4  int = 1986
-// 		fecha5  int = 1810
-// 		fecha6  int = 1806
-// 		fecha7  int = 2010
-// 		fecha8  int = 1807
-// 		fecha9  int = 1816
-// 		fecha10 int = 1978
-// 	)
+	var (
+		fecha1  int = 1910
+		fecha2  int = 2022
+		fecha3  int = 1916
+		fecha4  int = 1986
+		fecha5  int = 1810
+		fecha6  int = 1806
+		fecha7  int = 2010
+		fecha8  int = 1807
+		fecha9  int = 1816
+		fecha10 int = 1978
+	)
 
-// 	const (
-// 		acon1  string = "Centenario"
-// 		acon2  string = "Actualidad"
-// 		acon3  string = "Presidencia Yrigoyen"
-// 		acon4  string = "Mundial"
-// 		acon5  string = "Revolucion de Mayo"
-// 		acon6  string = "Primera Invasion Inglesa"
-// 		acon7  string = "Bicentenario"
-// 		acon8  string = "Segunda Invasion Inglesa"
-// 		acon9  string = "Independencia"
-// 		acon10 string = "Mundial"
-// 	)
+	const (
+		acon1  string = "Centenario"
+		acon2  string = "Actualidad"
+		acon3  string = "Presidencia Yrigoyen"
+		acon4  string = "Mundial"
+		acon5  string = "Revolucion de Mayo"
+		acon6  string = "Primera Invasion Inglesa"
+		acon7  string = "Bicentenario"
+		acon8  string = "Segunda Invasion Inglesa"
+		acon9  string = "Independencia"
+		acon10 string = "Mundial"
+	)
 
-// 	funcionComparable := func(clave1 int, clave2 int) int {
-// 		if clave1 < clave2 {
-// 			return -1
-// 		} else if clave1 > clave2 {
-// 			return 1
-// 		}
-// 		return 0
-// 	}
+	funcionComparable := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
 
-// 	lineaDeTiempo := TDADiccionario.CrearABB[int, string](funcionComparable)
+	lineaDeTiempo := TDADiccionario.CrearABB[int, string](funcionComparable)
 
-// 	lineaDeTiempo.Guardar(fecha1, acon1)
-// 	lineaDeTiempo.Guardar(fecha2, acon2)
-// 	lineaDeTiempo.Guardar(fecha3, acon3)
-// 	lineaDeTiempo.Guardar(fecha4, acon4)
-// 	lineaDeTiempo.Guardar(fecha5, acon5)
-// 	lineaDeTiempo.Guardar(fecha6, acon6)
-// 	lineaDeTiempo.Guardar(fecha7, acon7)
-// 	lineaDeTiempo.Guardar(fecha8, acon8)
-// 	lineaDeTiempo.Guardar(fecha9, acon9)
-// 	lineaDeTiempo.Guardar(fecha10, acon10)
+	lineaDeTiempo.Guardar(fecha1, acon1)
+	lineaDeTiempo.Guardar(fecha2, acon2)
+	lineaDeTiempo.Guardar(fecha3, acon3)
+	lineaDeTiempo.Guardar(fecha4, acon4)
+	lineaDeTiempo.Guardar(fecha5, acon5)
+	lineaDeTiempo.Guardar(fecha6, acon6)
+	lineaDeTiempo.Guardar(fecha7, acon7)
+	lineaDeTiempo.Guardar(fecha8, acon8)
+	lineaDeTiempo.Guardar(fecha9, acon9)
+	lineaDeTiempo.Guardar(fecha10, acon10)
 
-// 	ptrFecha6 := &fecha6
-// 	ptrFecha1 := &fecha1
-// 	var contadorMundiales int
-// 	lineaDeTiempo.IterarRango(ptrFecha6, ptrFecha1, func(year int, acon string) bool {
-// 		if acon == "Mundial" {
-// 			contadorMundiales++
-// 		}
-// 		return true
-// 	})
-// 	require.EqualValues(t, 0, contadorMundiales)
+	ptrFecha6 := &fecha6
+	ptrFecha1 := &fecha1
+	var contadorMundiales int
+	lineaDeTiempo.IterarRango(ptrFecha6, ptrFecha1, func(year int, acon string) bool {
+		if acon == "Mundial" {
+			contadorMundiales++
+		}
+		return true
+	})
+	require.EqualValues(t, 0, contadorMundiales)
 
-// 	ptrFecha4 := &fecha4
-// 	ptrFecha7 := &fecha7
-// 	contadorMundiales = 0
-// 	lineaDeTiempo.IterarRango(ptrFecha4, ptrFecha7, func(year int, acon string) bool {
-// 		if acon == "Mundial" {
-// 			fmt.Println(year)
-// 			fmt.Println("Llega")
-// 			contadorMundiales++
-// 		}
-// 		return true
-// 	})
-// 	require.EqualValues(t, 1, contadorMundiales)
+	ptrFecha4 := &fecha4
+	ptrFecha7 := &fecha7
+	contadorMundiales = 0
+	lineaDeTiempo.IterarRango(ptrFecha4, ptrFecha7, func(year int, acon string) bool {
+		if acon == "Mundial" {
+			contadorMundiales++
+		}
+		return true
+	})
+	require.EqualValues(t, 1, contadorMundiales)
 
-// 	contadorMundiales = 0
-// 	lineaDeTiempo.IterarRango(nil, nil, func(year int, acon string) bool {
-// 		if acon == "Mundial" {
-// 			contadorMundiales++
-// 		}
-// 		return true
-// 	})
-// 	require.EqualValues(t, 2, contadorMundiales)
-// }
+	contadorMundiales = 0
+	lineaDeTiempo.IterarRango(nil, nil, func(year int, acon string) bool {
+		if acon == "Mundial" {
+			contadorMundiales++
+		}
+		return true
+	})
+	require.EqualValues(t, 2, contadorMundiales)
+}
 
 func TestIteradorInterno(t *testing.T) {
 	type letras string
@@ -496,4 +494,114 @@ func TestIteradorRangos(t *testing.T) {
 	require.EqualValues(t, resClave2, clave2)
 	require.EqualValues(t, resValor2, valor2)
 	require.EqualValues(t, resClave2, iter.Siguiente())
+}
+
+func TestComparacionIteradores(t *testing.T) {
+	const (
+		animal1 string = "Gato"
+		animal2 string = "Perro"
+		animal3 string = "Vaca"
+	)
+	arrayAnimal := []string{animal1, animal2, animal3}
+
+	const (
+		ruido1 string = "Miau"
+		ruido2 string = "Guau"
+		ruido3 string = "Muu"
+	)
+	arrayRuido := []string{ruido1, ruido2, ruido3}
+
+	funcionComparable := func(clave1 string, clave2 string) int {
+		if clave1[0] < clave2[0] {
+			return -1
+		} else if clave1[0] > clave2[0] {
+			return 1
+		}
+		return 0
+	}
+
+	animales := TDADiccionario.CrearABB[string, string](funcionComparable)
+
+	animales.Guardar(animal1, ruido1)
+	animales.Guardar(animal2, ruido2)
+	animales.Guardar(animal3, ruido3)
+
+	iterSinRangos := animales.Iterador()
+	iterConRangos := animales.IteradorRango(nil, nil)
+
+	for i := 0; i < 3; i++ {
+		resClaveCon, resValorCon := iterConRangos.VerActual()
+		resClaveSin, resValorSin := iterSinRangos.VerActual()
+
+		require.EqualValues(t, resClaveCon, resClaveSin)
+		require.EqualValues(t, resValorCon, resValorSin)
+		require.EqualValues(t, resValorCon, arrayRuido[i])
+		require.EqualValues(t, resValorSin, arrayRuido[i])
+
+		claveCon := iterConRangos.Siguiente()
+		claveSin := iterSinRangos.Siguiente()
+
+		require.EqualValues(t, claveCon, arrayAnimal[i])
+		require.EqualValues(t, claveSin, arrayAnimal[i])
+	}
+
+	verificarIterVacio(iterConRangos, t)
+	verificarIterVacio(iterConRangos, t)
+
+}
+
+func TestIteradoresSalidaInOrder(t *testing.T) {
+
+	const (
+		a string = "A"
+		b string = "B"
+		c string = "C"
+		d string = "D"
+		e string = "E"
+	)
+
+	funcionComparable := func(clave1 string, clave2 string) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1[0] > clave2[0] {
+			return 1
+		}
+		return 0
+	}
+
+	ordenDeIngreso := []string{e, d, a, b, c}
+
+	dic := TDADiccionario.CrearABB[string, int](funcionComparable)
+
+	for _, valor := range ordenDeIngreso {
+		dic.Guardar(valor, 0)
+	}
+
+	iter := dic.Iterador()
+
+	clave1, _ := iter.VerActual()
+	require.NotEqualValues(t, clave1, ordenDeIngreso[0])
+	require.EqualValues(t, clave1, a)
+	require.True(t, iter.HaySiguiente())
+	iter.Siguiente()
+	clave2, _ := iter.VerActual()
+	require.NotEqualValues(t, clave2, ordenDeIngreso[1])
+	require.EqualValues(t, clave2, b)
+	require.True(t, iter.HaySiguiente())
+	iter.Siguiente()
+	clave3, _ := iter.VerActual()
+	require.NotEqualValues(t, clave3, ordenDeIngreso[2])
+	require.EqualValues(t, clave3, c)
+	require.True(t, iter.HaySiguiente())
+	iter.Siguiente()
+	clave4, _ := iter.VerActual()
+	require.NotEqualValues(t, clave4, ordenDeIngreso[3])
+	require.EqualValues(t, clave4, d)
+	require.True(t, iter.HaySiguiente())
+	iter.Siguiente()
+	clave5, _ := iter.VerActual()
+	require.NotEqualValues(t, clave5, ordenDeIngreso[4])
+	require.EqualValues(t, clave5, e)
+	iter.Siguiente()
+	verificarIterVacio(iter, t)
 }
