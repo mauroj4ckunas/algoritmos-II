@@ -245,7 +245,11 @@ func (arbol *arbolBinario[K, V]) Borrar(clave K) V {
 func (arbol *arbolBinario[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
 
 	if desde == nil {
-		arbol.raiz.iterar(arbol.comparador, visitar, &arbol.raiz.clave, hasta)
+		elMasChico := arbol.raiz
+		for elMasChico.hijoIzq != nil {
+			elMasChico = elMasChico.hijoIzq
+		}
+		arbol.raiz.iterar(arbol.comparador, visitar, &elMasChico.clave, hasta)
 	} else {
 		arbol.raiz.iterar(arbol.comparador, visitar, desde, hasta)
 	}
@@ -254,7 +258,7 @@ func (arbol *arbolBinario[K, V]) IterarRango(desde *K, hasta *K, visitar func(cl
 
 func (arbol *arbolBinario[K, V]) Iterar(f func(clave K, dato V) bool) {
 
-	arbol.raiz.iterar(arbol.comparador, f, &arbol.raiz.clave, nil)
+	arbol.IterarRango(nil,nil,f)
 
 }
 
