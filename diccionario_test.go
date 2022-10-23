@@ -2,7 +2,6 @@ package diccionario_test
 
 import (
 	TDADiccionario "diccionario"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -459,7 +458,7 @@ func TestIteradorRangos(t *testing.T) {
 	clave3 := "Gerez"
 	clave4 := "Navarro"
 	clave5 := "Alberti"
-	clave6 := "Fernandez"
+	clave6 := "Mendez"
 	valor1 := 10
 	valor2 := 2
 	valor3 := 7
@@ -470,27 +469,31 @@ func TestIteradorRangos(t *testing.T) {
 	valores := []int{valor1, valor2, valor3, valor4, valor5, valor6}
 	dic := TDADiccionario.CrearABB[string, int](funcionComparable)
 	dic.Guardar(claves[0], valores[0])
+
 	dic.Guardar(claves[1], valores[1])
 	dic.Guardar(claves[2], valores[2])
 	dic.Guardar(claves[3], valores[3])
 	dic.Guardar(claves[4], valores[4])
 	dic.Guardar(claves[5], valores[5])
-	ptrClave1 := &clave1
+	ptrClave5 := &clave5
 	ptrClave4 := &clave4
-	iter := dic.IteradorRango(ptrClave1, ptrClave4)
+	iter := dic.IteradorRango(ptrClave5, ptrClave4)
 
 	require.True(t, iter.HaySiguiente())
-	resClave1, resValor1 := iter.VerActual()
-	fmt.Println(resClave1)
-	fmt.Println(resValor1)
-	require.EqualValues(t, resClave1, clave1)
-	require.EqualValues(t, resValor1, valor1)
-	require.EqualValues(t, resClave1, iter.Siguiente())
+	resClave5, resValor5 := iter.VerActual()
+	require.EqualValues(t, resClave5, clave5)
+	require.EqualValues(t, resValor5, valor5)
+	require.EqualValues(t, resClave5, iter.Siguiente())
+
+	require.True(t, iter.HaySiguiente())
+	resClave3, resValor3 := iter.VerActual()
+	require.EqualValues(t, resClave3, clave3)
+	require.EqualValues(t, resValor3, valor3)
+	require.EqualValues(t, resClave3, iter.Siguiente())
 
 	require.True(t, iter.HaySiguiente())
 	resClave2, resValor2 := iter.VerActual()
 	require.EqualValues(t, resClave2, clave2)
 	require.EqualValues(t, resValor2, valor2)
 	require.EqualValues(t, resClave2, iter.Siguiente())
-
 }
