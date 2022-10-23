@@ -563,7 +563,7 @@ func TestIteradoresSalidaInOrder(t *testing.T) {
 	funcionComparable := func(clave1 string, clave2 string) int {
 		if clave1 < clave2 {
 			return -1
-		} else if clave1[0] > clave2[0] {
+		} else if clave1 > clave2 {
 			return 1
 		}
 		return 0
@@ -604,4 +604,45 @@ func TestIteradoresSalidaInOrder(t *testing.T) {
 	require.EqualValues(t, clave5, e)
 	iter.Siguiente()
 	verificarIterVacio(iter, t)
+}
+
+func TestVolumen(t *testing.T) {
+	funcionComparable := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+
+	volumen := TDADiccionario.CrearABB[int, int](funcionComparable)
+
+	for j := 5000; j <= 10000; j++ {
+		volumen.Guardar(j, j*2)
+	}
+	for i := 1; i <= 5000; i++ {
+		volumen.Guardar(i, i*2)
+	}
+
+	iter := volumen.IteradorRango(nil, nil)
+	var num int = 1
+	for iter.HaySiguiente() {
+		clave, valor := iter.VerActual()
+		require.EqualValues(t, clave, num)
+		require.EqualValues(t, valor, clave*2)
+		num++
+		iter.Siguiente()
+	}
+	require.EqualValues(t, 10000, volumen.Cantidad())
+	for k := 1; k <= 10000; k++ {
+		require.True(t, volumen.Pertenece(k))
+		require.EqualValues(t, k*2, volumen.Obtener(k))
+		require.EqualValues(t, k*2, volumen.Borrar(k))
+	}
+	for m := 10000; m >= 1; m-- {
+		require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { volumen.Obtener(m) })
+		require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { volumen.Borrar(m) })
+	}
+	require.EqualValues(t, 0, volumen.Cantidad())
 }

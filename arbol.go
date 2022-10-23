@@ -258,7 +258,7 @@ func (arbol *arbolBinario[K, V]) IterarRango(desde *K, hasta *K, visitar func(cl
 
 func (arbol *arbolBinario[K, V]) Iterar(f func(clave K, dato V) bool) {
 
-	arbol.IterarRango(nil,nil,f)
+	arbol.IterarRango(nil, nil, f)
 
 }
 
@@ -293,7 +293,7 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 			iterr.Siguiente()
 		}
 	}
-	
+
 	return iterr
 }
 
