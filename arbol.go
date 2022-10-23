@@ -91,30 +91,31 @@ func (hoja *hojas[K, V]) guardar(compara func(K, K) int, hojaNueva *hojas[K, V],
 	}
 }
 
-func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato V) bool, desde *K, hasta *K) {
+func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato V) bool, desde *K, hasta *K) bool {
 	if hoja == nil {
-		return
+		return true
 	}
 
-	hoja.hijoIzq.iterar(comparador, f, desde, hasta)
+	resultado := hoja.hijoIzq.iterar(comparador, f, desde, hasta)
+	if resultado == false {
+		return resultado
+	}
 
 	if hasta != nil {
 		if hoja.clave == *hasta {
 
-			return
+			return false
 
 		}
 	}
 
 	if comparador(hoja.clave, *desde) >= 0 {
 
-		if f(hoja.clave, hoja.valor) {
-
-			hoja.hijoDer.iterar(comparador, f, desde, hasta)
-
+		if !f(hoja.clave, hoja.valor) {
+			return false
 		}
 	}
-	//hoja.hijoDer.iterar(comparador, f, desde, hasta)
+	return hoja.hijoDer.iterar(comparador, f, desde, hasta)
 }
 
 func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdenado[K, V] {
