@@ -3,10 +3,8 @@ package votos
 import "fmt"
 
 type partidoImplementacion struct {
-	nombre_part string
-	presidente  *candidatosParaEleccion
-	gobernador  *candidatosParaEleccion
-	intendente  *candidatosParaEleccion
+	nombre_Part string
+	candidatos  [CANT_VOTACION]candidatosParaEleccion
 }
 
 type candidatosParaEleccion struct {
@@ -14,65 +12,32 @@ type candidatosParaEleccion struct {
 	cant_votos int
 }
 
-func CrearPartido(nombre string, candidatos [3]string) Partido {
+func CrearPartido(nombre string, candidatos [CANT_VOTACION]string) Partido {
 
 	nuevoPartido := new(partidoImplementacion)
-	nuevoPartido.nombre_part = nombre
-	nuevoPartido.inscribirCandidatos(candidatos)
+	nuevoPartido.nombre_Part = nombre
+	for i := PRESIDENTE; i < CANT_VOTACION; i++ {
+		nuevoPartido.candidatos[i].nombre = candidatos[i]
+	}
 	return nuevoPartido
 
 }
 
 func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
-	switch tipo {
-	case 0:
-		partido.presidente.cant_votos++
-	case 1:
-		partido.gobernador.cant_votos++
-	case 2:
-		partido.intendente.cant_votos++
-	}
+	partido.candidatos[tipo].cant_votos += 1
 }
 
 func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
-	var nombreCandidato string
-	var cantidadVotos int
 	var palabra string
 
-	switch tipo {
-	case 0:
-		nombreCandidato = partido.presidente.nombre
-		cantidadVotos = partido.presidente.cant_votos
-	case 1:
-		nombreCandidato = partido.gobernador.nombre
-		cantidadVotos = partido.gobernador.cant_votos
-	case 2:
-		nombreCandidato = partido.intendente.nombre
-		cantidadVotos = partido.intendente.cant_votos
-	}
-
-	if cantidadVotos == 1 {
+	if partido.candidatos[tipo].cant_votos == 1 {
 		palabra = "voto"
 	} else {
 		palabra = "votos"
 	}
 
-	if partido.nombre_part == "Votos en Blanco" {
-		return fmt.Sprintf("%s: %d %s", partido.nombre_part, cantidadVotos, palabra)
+	if partido.nombre_Part == "Votos en Blanco" {
+		return fmt.Sprintf("%s: %d %s", partido.nombre_Part, partido.candidatos[tipo].cant_votos, palabra)
 	}
-	return fmt.Sprintf("%s - %s: %d %s", partido.nombre_part, nombreCandidato, cantidadVotos, palabra)
-}
-
-func (partido *partidoImplementacion) inscribirCandidatos(candidatos [CANT_VOTACION]string) {
-	candidatoPres := new(candidatosParaEleccion)
-	candidatoPres.nombre = candidatos[0]
-	partido.presidente = candidatoPres
-
-	candidatoGob := new(candidatosParaEleccion)
-	candidatoGob.nombre = candidatos[1]
-	partido.gobernador = candidatoGob
-
-	candidatoInt := new(candidatosParaEleccion)
-	candidatoInt.nombre = candidatos[2]
-	partido.intendente = candidatoInt
+	return fmt.Sprintf("%s - %s: %d %s", partido.nombre_Part, partido.candidatos[tipo].nombre, partido.candidatos[tipo].cant_votos, palabra)
 }

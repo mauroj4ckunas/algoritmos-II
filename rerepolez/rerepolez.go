@@ -11,17 +11,27 @@ import (
 	"strings"
 )
 
-func impresionFinalDeLaVotacion(lista []votos.Partido) {
+const (
+	CANDIDATO1 = "Presidente"
+	CANDIDATO2 = "Gobernador"
+	CANDIDATO3 = "Intendente"
+	COMAND1    = "ingresar"
+	COMAND2    = "votar"
+	COMAND3    = "deshacer"
+	COMAND4    = "fin-votar"
+)
+
+func impresionFinalDeLaVotacion(lista []votos.Partido, impugnados int) {
 
 	for candidato := votos.PRESIDENTE; candidato <= votos.INTENDENTE; candidato++ {
 
 		switch candidato {
 		case 0:
-			fmt.Fprintf(os.Stdout, "%s\n", "Presidente:")
+			fmt.Fprintf(os.Stdout, "%s:\n", CANDIDATO1)
 		case 1:
-			fmt.Fprintf(os.Stdout, "%s\n", "Gobernador:")
+			fmt.Fprintf(os.Stdout, "%s:\n", CANDIDATO2)
 		case 2:
-			fmt.Fprintf(os.Stdout, "%s\n", "Intendente:")
+			fmt.Fprintf(os.Stdout, "%s:\n", CANDIDATO3)
 		}
 
 		for p := 0; p < len(lista); p++ {
@@ -32,13 +42,13 @@ func impresionFinalDeLaVotacion(lista []votos.Partido) {
 		fmt.Println()
 	}
 
-	if votos.LISTA_IMPUGNA == 1 {
+	if impugnados == 1 {
 
-		fmt.Fprintf(os.Stdout, "Votos Impugnados: %d voto\n", votos.LISTA_IMPUGNA)
+		fmt.Fprintf(os.Stdout, "Votos Impugnados: %d voto\n", impugnados)
 
 	} else {
 
-		fmt.Fprintf(os.Stdout, "Votos Impugnados: %d votos\n", votos.LISTA_IMPUGNA)
+		fmt.Fprintf(os.Stdout, "Votos Impugnados: %d votos\n", impugnados)
 
 	}
 
@@ -48,43 +58,15 @@ func main() {
 
 	parametros := os.Args[1:]
 
-	if len(parametros) == 0 { //si no hay parametros tira error
-
-		err := new(Err.ErrorParametros)
-		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
-		return
-
-	}
-
-	rutaListas := parametros[0]
-
-	listaDeLosPartidos, err := PrepararListaPartidos(rutaListas)
-
-	if err != nil {
-		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
-		return
-	}
-
-	if len(parametros) != 2 { //si los parametros no terminan de ser suficientes
-
-		err := new(Err.ErrorParametros)
-		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
-		return
-
-	}
-
-	rutaPadrones := parametros[1]
-
-	Votantes, err := PrepararListaVotantes(rutaPadrones)
+	listaDeLosPartidos, Votantes, err := PrepararMesa(parametros)
 
 	if err != nil {
 
 		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
 		return
-
 	}
 
-	defer impresionFinalDeLaVotacion(listaDeLosPartidos)
+	var contadorImpugnados int
 
 	//implementacion de elecciones
 
@@ -95,7 +77,7 @@ func main() {
 
 		comandos := strings.Split(entradaUsuario.Text(), " ")
 
-		if comandos[0] == "ingresar" {
+		if comandos[0] == COMAND1 {
 
 			dni, err := strconv.Atoi(comandos[1])
 
@@ -106,8 +88,14 @@ func main() {
 				continue
 
 			}
-
-			posicionEnLaLista := BusquedaVotante(Votantes, dni, 0, len(Votantes)-1)
+			posicionEnLaLista := BusquedaVotante[votos.Votante](Votantes, dni, 0, len(Votantes)-1, func(votante votos.Votante, buscado int) int {
+				if votante.LeerDNI() == buscado {
+					return 0
+				} else if votante.LeerDNI() < buscado {
+					return -1
+				}
+				return 1
+			})
 
 			if posicionEnLaLista == -1 { //-1 es q no esta en la lista
 
@@ -132,7 +120,7 @@ func main() {
 
 		switch comandos[0] {
 
-		case "votar":
+		case COMAND2:
 
 			numeroDeBoleta, err := strconv.Atoi(comandos[2])
 
@@ -146,17 +134,17 @@ func main() {
 
 			switch comandos[1] {
 
-			case "Presidente":
+			case CANDIDATO1:
 				err = filaVotacion.VerPrimero().Votar(votos.PRESIDENTE, numeroDeBoleta)
 
-			case "Gobernador":
+			case CANDIDATO2:
 				err = filaVotacion.VerPrimero().Votar(votos.GOBERNADOR, numeroDeBoleta)
 
-			case "Intendente":
+			case CANDIDATO3:
 				err = filaVotacion.VerPrimero().Votar(votos.INTENDENTE, numeroDeBoleta)
 
 			default:
-				err = filaVotacion.VerPrimero().Votar(votos.CUALQUIERCOSA, numeroDeBoleta)
+				err = filaVotacion.VerPrimero().Votar(votos.CANDIDATOERRONEO, numeroDeBoleta)
 			}
 
 			if err != nil {
@@ -172,7 +160,7 @@ func main() {
 
 			}
 
-		case "deshacer":
+		case COMAND3:
 
 			err = filaVotacion.VerPrimero().Deshacer()
 
@@ -189,7 +177,7 @@ func main() {
 
 			}
 
-		case "fin-votar":
+		case COMAND4:
 
 			VotoTerminado, err := filaVotacion.VerPrimero().FinVoto()
 			filaVotacion.Desencolar()
@@ -201,10 +189,12 @@ func main() {
 
 			} else if VotoTerminado.Impugnado != true {
 
-				for puesto := votos.PRESIDENTE; puesto <= votos.INTENDENTE; puesto++ {
+				for puesto := votos.PRESIDENTE; puesto < votos.CANT_VOTACION; puesto++ {
 					listaDeLosPartidos[VotoTerminado.VotoPorTipo[puesto]].VotadoPara(puesto)
 				}
 
+			} else {
+				contadorImpugnados += 1
 			}
 
 		}
@@ -217,4 +207,6 @@ func main() {
 		err = new(Err.ErrorCiudadanosSinVotar)
 		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
 	}
+
+	impresionFinalDeLaVotacion(listaDeLosPartidos, contadorImpugnados)
 }

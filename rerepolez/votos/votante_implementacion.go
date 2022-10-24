@@ -28,32 +28,23 @@ func (votante votanteImplementacion) LeerDNI() int {
 func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) error {
 
 	if votante.finalizoSuVoto == true {
-
-		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
-		return error
-
+		return Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 	}
-
 	if alternativa == 0 {
-
 		votante.votosAnteriores.Apilar(*votante.voto)
 
 		if votante.voto.Impugnado == false { //se impugna su voto por primera vez
 
 			votante.voto.Impugnado = true
-			LISTA_IMPUGNA += 1
 
 		}
-
 		return nil
 
-	} else if tipo == CUALQUIERCOSA {
+	} else if tipo == CANDIDATOERRONEO {
 
-		error := new(Err.ErrorTipoVoto)
-		return error
+		return new(Err.ErrorTipoVoto)
 
 	}
-
 	votante.votosAnteriores.Apilar(*votante.voto)
 	votante.voto.VotoPorTipo[tipo] = alternativa
 	return nil
@@ -62,20 +53,10 @@ func (votante *votanteImplementacion) Votar(tipo TipoVoto, alternativa int) erro
 func (votante *votanteImplementacion) Deshacer() error {
 
 	if votante.finalizoSuVoto == true {
-
-		var error1 Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
-		return error1
+		return Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 
 	} else if votante.votosAnteriores.EstaVacia() {
-
-		error2 := new(Err.ErrorNoHayVotosAnteriores)
-		return error2
-	}
-
-	if votante.voto.Impugnado == true && votante.votosAnteriores.VerTope().Impugnado == false {
-
-		LISTA_IMPUGNA -= 1
-
+		return new(Err.ErrorNoHayVotosAnteriores)
 	}
 
 	*votante.voto = votante.votosAnteriores.Desapilar()
@@ -85,12 +66,8 @@ func (votante *votanteImplementacion) Deshacer() error {
 func (votante *votanteImplementacion) FinVoto() (Voto, error) {
 
 	if votante.finalizoSuVoto == true {
-
-		var error Err.ErrorVotanteFraudulento = Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
-		return Voto{}, error
-
+		return Voto{}, Err.ErrorVotanteFraudulento{Dni: votante.LeerDNI()}
 	}
-
 	votante.finalizoSuVoto = true
 	return *votante.voto, nil
 }

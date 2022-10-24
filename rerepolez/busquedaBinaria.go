@@ -1,28 +1,23 @@
 package main
 
-import (
-	votos "rerepolez/votos"
-)
-
-func BusquedaVotante(lista []votos.Votante, dni int, inicio int, fin int) int {
+func BusquedaVotante[T any](lista []T, dni int, inicio int, fin int, f func(T, int) int) int {
 
 	if inicio > fin { //se busco en la lista y no se encontro el votante
 		return -1
 	}
 
 	mitad := (inicio + fin) / 2
+	comparacion := f(lista[mitad], dni)
 
-	if lista[mitad].LeerDNI() == dni { //se encontro
-
+	switch {
+	case comparacion == 0:
 		return mitad
 
-	} else if lista[mitad].LeerDNI() < dni { //se busca a la derecha de la lista
+	case comparacion < 0:
+		return BusquedaVotante[T](lista, dni, mitad+1, fin, f)
 
-		return BusquedaVotante(lista, dni, mitad+1, fin)
-
-	} else { //se busca a la izquierda de la lista
-
-		return BusquedaVotante(lista, dni, inicio, mitad-1)
+	default:
+		return BusquedaVotante[T](lista, dni, inicio, mitad-1, f)
 
 	}
 }
