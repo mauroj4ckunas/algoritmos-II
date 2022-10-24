@@ -143,7 +143,7 @@ func (arbol *arbolBinario[K, V]) encontrarClave(clave K) (**hojas[K, V], string)
 
 func (arbol *arbolBinario[K, V]) Guardar(clave K, dato V) {
 
-	hoja := crearHoja[K, V](clave, dato)
+	hoja := crearHoja(clave, dato)
 
 	if arbol.raiz == nil {
 
@@ -273,7 +273,7 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 	iterr.pilaRecursiva = TDApila.CrearPilaDinamica[*hojas[K, V]]()
 	iterr.hasta = hasta
 
-	if hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
+	if hasta != nil && desde != nil && arbol.comparador(*desde, *hasta) > 0 {
 
 		return iterr
 
@@ -286,14 +286,12 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 			iterr.pilaRecursiva.Apilar(todoIzquierda)
 		}
 		todoIzquierda = todoIzquierda.hijoIzq
-
 	}
 	if desde != nil {
-		for arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) > 0 {
+		for arbol.comparador(*desde, iterr.pilaRecursiva.VerTope().clave) > 0 {
 			iterr.Siguiente()
 		}
 	}
-
 	return iterr
 }
 
@@ -304,9 +302,7 @@ func (arbol *arbolBinario[K, V]) Iterador() IterDiccionario[K, V] {
 }
 
 func (iterr *iterExterno[K, V]) HaySiguiente() bool {
-
 	return !iterr.pilaRecursiva.EstaVacia()
-
 }
 
 func (iterr *iterExterno[K, V]) VerActual() (K, V) {
@@ -334,16 +330,14 @@ func (iterr *iterExterno[K, V]) Siguiente() K {
 		todoIzquierda := devolver.hijoDer
 
 		for todoIzquierda != nil {
-
 			if iterr.hasta != nil && todoIzquierda.clave == *iterr.hasta {
-
+				pilaVacia := TDApila.CrearPilaDinamica[*hojas[K, V]]()
+				pilaVacia.Apilar(todoIzquierda)
+				iterr.pilaRecursiva = pilaVacia
 				break
-
 			}
-
 			iterr.pilaRecursiva.Apilar(todoIzquierda)
 			todoIzquierda = todoIzquierda.hijoIzq
-
 		}
 
 	}
