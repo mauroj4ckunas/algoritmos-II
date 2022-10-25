@@ -547,7 +547,6 @@ func TestComparacionIteradores(t *testing.T) {
 
 	verificarIterVacio(iterConRangos, t)
 	verificarIterVacio(iterConRangos, t)
-
 }
 
 func TestIteradoresSalidaInOrder(t *testing.T) {
@@ -645,4 +644,59 @@ func TestVolumen(t *testing.T) {
 		require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { volumen.Borrar(m) })
 	}
 	require.EqualValues(t, 0, volumen.Cantidad())
+}
+
+func TestIteradorConNil(t *testing.T) {
+	funcionComparable := func(clave1 string, clave2 string) int {
+		if clave1[0] < clave2[0] {
+			return -1
+		} else if clave1[0] > clave2[0] {
+			return 1
+		}
+		return 0
+	}
+
+	alumnos := TDADiccionario.CrearABB[string, string](funcionComparable)
+
+	listado := []string{"Nicolas", "Roberto", "Leonardo", "Cesar", "Pablo", "Mora", "Tamara"}
+
+	alumnos.Guardar(listado[0], "Presente")
+	alumnos.Guardar(listado[1], "Presente")
+	alumnos.Guardar(listado[2], "Presente")
+	alumnos.Guardar(listado[3], "Presente")
+	alumnos.Guardar(listado[4], "Presente")
+	alumnos.Guardar(listado[5], "Presente")
+	alumnos.Guardar(listado[6], "Presente")
+
+	ptrHasta := &listado[4]
+
+	iteradorDesdeNil := alumnos.IteradorRango(nil, ptrHasta)
+
+	presentesDia1 := []string{"Cesar", "Leonardo", "Mora", "Nicolas", "Pablo"}
+
+	var i int = 0
+	for iteradorDesdeNil.HaySiguiente() {
+		clave, valor := iteradorDesdeNil.VerActual()
+		require.EqualValues(t, presentesDia1[i], clave)
+		require.EqualValues(t, "Presente", valor)
+		require.EqualValues(t, presentesDia1[i], iteradorDesdeNil.Siguiente())
+		i++
+	}
+
+	ptrDesde := &listado[5]
+
+	iteradorHastaNil := alumnos.IteradorRango(ptrDesde, nil)
+
+	presentesDia2 := []string{"Mora", "Nicolas", "Pablo", "Roberto", "Tamara"}
+
+	var j int = 0
+	for iteradorHastaNil.HaySiguiente() {
+		clave, valor := iteradorHastaNil.VerActual()
+		require.EqualValues(t, presentesDia2[j], clave)
+		require.EqualValues(t, "Presente", valor)
+		require.EqualValues(t, presentesDia2[j], iteradorHastaNil.Siguiente())
+		iteradorHastaNil.Siguiente()
+		j++
+	}
+
 }
