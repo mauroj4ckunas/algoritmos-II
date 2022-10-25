@@ -289,8 +289,8 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 		todoIzquierda = todoIzquierda.hijoIzq
 
 	}
-	if desde != nil && !iterr.pilaRecursiva.EstaVacia() {
-		for arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) < 0 {
+	if desde != nil {
+		for !iterr.pilaRecursiva.EstaVacia() && arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) < 0 {
 			iterr.Siguiente()
 		}
 	}
