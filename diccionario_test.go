@@ -700,7 +700,7 @@ func TestIteradorConNil(t *testing.T) {
 	}
 }
 
-func TestIterarConNil(t *testing.T) {
+func TestIterarConNilyCortes(t *testing.T) {
 	var (
 		par1   int = 2
 		par2   int = 4
@@ -748,5 +748,4 @@ func TestIterarConNil(t *testing.T) {
 		return clave%2 == 0
 	})
 	require.EqualValues(t, 3, contador)
-
 }
