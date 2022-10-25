@@ -695,7 +695,6 @@ func TestIteradorConNil(t *testing.T) {
 		require.EqualValues(t, presentesDia2[j], clave)
 		require.EqualValues(t, "Presente", valor)
 		require.EqualValues(t, presentesDia2[j], iteradorHastaNil.Siguiente())
-		iteradorHastaNil.Siguiente()
 		j++
 	}
 }
