@@ -102,10 +102,11 @@ func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato 
 	}
 
 	if hasta != nil {
-		if hoja.clave == *hasta {
-
+		if comparador(hoja.clave, *hasta) == 0{
+			f(hoja.clave, hoja.valor)
 			return false
-
+		}else if comparador(hoja.clave, *hasta) > 0{
+			return false
 		}
 	}
 
@@ -143,7 +144,7 @@ func (arbol *arbolBinario[K, V]) encontrarClave(clave K) (**hojas[K, V], string)
 
 func (arbol *arbolBinario[K, V]) Guardar(clave K, dato V) {
 
-	hoja := crearHoja(clave, dato)
+	hoja := crearHoja[K, V](clave, dato)
 
 	if arbol.raiz == nil {
 
@@ -273,7 +274,7 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 	iterr.pilaRecursiva = TDApila.CrearPilaDinamica[*hojas[K, V]]()
 	iterr.hasta = hasta
 
-	if hasta != nil && desde != nil && arbol.comparador(*desde, *hasta) > 0 {
+	if desde != nil && hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
 
 		return iterr
 
@@ -286,12 +287,14 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 			iterr.pilaRecursiva.Apilar(todoIzquierda)
 		}
 		todoIzquierda = todoIzquierda.hijoIzq
+
 	}
 	if desde != nil {
 		for arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) > 0 {
 			iterr.Siguiente()
 		}
 	}
+
 	return iterr
 }
 
@@ -302,7 +305,9 @@ func (arbol *arbolBinario[K, V]) Iterador() IterDiccionario[K, V] {
 }
 
 func (iterr *iterExterno[K, V]) HaySiguiente() bool {
+
 	return !iterr.pilaRecursiva.EstaVacia()
+
 }
 
 func (iterr *iterExterno[K, V]) VerActual() (K, V) {
@@ -325,19 +330,25 @@ func (iterr *iterExterno[K, V]) Siguiente() K {
 	}
 
 	devolver := iterr.pilaRecursiva.Desapilar()
-	if devolver.hijoDer != nil {
+	if iterr.hasta != nil && devolver.clave == *iterr.hasta {
+		for !iterr.pilaRecursiva.EstaVacia(){
+			iterr.pilaRecursiva.Desapilar()
+		}
+	}else if devolver.hijoDer != nil {
 
 		todoIzquierda := devolver.hijoDer
 
 		for todoIzquierda != nil {
+
 			if iterr.hasta != nil && todoIzquierda.clave == *iterr.hasta {
-				// pilaVacia := TDApila.CrearPilaDinamica[*hojas[K, V]]()
-				// pilaVacia.Apilar(todoIzquierda)
-				// iterr.pilaRecursiva = pilaVacia
+
 				break
+
 			}
+
 			iterr.pilaRecursiva.Apilar(todoIzquierda)
 			todoIzquierda = todoIzquierda.hijoIzq
+
 		}
 
 	}
