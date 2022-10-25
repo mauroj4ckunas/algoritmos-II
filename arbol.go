@@ -288,7 +288,7 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 		todoIzquierda = todoIzquierda.hijoIzq
 	}
 	if desde != nil {
-		for arbol.comparador(*desde, iterr.pilaRecursiva.VerTope().clave) > 0 {
+		for arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) > 0 {
 			iterr.Siguiente()
 		}
 	}
@@ -331,9 +331,9 @@ func (iterr *iterExterno[K, V]) Siguiente() K {
 
 		for todoIzquierda != nil {
 			if iterr.hasta != nil && todoIzquierda.clave == *iterr.hasta {
-				pilaVacia := TDApila.CrearPilaDinamica[*hojas[K, V]]()
-				pilaVacia.Apilar(todoIzquierda)
-				iterr.pilaRecursiva = pilaVacia
+				// pilaVacia := TDApila.CrearPilaDinamica[*hojas[K, V]]()
+				// pilaVacia.Apilar(todoIzquierda)
+				// iterr.pilaRecursiva = pilaVacia
 				break
 			}
 			iterr.pilaRecursiva.Apilar(todoIzquierda)
