@@ -249,6 +249,8 @@ func TestIterarRango(t *testing.T) {
 		acon10 string = "Mundial"
 	)
 
+	arrayAconOrdenadoPorClave := []string{acon6, acon8, acon5, acon9, acon1, acon3, acon10, acon4, acon7, acon2}
+
 	funcionComparable := func(clave1 int, clave2 int) int {
 		if clave1 < clave2 {
 			return -1
@@ -301,6 +303,121 @@ func TestIterarRango(t *testing.T) {
 		return true
 	})
 	require.EqualValues(t, 2, contadorMundiales)
+
+	desdeFueraDelAbb := 1900
+	ptrdesdeFueraDelAbb := &desdeFueraDelAbb
+
+	hastaFueraDelAbb := 2000
+	ptrhastaFueraDelAbb := &hastaFueraDelAbb
+
+	var i int = 4
+	ptrI := &i
+
+	lineaDeTiempo.IterarRango(ptrdesdeFueraDelAbb, ptrhastaFueraDelAbb, func(year int, acon string) bool {
+		require.EqualValues(t, acon, arrayAconOrdenadoPorClave[*ptrI])
+		*ptrI++
+		return true
+	})
+
+	ptrFecha8 := &fecha8
+	var j int = 1
+	ptrj := &j
+
+	lineaDeTiempo.IterarRango(ptrFecha8, ptrFecha7, func(year int, acon string) bool {
+		require.EqualValues(t, acon, arrayAconOrdenadoPorClave[*ptrj])
+		*ptrj++
+		return true
+	})
+
+}
+
+func TestIterarRangoIncluyeUno(t *testing.T) {
+
+	funcionComparable := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+
+	var (
+		primer  int = 45
+		segundo int = 90
+		tercero int = 92
+		cuarto  int = 140
+		quinto  int = 237
+	)
+
+	dic1 := TDADiccionario.CrearABB[int, int](funcionComparable)
+
+	dic1.Guardar(cuarto, 0)
+	dic1.Guardar(quinto, 0)
+	dic1.Guardar(primer, 0)
+	dic1.Guardar(tercero, 0)
+	dic1.Guardar(segundo, 0)
+
+	funcionComparable2 := func(clave1 string, clave2 string) int {
+		if clave1[0] < clave2[0] {
+			return -1
+		} else if clave1[0] > clave2[0] {
+			return 1
+		}
+		return 0
+	}
+
+	var (
+		a string = "C"
+		b string = "F"
+		c string = "M"
+		d string = "T"
+		e string = "V"
+	)
+
+	dic2 := TDADiccionario.CrearABB[string, string](funcionComparable2)
+
+	dic2.Guardar(c, "")
+	dic2.Guardar(a, "")
+	dic2.Guardar(e, "")
+	dic2.Guardar(b, "")
+	dic2.Guardar(d, "")
+
+	num1 := 130
+	ptrNum1 := &num1
+	num2 := 210
+	ptrNum2 := &num2
+
+	dic1.IterarRango(ptrNum1, ptrNum2, func(clave, dato int) bool {
+		require.EqualValues(t, clave, cuarto)
+		return true
+	})
+
+	num3 := 230
+	ptrNum3 := &num3
+	num4 := 10000
+	ptrNum4 := &num4
+
+	dic1.IterarRango(ptrNum3, ptrNum4, func(clave, dato int) bool {
+		if clave == quinto {
+			require.EqualValues(t, clave, quinto)
+		} else {
+			require.NotEqualValues(t, clave, quinto)
+		}
+
+		return true
+	})
+
+	letra1 := "P"
+	ptrLetra1 := &letra1
+	letra2 := "U"
+	ptrLetra2 := &letra2
+
+	dic2.IterarRango(ptrLetra1, ptrLetra2, func(clave, dato string) bool {
+		require.EqualValues(t, clave, d)
+		return true
+	})
+
 }
 
 func TestIteradorInterno(t *testing.T) {
@@ -683,20 +800,22 @@ func TestIteradorConNil(t *testing.T) {
 		i++
 	}
 
-	ptrDesde := &listado[5]
+	require.False(t, iteradorDesdeNil.HaySiguiente())
 
-	iteradorHastaNil := alumnos.IteradorRango(ptrDesde, nil)
+	// ptrDesde := &listado[5]
 
-	presentesDia2 := []string{"Mora", "Nicolas", "Pablo", "Roberto", "Tamara"}
+	// iteradorHastaNil := alumnos.IteradorRango(ptrDesde, nil)
 
-	var j int = 0
-	for iteradorHastaNil.HaySiguiente() {
-		clave, valor := iteradorHastaNil.VerActual()
-		require.EqualValues(t, presentesDia2[j], clave)
-		require.EqualValues(t, "Presente", valor)
-		require.EqualValues(t, presentesDia2[j], iteradorHastaNil.Siguiente())
-		j++
-	}
+	// presentesDia2 := []string{"Mora", "Nicolas", "Pablo", "Roberto", "Tamara"}
+
+	// var j int = 0
+	// for iteradorHastaNil.HaySiguiente() {
+	// 	clave, valor := iteradorHastaNil.VerActual()
+	// 	require.EqualValues(t, presentesDia2[j], clave)
+	// 	require.EqualValues(t, "Presente", valor)
+	// 	require.EqualValues(t, presentesDia2[j], iteradorHastaNil.Siguiente())
+	// 	j++
+	// }
 }
 
 func TestIterarConNilyCortes(t *testing.T) {
