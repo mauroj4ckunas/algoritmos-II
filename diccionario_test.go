@@ -698,5 +698,55 @@ func TestIteradorConNil(t *testing.T) {
 		iteradorHastaNil.Siguiente()
 		j++
 	}
+}
+
+func TestIterarConNil(t *testing.T) {
+	var (
+		par1   int = 2
+		par2   int = 4
+		par3   int = 6
+		par4   int = 8
+		par5   int = 10
+		impar1 int = 3
+		impar2 int = 7
+	)
+	funcionComparable := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+	buscarImpar := TDADiccionario.CrearABB[int, bool](funcionComparable)
+	buscarImpar.Guardar(par3, false)
+	buscarImpar.Guardar(impar2, true)
+	buscarImpar.Guardar(par4, false)
+	buscarImpar.Guardar(par2, false)
+	buscarImpar.Guardar(par1, false)
+	buscarImpar.Guardar(impar1, true)
+	buscarImpar.Guardar(par5, false)
+
+	var contador int
+	ptrContador := &contador
+
+	ptrPar1 := &par1
+	ptrPar3 := &par3
+
+	buscarImpar.IterarRango(ptrPar1, ptrPar3, func(clave int, dato bool) bool {
+		*ptrContador++
+		return clave%2 == 0
+	})
+	require.EqualValues(t, 2, contador)
+
+	ptrPar2 := &par2
+	ptrPar5 := &par5
+
+	contador = 0
+	buscarImpar.IterarRango(ptrPar2, ptrPar5, func(clave int, dato bool) bool {
+		*ptrContador++
+		return clave%2 == 0
+	})
+	require.EqualValues(t, 3, contador)
 
 }
