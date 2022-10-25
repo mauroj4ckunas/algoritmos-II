@@ -102,10 +102,11 @@ func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato 
 	}
 
 	if hasta != nil {
-		if hoja.clave == *hasta {
-
+		if comparador(hoja.clave, *hasta) == 0{
+			f(hoja.clave, hoja.valor)
 			return false
-
+		}else if comparador(hoja.clave, *hasta) > 0{
+			return false
 		}
 	}
 
@@ -273,7 +274,7 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 	iterr.pilaRecursiva = TDApila.CrearPilaDinamica[*hojas[K, V]]()
 	iterr.hasta = hasta
 
-	if hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
+	if desde != nil && hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
 
 		return iterr
 
@@ -329,7 +330,11 @@ func (iterr *iterExterno[K, V]) Siguiente() K {
 	}
 
 	devolver := iterr.pilaRecursiva.Desapilar()
-	if devolver.hijoDer != nil {
+	if iterr.hasta != nil && devolver.clave == *iterr.hasta {
+		for !iterr.pilaRecursiva.EstaVacia(){
+			iterr.pilaRecursiva.Desapilar()
+		}
+	}else if devolver.hijoDer != nil {
 
 		todoIzquierda := devolver.hijoDer
 
