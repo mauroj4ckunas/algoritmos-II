@@ -668,20 +668,20 @@ func TestIteradorConNil(t *testing.T) {
 	alumnos.Guardar(listado[5], "Presente")
 	alumnos.Guardar(listado[6], "Presente")
 
-	// ptrHasta := &listado[4]
+	ptrHasta := &listado[4]
 
-	// iteradorDesdeNil := alumnos.IteradorRango(nil, ptrHasta)
+	iteradorDesdeNil := alumnos.IteradorRango(nil, ptrHasta)
 
-	// presentesDia1 := []string{"Cesar", "Leonardo", "Mora", "Nicolas", "Pablo"}
+	presentesDia1 := []string{"Cesar", "Leonardo", "Mora", "Nicolas", "Pablo"}
 
-	// var i int = 0
-	// for iteradorDesdeNil.HaySiguiente() {
-	// 	clave, valor := iteradorDesdeNil.VerActual()
-	// 	require.EqualValues(t, presentesDia1[i], clave)
-	// 	require.EqualValues(t, "Presente", valor)
-	// 	require.EqualValues(t, presentesDia1[i], iteradorDesdeNil.Siguiente())
-	// 	i++
-	// }
+	var i int = 0
+	for iteradorDesdeNil.HaySiguiente() {
+		clave, valor := iteradorDesdeNil.VerActual()
+		require.EqualValues(t, presentesDia1[i], clave)
+		require.EqualValues(t, "Presente", valor)
+		require.EqualValues(t, presentesDia1[i], iteradorDesdeNil.Siguiente())
+		i++
+	}
 
 	ptrDesde := &listado[5]
 
