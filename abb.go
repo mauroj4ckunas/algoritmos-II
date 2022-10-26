@@ -97,25 +97,20 @@ func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato 
 	}
 
 	resultado := hoja.hijoIzq.iterar(comparador, f, desde, hasta)
-	if !resultado {
+	if resultado == false {
 		return resultado
 	}
 
-	if hasta != nil {
-		if comparador(hoja.clave, *hasta) == 0 {
-			f(hoja.clave, hoja.valor)
-			return false
-		} else if comparador(hoja.clave, *hasta) > 0 {
-			return false
+	if (hasta != nil && comparador(hoja.clave, *hasta) <= 0) || hasta == nil {
+		if (desde != nil && comparador(hoja.clave, *desde) >= 0) || desde == nil {
+			if f(hoja.clave, hoja.valor) == false {
+				return false
+			}
 		}
+	} else {
+		return false
 	}
 
-	if comparador(hoja.clave, *desde) >= 0 {
-
-		if !f(hoja.clave, hoja.valor) {
-			return false
-		}
-	}
 	return hoja.hijoDer.iterar(comparador, f, desde, hasta)
 }
 
@@ -244,17 +239,7 @@ func (arbol *arbolBinario[K, V]) Borrar(clave K) V {
 }
 
 func (arbol *arbolBinario[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
-
-	if desde == nil {
-		elMasChico := arbol.raiz
-		for elMasChico.hijoIzq != nil {
-			elMasChico = elMasChico.hijoIzq
-		}
-		arbol.raiz.iterar(arbol.comparador, visitar, &elMasChico.clave, hasta)
-	} else {
-		arbol.raiz.iterar(arbol.comparador, visitar, desde, hasta)
-	}
-
+	arbol.raiz.iterar(arbol.comparador, visitar, desde, hasta)
 }
 
 func (arbol *arbolBinario[K, V]) Iterar(f func(clave K, dato V) bool) {
@@ -266,6 +251,7 @@ func (arbol *arbolBinario[K, V]) Iterar(f func(clave K, dato V) bool) {
 type iterExterno[K comparable, V any] struct {
 	pilaRecursiva TDApila.Pila[*hojas[K, V]]
 	hasta         *K
+	comparador    func(K, K) int
 }
 
 func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
@@ -273,24 +259,22 @@ func (arbol *arbolBinario[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionar
 	iterr := new(iterExterno[K, V])
 	iterr.pilaRecursiva = TDApila.CrearPilaDinamica[*hojas[K, V]]()
 	iterr.hasta = hasta
+	iterr.comparador = arbol.comparador
 
 	if desde != nil && hasta != nil && arbol.comparador(*desde, *hasta) > 0 {
 
 		return iterr
 
 	}
-
 	todoIzquierda := arbol.raiz
-
 	for todoIzquierda != nil {
-		if (hasta != nil && arbol.comparador(*hasta, todoIzquierda.clave) > 0) || hasta == nil {
+		if (iterr.hasta != nil && iterr.comparador(todoIzquierda.clave, *iterr.hasta) <= 0) || iterr.hasta == nil {
 			iterr.pilaRecursiva.Apilar(todoIzquierda)
 		}
 		todoIzquierda = todoIzquierda.hijoIzq
-
 	}
 	if desde != nil {
-		for !iterr.pilaRecursiva.EstaVacia() && arbol.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) < 0 {
+		for !iterr.pilaRecursiva.EstaVacia() && iterr.comparador(iterr.pilaRecursiva.VerTope().clave, *desde) < 0 {
 			iterr.Siguiente()
 		}
 	}
@@ -330,27 +314,18 @@ func (iterr *iterExterno[K, V]) Siguiente() K {
 	}
 
 	devolver := iterr.pilaRecursiva.Desapilar()
-	if iterr.hasta != nil && devolver.clave == *iterr.hasta {
+	if iterr.hasta != nil && iterr.comparador(devolver.clave, *iterr.hasta) == 0 {
 		for !iterr.pilaRecursiva.EstaVacia() {
 			iterr.pilaRecursiva.Desapilar()
 		}
 	} else if devolver.hijoDer != nil {
-
 		todoIzquierda := devolver.hijoDer
-
 		for todoIzquierda != nil {
-
-			if iterr.hasta != nil && todoIzquierda.clave == *iterr.hasta {
+			if (iterr.hasta != nil && iterr.comparador(todoIzquierda.clave, *iterr.hasta) <= 0) || iterr.hasta == nil {
 				iterr.pilaRecursiva.Apilar(todoIzquierda)
-				break
-
 			}
-
-			iterr.pilaRecursiva.Apilar(todoIzquierda)
 			todoIzquierda = todoIzquierda.hijoIzq
-
 		}
-
 	}
 
 	return devolver.clave
