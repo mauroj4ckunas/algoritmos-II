@@ -527,7 +527,7 @@ func TestConClavesStructs(t *testing.T) {
 
 }
 
-func TestIteradorExternoSinElementos(t *testing.T) {
+func TestIteradorExternoEInternoSinElementos(t *testing.T) {
 	funcionComparable := func(clave1 int, clave2 int) int {
 		if clave1 < clave2 {
 			return -1
@@ -551,6 +551,11 @@ func TestIteradorExternoSinElementos(t *testing.T) {
 
 	iterVacio2 := probarIter.Iterador()
 	verificarIterVacio(iterVacio2, t)
+
+	probarIter.Iterar(func(clave int, dato string) bool {
+		return true
+	})
+
 }
 
 func verificarIterVacio[K comparable, V any](iter TDADiccionario.IterDiccionario[K, V], t *testing.T) {
@@ -802,20 +807,20 @@ func TestIteradorConNil(t *testing.T) {
 
 	require.False(t, iteradorDesdeNil.HaySiguiente())
 
-	// ptrDesde := &listado[5]
+	ptrDesde := &listado[5]
 
-	// iteradorHastaNil := alumnos.IteradorRango(ptrDesde, nil)
+	iteradorHastaNil := alumnos.IteradorRango(ptrDesde, nil)
 
-	// presentesDia2 := []string{"Mora", "Nicolas", "Pablo", "Roberto", "Tamara"}
+	presentesDia2 := []string{"Mora", "Nicolas", "Pablo", "Roberto", "Tamara"}
 
-	// var j int = 0
-	// for iteradorHastaNil.HaySiguiente() {
-	// 	clave, valor := iteradorHastaNil.VerActual()
-	// 	require.EqualValues(t, presentesDia2[j], clave)
-	// 	require.EqualValues(t, "Presente", valor)
-	// 	require.EqualValues(t, presentesDia2[j], iteradorHastaNil.Siguiente())
-	// 	j++
-	// }
+	var j int = 0
+	for iteradorHastaNil.HaySiguiente() {
+		clave, valor := iteradorHastaNil.VerActual()
+		require.EqualValues(t, presentesDia2[j], clave)
+		require.EqualValues(t, "Presente", valor)
+		require.EqualValues(t, presentesDia2[j], iteradorHastaNil.Siguiente())
+		j++
+	}
 }
 
 func TestIterarConNilyCortes(t *testing.T) {
@@ -866,4 +871,83 @@ func TestIterarConNilyCortes(t *testing.T) {
 		return clave%2 == 0
 	})
 	require.EqualValues(t, 3, contador)
+}
+
+func TestMismosNodosDiferentesPuestos(t *testing.T) {
+	funcionComparable := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+	var (
+		num1 int = 1
+		num2 int = 2
+		num3 int = 3
+		num4 int = 4
+		num5 int = 5
+		num6 int = 6
+		num7 int = 7
+	)
+	array := []int{num1, num2, num3, num4, num5, num6, num7}
+	diccionario := TDADiccionario.CrearABB[int, int](funcionComparable)
+
+	diccionario.Guardar(num1, 0)
+	diccionario.Guardar(num2, 0)
+	diccionario.Guardar(num3, 0)
+	diccionario.Guardar(num5, 0)
+	diccionario.Guardar(num4, 0)
+	diccionario.Guardar(num6, 0)
+	diccionario.Guardar(num7, 0)
+
+	ptrNum2 := &num2
+	ptrNum5 := &num5
+	var i int = 1
+	ptrI := &i
+
+	diccionario.IterarRango(ptrNum2, ptrNum5, func(clave, dato int) bool {
+		require.EqualValues(t, array[*ptrI], clave)
+		*ptrI++
+		return true
+	})
+
+	for _, valor := range array {
+		diccionario.Borrar(valor)
+	}
+
+	diccionario.Guardar(num7, 0)
+	diccionario.Guardar(num6, 0)
+	diccionario.Guardar(num5, 0)
+	diccionario.Guardar(num4, 0)
+	diccionario.Guardar(num3, 0)
+	diccionario.Guardar(num2, 0)
+	diccionario.Guardar(num1, 0)
+
+	i = 1
+	diccionario.IterarRango(ptrNum2, ptrNum5, func(clave, dato int) bool {
+		require.EqualValues(t, array[*ptrI], clave)
+		*ptrI++
+		return true
+	})
+
+	for _, valor := range array {
+		diccionario.Borrar(valor)
+	}
+
+	diccionario.Guardar(num5, 0)
+	diccionario.Guardar(num6, 0)
+	diccionario.Guardar(num7, 0)
+	diccionario.Guardar(num3, 0)
+	diccionario.Guardar(num1, 0)
+	diccionario.Guardar(num2, 0)
+	diccionario.Guardar(num4, 0)
+
+	i = 1
+	diccionario.IterarRango(ptrNum2, ptrNum5, func(clave, dato int) bool {
+		require.EqualValues(t, array[*ptrI], clave)
+		*ptrI++
+		return true
+	})
 }

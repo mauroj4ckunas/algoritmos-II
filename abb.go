@@ -97,7 +97,7 @@ func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato 
 	}
 
 	resultado := hoja.hijoIzq.iterar(comparador, f, desde, hasta)
-	if resultado == false {
+	if !resultado {
 		return resultado
 	}
 
