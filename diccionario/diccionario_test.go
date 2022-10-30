@@ -376,8 +376,8 @@ func TestIterarDiccionarioVacio(t *testing.T) {
 }
 
 func TestDiccionarioIterar(t *testing.T) {
-	t.Log("Guardamos 3 valores en un Diccionario, e iteramos validando que las claves sean todas diferentes " +
-		"pero pertenecientes al diccionario. Además los valores de VerActual y Siguiente van siendo correctos entre sí")
+	// t.Log("Guardamos 3 valores en un Diccionario, e iteramos validando que las claves sean todas diferentes " +
+	// 	"pero pertenecientes al diccionario. Además los valores de VerActual y Siguiente van siendo correctos entre sí")
 	clave1 := "Gato"
 	clave2 := "Perro"
 	clave3 := "Vaca"

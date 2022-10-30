@@ -1,4 +1,4 @@
-package FuncionHash
+package diccionario
 
 import (
 	"crypto/sha1"
