@@ -11,7 +11,7 @@ type elementos[K comparable, V any] struct {
 	ubicacion uint64
 }
 
-type diccionario_implementacion[K comparable, V any] struct {
+type tablaDeHash[K comparable, V any] struct {
 	array           []*elementos[K, V]
 	largo           int
 	cap_diccionario uint64
@@ -25,7 +25,7 @@ func crearElemento[K comparable, V any](clave K, valor V, ubicacionHash uint64) 
 	return dato
 }
 
-func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
+func (dicc *tablaDeHash[K, V]) redimensionar(nuevoTam int) {
 	dicc.cap_diccionario = uint64(nuevoTam)
 	arrayViejo := dicc.array
 	dicc.array = crearArrayHash[K, V](dicc.cap_diccionario)
@@ -37,7 +37,7 @@ func (dicc *diccionario_implementacion[K, V]) redimensionar(nuevoTam int) {
 	}
 }
 
-func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarNecesario uint64) (uint64, bool) {
+func (dicc *tablaDeHash[K, V]) hacerEspacio(indice uint64, lugarNecesario uint64) (uint64, bool) {
 
 	capacidad := dicc.cap_diccionario
 	if (capacidad+indice)%capacidad < (capacidad+lugarNecesario+POSICIONES_HABILES)%capacidad {
@@ -63,7 +63,7 @@ func (dicc *diccionario_implementacion[K, V]) hacerEspacio(indice uint64, lugarN
 	return 0, true
 }
 
-func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
+func (dicc *tablaDeHash[K, V]) Guardar(clave K, dato V) {
 
 	capacidad := dicc.cap_diccionario
 	indiceHash := Hashear(clave) % capacidad
@@ -104,7 +104,7 @@ func (dicc *diccionario_implementacion[K, V]) Guardar(clave K, dato V) {
 
 }
 
-func (dicc *diccionario_implementacion[K, V]) perteneceElemento(clave K) (bool, int) {
+func (dicc *tablaDeHash[K, V]) perteneceElemento(clave K) (bool, int) {
 
 	capacidad := dicc.cap_diccionario
 	ubicacion := Hashear(clave) % capacidad
@@ -119,12 +119,12 @@ func (dicc *diccionario_implementacion[K, V]) perteneceElemento(clave K) (bool, 
 	return false, -1
 }
 
-func (dicc *diccionario_implementacion[K, V]) Pertenece(clave K) bool {
+func (dicc *tablaDeHash[K, V]) Pertenece(clave K) bool {
 	pertenece, _ := dicc.perteneceElemento(clave)
 	return pertenece
 }
 
-func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
+func (dicc *tablaDeHash[K, V]) Obtener(clave K) V {
 	pertenece, indice := dicc.perteneceElemento(clave)
 	if pertenece {
 		return (*dicc.array[indice]).valor
@@ -132,7 +132,7 @@ func (dicc *diccionario_implementacion[K, V]) Obtener(clave K) V {
 	panic("La clave no pertenece al diccionario")
 }
 
-func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
+func (dicc *tablaDeHash[K, V]) Borrar(clave K) V {
 
 	if dicc.Cantidad() < int(dicc.cap_diccionario)/2 && dicc.Cantidad() > int(dicc.cap_diccionario)/4 {
 		dicc.redimensionar(int(dicc.cap_diccionario) / 2)
@@ -148,7 +148,7 @@ func (dicc *diccionario_implementacion[K, V]) Borrar(clave K) V {
 	panic("La clave no pertenece al diccionario")
 }
 
-func (dicc *diccionario_implementacion[K, V]) Cantidad() int {
+func (dicc *tablaDeHash[K, V]) Cantidad() int {
 	return dicc.largo
 }
 
@@ -160,20 +160,20 @@ func crearArrayHash[K comparable, V any](tam uint64) []*elementos[K, V] {
 const CAPACIDAD_INICIAL uint64 = 87
 
 func CrearHash[K comparable, V any]() Diccionario[K, V] {
-	diccio := new(diccionario_implementacion[K, V])
+	diccio := new(tablaDeHash[K, V])
 	diccio.cap_diccionario = CAPACIDAD_INICIAL
 	(*diccio).array = crearArrayHash[K, V](CAPACIDAD_INICIAL)
 	return diccio
 }
 
 // Iterador Externo
-type iterador_externo[K comparable, V any] struct {
+type iterTablaDeHash[K comparable, V any] struct {
 	actual   int
 	iter_arr []*elementos[K, V]
 }
 
-func (dicc *diccionario_implementacion[K, V]) Iterador() IterDiccionario[K, V] {
-	iterr := new(iterador_externo[K, V])
+func (dicc *tablaDeHash[K, V]) Iterador() IterDiccionario[K, V] {
+	iterr := new(iterTablaDeHash[K, V])
 	iterr.iter_arr = dicc.array
 	for iterr.actual < len(iterr.iter_arr) {
 		if iterr.iter_arr[iterr.actual] != nil {
@@ -184,18 +184,18 @@ func (dicc *diccionario_implementacion[K, V]) Iterador() IterDiccionario[K, V] {
 	return iterr
 }
 
-func (iterr *iterador_externo[K, V]) HaySiguiente() bool {
+func (iterr *iterTablaDeHash[K, V]) HaySiguiente() bool {
 	return iterr.actual < len(iterr.iter_arr)
 }
 
-func (iterr *iterador_externo[K, V]) VerActual() (K, V) {
+func (iterr *iterTablaDeHash[K, V]) VerActual() (K, V) {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
 	return (*iterr.iter_arr[iterr.actual]).clave, (*iterr.iter_arr[iterr.actual]).valor
 }
 
-func (iterr *iterador_externo[K, V]) Siguiente() K {
+func (iterr *iterTablaDeHash[K, V]) Siguiente() K {
 	if !iterr.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
@@ -212,7 +212,7 @@ func (iterr *iterador_externo[K, V]) Siguiente() K {
 
 // Iterador Interno
 
-func (dicc *diccionario_implementacion[K, V]) Iterar(f func(clave K, valor V) bool) {
+func (dicc *tablaDeHash[K, V]) Iterar(f func(clave K, valor V) bool) {
 
 	for i := 0; i < len(dicc.array); i++ {
 		if dicc.array[i] == nil {
