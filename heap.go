@@ -6,6 +6,8 @@ type heap[T comparable] struct {
 	comparar func(T, T) int
 }
 
+const TAM_INICIAL int = 20
+
 func (cola *heap[T]) EstaVacia() bool {
 	return cola.cantidad == 0
 }
@@ -53,13 +55,10 @@ func (cola *heap[T]) Encolar(elem T) {
 func (cola heap[T]) maximoEntreHijos(indPadre int) int {
 	hijoIzq := (indPadre * 2) + 1
 	hijoDer := (indPadre * 2) + 2
-	var indice int
-	if cola.comparar(cola.datos[hijoIzq], cola.datos[hijoDer]) >= 0 {
-		indice = hijoIzq
-	} else {
-		indice = hijoDer
+	if cola.comparar(cola.datos[hijoIzq], cola.datos[hijoDer]) > 0 {
+		return hijoIzq
 	}
-	return indice
+	return hijoDer
 }
 
 func (cola *heap[T]) downheap(padre int) {
@@ -75,6 +74,7 @@ func (cola *heap[T]) downheap(padre int) {
 }
 
 func (cola *heap[T]) Desencolar() T {
+
 	if cola.EstaVacia() {
 		panic("La cola esta vacia")
 	}
@@ -86,8 +86,8 @@ func (cola *heap[T]) Desencolar() T {
 	pos_ultimo := cola.cantidad - 1
 	cola.swap(0, pos_ultimo)
 	devolver := cola.datos[pos_ultimo]
-	cola.downheap(0)
 	cola.cantidad--
+	cola.downheap(0)
 	return devolver
 }
 
@@ -99,10 +99,29 @@ func (cola *heap[T]) redimensionar(nuevoTam int) {
 
 func CrearHeap[T comparable](f_comparar func(T, T) int) ColaPrioridad[T] {
 	nuevoHeap := new(heap[T])
-	const tamFijo int = 20
-	array := make([]T, tamFijo)
+	array := make([]T, TAM_INICIAL)
 	nuevoHeap.datos = array
 	nuevoHeap.comparar = f_comparar
 
 	return nuevoHeap
+}
+
+func (cola *heap[T]) heapify() {
+	for i := len(cola.datos) - 1; i >= 1; i-- {
+		padre := (i - 1) / 2
+		cola.downheap(padre)
+	}
+}
+
+func CrearHeapArr[T comparable](arr []T, f_comparar func(T, T) int) ColaPrioridad[T] {
+	arrHeap := new(heap[T])
+	arrHeap.comparar = f_comparar
+	arrHeap.cantidad = len(arr)
+	arrHeap.datos = arr
+	arrHeap.heapify()
+	return arrHeap
+}
+
+func HeapSort[T comparable](elementos []T, f_comparar func(T, T) int) {
+	nuevoHeap := CrearHeapArr[T](elementos, f_comparar)
 }
