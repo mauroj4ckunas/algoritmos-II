@@ -23,20 +23,20 @@ func (cola *heap[T]) Cantidad() int {
 	return cola.cantidad
 }
 
-func (cola *heap[T]) swap(ind1 int, ind2 int) {
-	reemplazado := cola.datos[ind1]
-	cola.datos[ind1] = cola.datos[ind2]
-	cola.datos[ind2] = reemplazado
+func swap[T comparable](ind1 int, ind2 int, arr []T) {
+	reemplazado := arr[ind1]
+	arr[ind1] = arr[ind2]
+	arr[ind2] = reemplazado
 }
 
-func (cola *heap[T]) upheap(hijo int) {
+func upheap[T comparable](hijo int, array []T, comparar func(T, T) int) {
 	if hijo == 0 {
 		return
 	}
 	padre := (hijo - 1) / 2
-	if cola.comparar(cola.datos[padre], cola.datos[hijo]) < 0 {
-		cola.swap(padre, hijo)
-		cola.upheap(padre)
+	if comparar(array[padre], array[hijo]) < 0 {
+		swap(padre, hijo, array)
+		upheap(padre, array, comparar)
 	}
 }
 
@@ -48,28 +48,28 @@ func (cola *heap[T]) Encolar(elem T) {
 
 	nuevaPosicion := cola.cantidad
 	cola.datos[nuevaPosicion] = elem
-	cola.upheap(nuevaPosicion)
+	upheap(nuevaPosicion, cola.datos, cola.comparar)
 	cola.cantidad++
 }
 
-func (cola heap[T]) maximoEntreHijos(indPadre int) int {
+func maximoEntreHijos[T comparable](arreglo []T, indPadre int, f func(T, T) int) int {
 	hijoIzq := (indPadre * 2) + 1
 	hijoDer := (indPadre * 2) + 2
-	if cola.comparar(cola.datos[hijoIzq], cola.datos[hijoDer]) > 0 {
+	if f(arreglo[hijoIzq], arreglo[hijoDer]) > 0 {
 		return hijoIzq
 	}
 	return hijoDer
 }
 
-func (cola *heap[T]) downheap(padre int) {
-	if padre == cola.cantidad-1 {
+func downheap[T comparable](padre int, array []T, cantidad int, comparar func(T, T) int) {
+	if padre == cantidad-1 {
 		return
 	}
-	mayor := cola.maximoEntreHijos(padre)
-	if cola.comparar(cola.datos[padre], cola.datos[mayor]) < 0 {
-		cola.swap(padre, mayor)
+	mayor := maximoEntreHijos(array, padre, comparar)
+	if comparar(array[padre], array[mayor]) < 0 {
+		swap(padre, mayor, array)
 		padre = mayor
-		cola.downheap(padre)
+		downheap(padre, array, cantidad, comparar)
 	}
 }
 
@@ -84,10 +84,10 @@ func (cola *heap[T]) Desencolar() T {
 	}
 
 	pos_ultimo := cola.cantidad - 1
-	cola.swap(0, pos_ultimo)
+	swap(0, pos_ultimo, cola.datos)
 	devolver := cola.datos[pos_ultimo]
 	cola.cantidad--
-	cola.downheap(0)
+	downheap(0, cola.datos, cola.cantidad, cola.comparar)
 	return devolver
 }
 
@@ -106,10 +106,10 @@ func CrearHeap[T comparable](f_comparar func(T, T) int) ColaPrioridad[T] {
 	return nuevoHeap
 }
 
-func (cola *heap[T]) heapify() {
-	for i := len(cola.datos) - 1; i >= 1; i-- {
+func heapify[T comparable](arr []T, cantidad int, cmp func(T, T) int) {
+	for i := len(arr) - 1; i >= 1; i-- {
 		padre := (i - 1) / 2
-		cola.downheap(padre)
+		downheap(padre, arr, cantidad, cmp)
 	}
 }
 
@@ -118,10 +118,21 @@ func CrearHeapArr[T comparable](arr []T, f_comparar func(T, T) int) ColaPriorida
 	arrHeap.comparar = f_comparar
 	arrHeap.cantidad = len(arr)
 	arrHeap.datos = arr
-	arrHeap.heapify()
+	heapify(arrHeap.datos, arrHeap.cantidad, arrHeap.comparar)
 	return arrHeap
 }
 
 func HeapSort[T comparable](elementos []T, f_comparar func(T, T) int) {
-	nuevoHeap := CrearHeapArr[T](elementos, f_comparar)
+	heapify(elementos, len(elementos), f_comparar)
+	heapsort(elementos, len(elementos), f_comparar)
+}
+
+func heapsort[T comparable](elem []T, cant int, cmp func(T, T) int) {
+	ultimoRelativo := cant - 1 //indice del ultimo relativo
+	if ultimoRelativo == 0 {
+		return
+	}
+	swap(0, ultimoRelativo, elem)
+	downheap(0, elem, ultimoRelativo, cmp)
+	heapsort(elem, ultimoRelativo, cmp)
 }
