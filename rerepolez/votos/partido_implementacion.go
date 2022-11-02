@@ -3,20 +3,20 @@ package votos
 import "fmt"
 
 type partidoImplementacion struct {
-	nombre_Part string
-	candidatos  [CANT_VOTACION]candidatosParaEleccion
+	nombrePart string
+	candidatos [CANT_VOTACION]candidatosParaEleccion
 }
 
 type candidatosParaEleccion struct {
-	nombre     string
-	cant_votos int
+	nombre    string
+	cantVotos int
 }
 
-func CrearPartido(nombre string, candidatos [CANT_VOTACION]string) Partido {
+func CrearPartido(nombre string, candidatos []string) Partido {
 
 	nuevoPartido := new(partidoImplementacion)
-	nuevoPartido.nombre_Part = nombre
-	for i := PRESIDENTE; i < CANT_VOTACION; i++ {
+	nuevoPartido.nombrePart = nombre
+	for i := TipoVoto(0); i < CANT_VOTACION; i++ {
 		nuevoPartido.candidatos[i].nombre = candidatos[i]
 	}
 	return nuevoPartido
@@ -24,20 +24,20 @@ func CrearPartido(nombre string, candidatos [CANT_VOTACION]string) Partido {
 }
 
 func (partido *partidoImplementacion) VotadoPara(tipo TipoVoto) {
-	partido.candidatos[tipo].cant_votos += 1
+	partido.candidatos[tipo].cantVotos += 1
 }
 
 func (partido partidoImplementacion) ObtenerResultado(tipo TipoVoto) string {
 	var palabra string
 
-	if partido.candidatos[tipo].cant_votos == 1 {
+	if partido.candidatos[tipo].cantVotos == 1 {
 		palabra = "voto"
 	} else {
 		palabra = "votos"
 	}
 
-	if partido.nombre_Part == "Votos en Blanco" {
-		return fmt.Sprintf("%s: %d %s", partido.nombre_Part, partido.candidatos[tipo].cant_votos, palabra)
+	if partido.nombrePart == "Votos en Blanco" {
+		return fmt.Sprintf("%s: %d %s", partido.nombrePart, partido.candidatos[tipo].cantVotos, palabra)
 	}
-	return fmt.Sprintf("%s - %s: %d %s", partido.nombre_Part, partido.candidatos[tipo].nombre, partido.candidatos[tipo].cant_votos, palabra)
+	return fmt.Sprintf("%s - %s: %d %s", partido.nombrePart, partido.candidatos[tipo].nombre, partido.candidatos[tipo].cantVotos, palabra)
 }

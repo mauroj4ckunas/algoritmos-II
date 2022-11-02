@@ -10,7 +10,7 @@ import (
 )
 
 func PrepararMesa(parametros []string) ([]votos.Partido, []votos.Votante, error) {
-	if len(parametros) == 0 { //si no hay parametros tira error
+	if len(parametros) != 2 { //si los parametros no terminan de ser suficientes
 		return []votos.Partido{}, []votos.Votante{}, new(Err.ErrorParametros)
 	}
 
@@ -19,10 +19,6 @@ func PrepararMesa(parametros []string) ([]votos.Partido, []votos.Votante, error)
 
 	if err != nil {
 		return []votos.Partido{}, []votos.Votante{}, err
-	}
-
-	if len(parametros) != 2 { //si los parametros no terminan de ser suficientes
-		return []votos.Partido{}, []votos.Votante{}, new(Err.ErrorParametros)
 	}
 
 	rutaPadrones := parametros[1]
@@ -49,7 +45,7 @@ func PrepararListaPartidos(ruta string) ([]votos.Partido, error) {
 	listaPartidos := bufio.NewScanner(archivoListas)
 
 	Partidos := make([]votos.Partido, 1)
-	candVacio := [votos.CANT_VOTACION]string{"", "", ""}
+	candVacio := make([]string, votos.CANT_VOTACION)
 	partidoEnBlanco := votos.CrearPartido("Votos en Blanco", candVacio)
 	Partidos[0] = partidoEnBlanco
 
@@ -65,7 +61,7 @@ func PrepararListaPartidos(ruta string) ([]votos.Partido, error) {
 		}
 
 		nombrePartido := boleta[0]
-		candidatosPartido := [votos.CANT_VOTACION]string{boleta[1], boleta[2], boleta[3]}
+		candidatosPartido := boleta[1:]
 		nuevoPartido := votos.CrearPartido(nombrePartido, candidatosPartido)
 		Partidos = append(Partidos, nuevoPartido)
 	}
