@@ -114,11 +114,16 @@ func heapify[T comparable](arr []T, cantidad int, cmp func(T, T) int) {
 }
 
 func CrearHeapArr[T comparable](arr []T, f_comparar func(T, T) int) ColaPrioridad[T] {
+	if len(arr) == 0 {
+		return CrearHeap(f_comparar)
+	}
 	arrHeap := new(heap[T])
 	arrHeap.comparar = f_comparar
 	arrHeap.cantidad = len(arr)
 	arrHeap.datos = arr
-	heapify(arrHeap.datos, arrHeap.cantidad, arrHeap.comparar)
+	if arrHeap.cantidad > 0 {
+		heapify(arrHeap.datos, arrHeap.cantidad, arrHeap.comparar)
+	}
 	return arrHeap
 }
 
