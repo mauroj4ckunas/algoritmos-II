@@ -253,3 +253,30 @@ func TestVolumen(t *testing.T) {
 	require.PanicsWithValue(t, "La cola esta vacia", func() { volumen.Desencolar() })
 	require.EqualValues(t, 0, volumen.Cantidad())
 }
+
+func TestModificarArrOriginal(t *testing.T) {
+	comparar := func(clave1 int, clave2 int) int {
+		if clave1 < clave2 {
+			return -1
+		} else if clave1 > clave2 {
+			return 1
+		}
+		return 0
+	}
+
+	original := []int{4, 6, 7, 1, 90}
+	heap := TDAHeap.CrearHeapArr[int](original, comparar)
+	ordenSalida := []int{90, 7, 6, 4, 1}
+
+	for i := 0; i < len(ordenSalida); i++ {
+		require.EqualValues(t, ordenSalida[i], heap.Desencolar())
+		require.NotEqualValues(t, ordenSalida[i], original[i])
+	}
+
+	require.EqualValues(t, 4, original[0])
+	require.EqualValues(t, 6, original[1])
+	require.EqualValues(t, 7, original[2])
+	require.EqualValues(t, 1, original[3])
+	require.EqualValues(t, 90, original[4])
+
+}

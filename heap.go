@@ -124,6 +124,7 @@ func CrearHeapArr[T comparable](arr []T, f_comparar func(T, T) int) ColaPriorida
 	arrHeap.comparar = f_comparar
 	arrHeap.cantidad = len(arr)
 	arrHeap.datos = arr
+	arrHeap.redimensionar(arrHeap.cantidad)
 	if arrHeap.cantidad > 0 {
 		heapify(arrHeap.datos, arrHeap.cantidad, arrHeap.comparar)
 	}
