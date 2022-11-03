@@ -52,10 +52,10 @@ func (cola *heap[T]) Encolar(elem T) {
 	cola.cantidad++
 }
 
-func maximoEntreHijos[T comparable](arreglo []T, indPadre int, f func(T, T) int) int {
+func maximoEntreHijos[T comparable](arreglo []T, indPadre int, f func(T, T) int, cant int) int {
 	hijoIzq := (indPadre * 2) + 1
 	hijoDer := (indPadre * 2) + 2
-	if f(arreglo[hijoIzq], arreglo[hijoDer]) > 0 {
+	if hijoDer >= cant || f(arreglo[hijoIzq], arreglo[hijoDer]) > 0 {
 		return hijoIzq
 	}
 	return hijoDer
@@ -65,7 +65,10 @@ func downheap[T comparable](padre int, array []T, cantidad int, comparar func(T,
 	if padre == cantidad-1 {
 		return
 	}
-	mayor := maximoEntreHijos(array, padre, comparar)
+	mayor := maximoEntreHijos(array, padre, comparar, cantidad)
+	if mayor >= cantidad {
+		return
+	}
 	if comparar(array[padre], array[mayor]) < 0 {
 		swap(padre, mayor, array)
 		padre = mayor
