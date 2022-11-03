@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestHeapVacio(t *testing.T) {
+func TestHeapsVacio(t *testing.T) {
 	comparar := func(clave1 int, clave2 int) int {
 		if clave1 < clave2 {
 			return -1
@@ -16,6 +16,17 @@ func TestHeapVacio(t *testing.T) {
 		}
 		return 0
 	}
-	heap := TDAHeap.CrearHeap[int](comparar)
+	heap := TDAHeap.CrearHeap(comparar)
 	require.True(t, heap.EstaVacia())
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.VerMax() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.Desencolar() })
+	require.EqualValues(t, 0, heap.Cantidad())
+
+	arrayVacio := make([]int, 0)
+	heapArray := TDAHeap.CrearHeapArr(arrayVacio, comparar)
+	require.True(t, heapArray.EstaVacia())
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heapArray.VerMax() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heapArray.Desencolar() })
+	require.EqualValues(t, 0, heapArray.Cantidad())
+
 }
