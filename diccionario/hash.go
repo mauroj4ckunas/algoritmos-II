@@ -59,7 +59,6 @@ func (dicc *tablaDeHash[K, V]) hacerEspacio(indice uint64, lugarNecesario uint64
 		return dicc.hacerEspacio(((capacidad + indice - 1) % capacidad), lugarNecesario)
 	}
 
-	dicc.redimensionar(cap(dicc.array) * MULTIPLICADOR_DE_CAPACIDAD)
 	return 0, true
 }
 
@@ -95,6 +94,7 @@ func (dicc *tablaDeHash[K, V]) Guardar(clave K, dato V) {
 	posicion, redimension := dicc.hacerEspacio(posicion%capacidad, indiceHash)
 
 	if redimension {
+		dicc.redimensionar(cap(dicc.array) * MULTIPLICADOR_DE_CAPACIDAD)
 		dicc.Guardar(clave, dato)
 	} else {
 		paraGuardar := crearElemento(clave, dato, indiceHash)
