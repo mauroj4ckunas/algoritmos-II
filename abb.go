@@ -31,7 +31,7 @@ func (hoja *hojas[K, V]) encontrarClave(compara func(K, K) int, clave K) (**hoja
 	if compara(clave, hoja.clave) < 0 {
 		if hoja.hijoIzq == nil {
 
-			return nil, "La clave no pertenece al diccionario"
+			return &hoja.hijoIzq, "La clave no pertenece al diccionario"
 
 		} else if compara(clave, hoja.hijoIzq.clave) == 0 {
 
@@ -45,7 +45,7 @@ func (hoja *hojas[K, V]) encontrarClave(compara func(K, K) int, clave K) (**hoja
 
 		if hoja.hijoDer == nil {
 
-			return nil, "La clave no pertenece al diccionario"
+			return &hoja.hijoDer, "La clave no pertenece al diccionario"
 
 		} else if compara(clave, hoja.hijoDer.clave) == 0 {
 
@@ -56,39 +56,6 @@ func (hoja *hojas[K, V]) encontrarClave(compara func(K, K) int, clave K) (**hoja
 		return hoja.hijoDer.encontrarClave(compara, clave)
 	}
 
-}
-
-func (hoja *hojas[K, V]) guardar(compara func(K, K) int, hojaNueva *hojas[K, V], cantidad *int) {
-	resultado := compara(hojaNueva.clave, hoja.clave)
-	switch {
-
-	case resultado < 0:
-
-		if hoja.hijoIzq == nil {
-
-			hoja.hijoIzq = hojaNueva
-			*cantidad++
-
-		}
-
-		hoja.hijoIzq.guardar(compara, hojaNueva, cantidad)
-
-	case resultado > 0:
-
-		if hoja.hijoDer == nil {
-
-			hoja.hijoDer = hojaNueva
-			*cantidad++
-
-		}
-
-		hoja.hijoDer.guardar(compara, hojaNueva, cantidad)
-
-	default:
-
-		hoja.valor = hojaNueva.valor
-
-	}
 }
 
 func (hoja *hojas[K, V]) iterar(comparador func(K, K) int, f func(clave K, dato V) bool, desde *K, hasta *K) bool {
@@ -126,7 +93,7 @@ func (arbol *arbolBinario[K, V]) encontrarClave(clave K) (**hojas[K, V], string)
 
 	if arbol.raiz == nil {
 
-		return nil, "La clave no pertenece al diccionario"
+		return &arbol.raiz, "La clave no pertenece al diccionario"
 
 	} else if arbol.raiz.clave == clave {
 
@@ -139,25 +106,20 @@ func (arbol *arbolBinario[K, V]) encontrarClave(clave K) (**hojas[K, V], string)
 
 func (arbol *arbolBinario[K, V]) Guardar(clave K, dato V) {
 
-	hoja := crearHoja[K, V](clave, dato)
-
-	if arbol.raiz == nil {
-
-		arbol.raiz = hoja
+	AGuardar, _ := arbol.encontrarClave(clave)
+	if *AGuardar == nil {
+		*AGuardar = crearHoja[K, V](clave, dato)
 		arbol.cantidad++
-
 	} else {
-
-		arbol.raiz.guardar(arbol.comparador, hoja, &arbol.cantidad)
-
+		(*AGuardar).valor = dato
 	}
 
 }
 
 func (arbol *arbolBinario[K, V]) Pertenece(clave K) bool {
 
-	resultado, _ := arbol.encontrarClave(clave)
-	return resultado != nil
+	_, error := arbol.encontrarClave(clave)
+	return error == ""
 
 }
 
@@ -165,7 +127,7 @@ func (arbol *arbolBinario[K, V]) Obtener(clave K) V {
 
 	resultado, err := arbol.encontrarClave(clave)
 
-	if resultado == nil {
+	if err != "" {
 
 		panic(err)
 
@@ -182,7 +144,7 @@ func (arbol *arbolBinario[K, V]) Borrar(clave K) V {
 
 	borrar, err := arbol.encontrarClave(clave)
 
-	if borrar == nil {
+	if err != "" {
 
 		panic(err)
 
