@@ -19,9 +19,7 @@ var (
 		}
 		return -1
 	}
-)
 
-var (
 	funcionPrioridadEntreUsuarios = func(prioridad1, prioridad2 int) int {
 		if prioridad1 < prioridad2 {
 			return prioridad2 - prioridad1

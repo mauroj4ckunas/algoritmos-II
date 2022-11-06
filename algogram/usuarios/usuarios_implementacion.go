@@ -12,7 +12,7 @@ type usuarioImplementacion[T comparable] struct {
 }
 
 func CrearPosteo[T comparable](prioridadPost int,posteo []T,id){
-	post:= new(post[T])
+	post := new(post[T])
 	post.prioridadPosteo = prioridadPost
 	post.posteado = posteo
 	post.id = id
