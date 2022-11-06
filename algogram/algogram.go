@@ -9,6 +9,12 @@ import (
 )
 
 const (
+	funcionPrioridadEntreUsuarios = func (prioridad1,prioridad2 int) int {
+		if prioridad1 < prioridad2 {
+			return prioridad2 - prioridad1
+		}
+		return prioridad1 - prioridad2
+	}
 	COMANDO1 = "login"
 	COMANDO2 = "logout"
 	COMANDO3 = "publicar"
@@ -16,48 +22,25 @@ const (
 
 func main() {
 	archivoUsuarios := os.Args[1:]
-	usuariosRegistrados := crearRedSocial(archivoUsuarios[0])
+	Algogram := crearAlgoGram[string,int](archivoUsuarios[0],funcionPrioridadEntreUsuarios)
 
-	var logeado *usuarios.Usuario
 	entradaUsuario := bufio.NewScanner(os.Stdin)
 	for entradaUsuario.Scan() {
 		comandos := strings.Split(entradaUsuario.Text(), " ")
 		switch comandos[0] {
 		case COMANDO1:
 			usuario := comandos[1]
-			if logeado == nil {
-				if usuariosRegistrados.Pertenece(usuario) {
-					logeado = usuariosRegistrados.Obtener(usuario)
-					fmt.Fprintf(os.Stdout, "Hola %s\n", usuario)
-				} else {
-					fmt.Fprintf(os.Stdout, "%s\n", err.Error())
-				}
-			} else {
-				fmt.Fprintf(os.Stdout, "%s\n", err.Error())
-			}
+			err := Algogram.Login(usuario)
+			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO2:
-			if logeado != nil {
-				logeado = nil
-				fmt.Fprintf(os.Stdout, "%s\n", "Adios")
-			} else {
-				fmt.Fprintf(os.Stdout, "%s\n", new(err.TALERROR).Error())
-			}
+			err := Algogram.Logout()
+			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO3:
 			post := comandos[1:]
-			if logeado != nil {
-				losUsuarios := usuariosRegistrados.Iterador()
-				for losUsuarios.HaySiguiente() {
-					_ , usuario := losUsuarios.VerActual()
-					if usuario != *logeado {
-						usuario.Publicar(post,logeado.PrioridadEntre(usuario.Prioridad()))
-					}
-				}
-				fmt.Fprintf(os.Stdout, "%s\n", "Post publicado")
-			} else {
-				fmt.Fprintf(os.Stdout, "%s\n", new(err.TALERROR).Error())
-			}
+			err := Algogram.Publicar(post)
+			fmt.Fprintf(os.Stdout, "%s\n", err)
 		default:
 			/* code */
 			return

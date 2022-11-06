@@ -1,10 +1,10 @@
 package main
 
-import (
-	"os"
-)
+type AlgoGram[T comparable,V comparable] interface {
 
-func crearRedSocial(nombreArchivo string) Diccionario[K, V] {
-	archivoListas, err := os.Open(ruta)
-	defer archivoListas.Close()
+	Login(usuario string) string
+
+	Logout() string
+
+	Publicar(posteo []T)
 }
