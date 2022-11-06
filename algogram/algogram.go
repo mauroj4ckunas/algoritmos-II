@@ -1,7 +1,6 @@
 package main
 
 import (
-	TDAcola "algogram/Cola"
 	"bufio"
 	"fmt"
 	"os"
@@ -9,12 +8,6 @@ import (
 )
 
 const (
-	funcionPrioridadEntreUsuarios = func (prioridad1,prioridad2 int) int {
-		if prioridad1 < prioridad2 {
-			return prioridad2 - prioridad1
-		}
-		return prioridad1 - prioridad2
-	}
 	COMANDO1 = "login"
 	COMANDO2 = "logout"
 	COMANDO3 = "publicar"
@@ -22,7 +15,7 @@ const (
 
 func main() {
 	archivoUsuarios := os.Args[1:]
-	Algogram := crearAlgoGram[string,int](archivoUsuarios[0],funcionPrioridadEntreUsuarios)
+	Algogram := crearAlgoGram[string, int](archivoUsuarios[0])
 
 	entradaUsuario := bufio.NewScanner(os.Stdin)
 	for entradaUsuario.Scan() {

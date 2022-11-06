@@ -5,16 +5,17 @@ type post[T comparable] struct {
 	posteado		[]T
 	id				int
 }
+
+type usuarioImplementacion[T comparable] struct {
+	nivel		int 
+	feed		ColaPrioridad[post[T]]
+}
+
 func CrearPosteo[T comparable](prioridadPost int,posteo []T,id){
 	post:= new(post[T])
 	post.prioridadPosteo = prioridadPost
 	post.posteado = posteo
 	post.id = id
-}
-
-type usuarioImplementacion[T comparable] struct {
-	nivel		int 
-	feed		ColaPrioridad[post[T]]
 }
 
 func CrearUsuario[T comparable](prioridadUsuario int, comparadorPosteos func(post[T],post[T])int) Usuario[T] {
