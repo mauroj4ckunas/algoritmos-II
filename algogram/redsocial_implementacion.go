@@ -22,12 +22,12 @@ func compararPost[T int | string](comp1, comp2 T) int {
 	return -1
 }
 
-funcionCompararUsuarios := func (prioridad1, prioridad2 int) int {
-	if prioridad1 < prioridad2 {
-		return prioridad2 - prioridad1
-	}
-	return prioridad1 - prioridad2
-}
+// funcionCompararUsuarios := func (prioridad1, prioridad2 int) int {
+// 	if prioridad1 < prioridad2 {
+// 		return prioridad2 - prioridad1
+// 	}
+// 	return prioridad1 - prioridad2
+// }
 
 func crearAlgoGram[T comparable, V comparable](nombreArchivo string) AlgoGram[T] {
 	archivoListas, err := os.Open(ruta)
