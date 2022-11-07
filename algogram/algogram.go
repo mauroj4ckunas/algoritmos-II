@@ -1,18 +1,18 @@
 package main
 
 import (
+	usuarios "algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
-	usuarios "algogram/usuarios"
 )
 
 const (
-	COMANDO1 = "login"
-	COMANDO2 = "logout"
-	COMANDO3 = "publicar"
-	funcionCompararPosteos = func (comp1, comp2 usuarios.post[V]) int {
+	COMANDO1               = "login"
+	COMANDO2               = "logout"
+	COMANDO3               = "publicar"
+	funcionCompararPosteos = func(comp1, comp2 usuarios.post) int {
 		if comp1 < comp2 {
 			return 1
 		}
@@ -22,7 +22,7 @@ const (
 
 func main() {
 	archivoUsuarios := os.Args[1:]
-	Algogram := crearAlgoGram[string, int](archivoUsuarios[0],funcionCompararPosteos)
+	Algogram := crearAlgoGram[string, int](archivoUsuarios[0], funcionCompararPosteos)
 
 	entradaUsuario := bufio.NewScanner(os.Stdin)
 	for entradaUsuario.Scan() {

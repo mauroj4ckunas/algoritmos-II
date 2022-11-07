@@ -8,26 +8,25 @@ import (
 	"os"
 )
 
-func sacarPrioridad[V any](usuario1 V,usuario2 V) V {
-	if usuario1 < usuario2{
+func sacarPrioridad(usuario1 int, usuario2 int) int {
+	if usuario1 < usuario2 {
 		return usuario2 - usuario1
 	}
 	return usuario1 - usuario2
 }
 
-
-type redSocial[T comparable,V any] struct {
-	actual            *usuarios.Usuario[T,V]
-	registroUsuarios  diccionario.Diccionario[string, usuarios.Usuario[T,V]]
-	idPosteos         int
+type redSocial[T comparable] struct {
+	actual           *usuarios.Usuario[T]
+	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario[T]]
+	idPosteos        int
 }
 
-func crearAlgoGram[T comparable,V any](nombreArchivo string,compararPosteos func(T,T)int) AlgoGram[T,V] {
+func crearAlgoGram[T comparable](nombreArchivo string, compararPosteos func(T, T) int) AlgoGram[T] {
 	archivoListas, err := os.Open(ruta)
 	defer archivoListas.Close()
 }
 
-func (red *redSocial[T, V]) Login(usuario string) string {
+func (red *redSocial[T]) Login(usuario string) string {
 	if red.actual == nil {
 		if red.registroUsuarios.Pertenece(usuario) {
 			*red.actual = red.registroUsuarios.Obtener(usuario)
@@ -40,7 +39,7 @@ func (red *redSocial[T, V]) Login(usuario string) string {
 	}
 }
 
-func (red *redSocial[T, V]) Logout() string {
+func (red *redSocial[T]) Logout() string {
 	if red.actual != nil {
 		red.actual = nil
 		return "Adios"
@@ -48,14 +47,14 @@ func (red *redSocial[T, V]) Logout() string {
 	return new(err.ErrorLogout).Error()
 }
 
-func (red *redSocial[T, V]) Publicar(posteo []string) string {
+func (red *redSocial[T]) Publicar(posteo []string) string {
 	if red.actual != nil {
 		losUsuarios := red.registroUsuarios.Iterador()
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
 			if usuario != (*red.actual) {
 				usuarioActual := *red.actual
-				aPublicar := usuarios.CrearPosteo[V](sacarPrioridad(usuarioPublicando.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
+				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioPublicando.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
 				usuario.Publicar(aPublicar)
 			}
 		}
