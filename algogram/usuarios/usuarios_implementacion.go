@@ -11,11 +11,12 @@ type usuarioImplementacion[T comparable] struct {
 	feed		ColaPrioridad[post[T]]
 }
 
-func CrearPosteo[T comparable](prioridadPost int,posteo []T,id){
+func CrearPosteo[T comparable](prioridadPost int ,posteo []T, id) post[T] { 
 	post := new(post[T])
 	post.prioridadPosteo = prioridadPost
 	post.posteado = posteo
 	post.id = id
+	return post
 }
 
 func CrearUsuario[T comparable](prioridadUsuario int, comparadorPosteos func(post[T],post[T])int) Usuario[T] {
