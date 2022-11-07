@@ -2,73 +2,66 @@ package main
 
 import (
 	diccionario "algogram/Hash"
-	err "algogram/errores"
+	errores "algogram/errores"
 	usuarios "algogram/usuarios"
 	"fmt"
 	"os"
 )
 
-type redSocial[T comparable, V comparable] struct {
-	actual            *usuarios.Usuario[T]
-	registroUsuarios  diccionario.Diccionario[string, usuarios.Usuario[T]]
-	idPosteos         int
-	calcularPrioridad func(V, V) int
+type redSocial[T comparable] struct {
+	actual           *usuarios.Usuario[T]
+	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario[T]]
+	idPosteos        int
 }
 
-func compararPost[T int | string](comp1, comp2 T) int {
-	if comp1 < comp2 {
-		return 1
+func sacarPrioridad(usuario1 int, usuario2 int) int {
+	if usuario1 < usuario2 {
+		return usuario2 - usuario1
 	}
-	return -1
+	return usuario1 - usuario2
 }
 
-// funcionCompararUsuarios := func (prioridad1, prioridad2 int) int {
-// 	if prioridad1 < prioridad2 {
-// 		return prioridad2 - prioridad1
-// 	}
-// 	return prioridad1 - prioridad2
-// }
-
-func crearAlgoGram[T comparable, V comparable](nombreArchivo string) AlgoGram[T] {
-	archivoListas, err := os.Open(ruta)
+func crearAlgoGram[T comparable](nombreArchivo string, compararPosteos func(T, T) int) AlgoGram[T] {
+	archivoListas, err := os.Open(nombreArchivo)
 	defer archivoListas.Close()
 }
 
-func (red *redSocial[T, V]) Login(usuario string) string {
+func (red *redSocial[T]) Login(usuario string) string {
 	if red.actual == nil {
 		if red.registroUsuarios.Pertenece(usuario) {
 			*red.actual = red.registroUsuarios.Obtener(usuario)
 			return fmt.Sprintf("Hola %s", usuario)
 		} else {
+			err := new(errores.ErrorUsuarioNoExiste)
 			return err.Error()
 		}
 	} else {
+		err := new(errores.ErrorUsuarioLoggeado)
 		return err.Error()
 	}
 }
 
-func (red *redSocial[T, V]) Logout() string {
+func (red *redSocial[T]) Logout() string {
 	if red.actual != nil {
 		red.actual = nil
 		return "Adios"
 	}
-	return new(err.ErrorLogout).Error()
+	return new(errores.ErrorLogout).Error()
 }
 
-func (red *redSocial[T, V]) Publicar(posteo []T) string {
+func (red *redSocial[T]) Publicar(posteo []string) string {
 	if red.actual != nil {
 		losUsuarios := red.registroUsuarios.Iterador()
-		usuarios.CrearPosteo[T](prioridadPost, posteo, id)
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
 			if usuario != (*red.actual) {
 				usuarioActual := *red.actual
-				aPublicar := usuarios.CrearPosteo[T](red.calcularPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
+				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
 				usuario.Publicar(aPublicar)
 			}
 		}
 		red.idPosteos++
 		return "Post publicado"
 	}
-	return new(err.TALERROR).Error()
+	return new(errores.ErrorUsuarioLoggeado).Error()
 }

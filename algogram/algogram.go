@@ -13,9 +13,18 @@ const (
 	COMANDO3 = "publicar"
 )
 
+var (
+	funcionCompararPosteos = func(comp1, comp2 usuarios.post) int {
+		if comp1 < comp2 {
+			return 1
+		}
+		return -1
+	}
+)
+
 func main() {
 	archivoUsuarios := os.Args[1:]
-	Algogram := crearAlgoGram[string, int](archivoUsuarios[0])
+	Algogram := crearAlgoGram[string, int](archivoUsuarios[0], funcionCompararPosteos)
 
 	entradaUsuario := bufio.NewScanner(os.Stdin)
 	for entradaUsuario.Scan() {
