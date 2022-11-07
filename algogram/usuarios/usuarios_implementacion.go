@@ -1,35 +1,39 @@
 package usuarios
 
-type post[T comparable] struct {
-	prioridadPosteo	int 
-	posteado		[]T
+import(
+	Heap "algogram/Heap"
+)
+
+type post[V any] struct {
+	prioridadPosteo	V 
+	posteado		[]string
 	id				int
 }
 
-type usuarioImplementacion[T comparable] struct {
-	nivel		int 
-	feed		ColaPrioridad[post[T]]
+type usuarioImplementacion[T comparable,V any] struct {
+	nivel		V 
+	feed		Heap.ColaPrioridad[T]
 }
 
-func CrearPosteo[T comparable](prioridadPost int ,posteo []T, id) post[T] { 
-	post := new(post[T])
+func CrearPosteo[V any](prioridadPost V ,posteo []string, id int) *post[V] { 
+	post := new(post[V])
 	post.prioridadPosteo = prioridadPost
 	post.posteado = posteo
 	post.id = id
 	return post
 }
 
-func CrearUsuario[T comparable](prioridadUsuario int, comparadorPosteos func(post[T],post[T])int) Usuario[T] {
-	usuario := new(usuarioImplementacion[T])
+func CrearUsuario[T comparable,V any](prioridadUsuario V, comparadorPosteos func(T,T)int) Usuario[T,V] {
+	usuario := new(usuarioImplementacion[T,V])
 	usuario.nivel = prioridadUsuario
-	usuario.feed = CrearHeap[post[T]](comparadorPosteos)
+	usuario.feed = Heap.CrearHeap[T](comparadorPosteos)
 	return usuario
 }
 
-func (usu *usuarioImplementacion[T]) Prioridad() int {
+func (usu *usuarioImplementacion[T,V]) Prioridad() V {
 	return usu.nivel
 }
 
-func (usu *usuarioImplementacion[T]) Publicar(posteo post[T]) {
+func (usu *usuarioImplementacion[T,V]) Publicar(posteo T) {
 	usu.feed.Encolar(posteo)
 }

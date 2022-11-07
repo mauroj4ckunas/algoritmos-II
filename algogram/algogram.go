@@ -5,17 +5,24 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	usuarios "algogram/usuarios"
 )
 
 const (
 	COMANDO1 = "login"
 	COMANDO2 = "logout"
 	COMANDO3 = "publicar"
+	funcionCompararPosteos = func (comp1, comp2 usuarios.post[V]) int {
+		if comp1 < comp2 {
+			return 1
+		}
+		return -1
+	}
 )
 
 func main() {
 	archivoUsuarios := os.Args[1:]
-	Algogram := crearAlgoGram[string, int](archivoUsuarios[0])
+	Algogram := crearAlgoGram[string, int](archivoUsuarios[0],funcionCompararPosteos)
 
 	entradaUsuario := bufio.NewScanner(os.Stdin)
 	for entradaUsuario.Scan() {

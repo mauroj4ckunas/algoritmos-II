@@ -1,8 +1,8 @@
 package usuarios
 
-type Usuario[T comparable] interface{
+type Usuario[T comparable,V any] interface{
 
-	Prioridad() int
+	Prioridad() V
 
-	Publicar(post[T])
+	Publicar(posteo T)
 }
