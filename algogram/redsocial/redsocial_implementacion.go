@@ -1,7 +1,7 @@
 package redsocial
 
 import (
-	diccionario "algogram/Hash"
+	diccionario "algogram/diccionario"
 	errores "algogram/errores"
 	usuarios "algogram/usuarios"
 	"bufio"
@@ -35,8 +35,8 @@ func (red *redSocial[T]) agregarRegistroUsuarios(nuevosUsuarios *bufio.Scanner) 
 	registro := diccionario.CrearHash[string, usuarios.Usuario[T]]()
 	pos := 1
 	for nuevosUsuarios.Scan() {
-		newUser := usuarios.CrearUsuario[T](pos)
-		registro.Guardar(nuevosUsuarios.Text(), newUser)
+		nuevo := usuarios.CrearUsuario[T](pos)
+		registro.Guardar(nuevosUsuarios.Text(), nuevo)
 		pos++
 	}
 	red.registroUsuarios = registro
@@ -71,8 +71,9 @@ func (red *redSocial[T]) Publicar(posteo []string) string {
 			if usuario != (*red.actual) {
 				usuarioActual := *red.actual
 				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
-				usuario.PublicarPosteo()
+				usuario.PublicarPosteo(aPublicar)
 			}
+			losUsuarios.Siguiente()
 		}
 		red.idPosteos++
 		return "Post publicado"
