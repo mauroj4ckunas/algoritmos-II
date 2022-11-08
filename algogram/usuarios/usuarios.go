@@ -1,7 +1,11 @@
 package usuarios
 
 type Usuario[T comparable] interface {
-	Prioridad() int
+	//Login(usuario string) string
 
-	Publicar(posteo T)
+	// Logout() string
+
+	// Prioridad() int
+
+	// Publicar(posteo Usuario[T])
 }

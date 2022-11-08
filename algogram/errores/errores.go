@@ -1,5 +1,11 @@
 package errores
 
+type ErrorLecturaArchivo struct{}
+
+func (e ErrorLecturaArchivo) Error() string {
+	return "ERROR: Lectura de archivos"
+}
+
 type ErrorUsuarioLoggeado struct{}
 
 func (e ErrorUsuarioLoggeado) Error() string {

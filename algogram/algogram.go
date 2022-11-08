@@ -1,6 +1,8 @@
 package main
 
 import (
+	red "algogram/redsocial"
+	usuarios "algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
@@ -13,18 +15,14 @@ const (
 	COMANDO3 = "publicar"
 )
 
-var (
-	funcionCompararPosteos = func(comp1, comp2 usuarios.post) int {
-		if comp1 < comp2 {
-			return 1
-		}
-		return -1
-	}
-)
-
 func main() {
 	archivoUsuarios := os.Args[1:]
-	Algogram := crearAlgoGram[string, int](archivoUsuarios[0], funcionCompararPosteos)
+	Algogram, err := red.CrearAlgoGram[string](archivoUsuarios[0])
+
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
+		return
+	}
 
 	entradaUsuario := bufio.NewScanner(os.Stdin)
 	for entradaUsuario.Scan() {
@@ -32,16 +30,16 @@ func main() {
 		switch comandos[0] {
 		case COMANDO1:
 			usuario := comandos[1]
-			err := Algogram.Login(usuario)
+			err := usuarios.Login(usuario)
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO2:
-			err := Algogram.Logout()
+			err := usuarios.Logout()
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO3:
 			post := comandos[1:]
-			err := Algogram.Publicar(post)
+			err := usuarios.Publicar(post)
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 		default:
 			/* code */
