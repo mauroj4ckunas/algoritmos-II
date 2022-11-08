@@ -27,7 +27,7 @@ func CrearUsuario[T comparable](prioridadUsuario int) Usuario[T] {
 	usuario.nivel = prioridadUsuario
 	usuario.feed = Heap.CrearHeap[int](compararId) //El heap sera de las posiciones de los posteos
 	usuario.feed.Encolar(prioridadUsuario)
-	return *usuario
+	return usuario
 }
 
 func CrearPosteo(prioridadPost int, posteo []string, id int) *post {
@@ -38,35 +38,10 @@ func CrearPosteo(prioridadPost int, posteo []string, id int) *post {
 	return post
 }
 
-// func (usu *usuario[T]) Prioridad() int {
-// 	return usu.nivel
-// }
+func (usu *usuario[T]) Prioridad() int {
+	return usu.nivel
+}
 
-// func (usu *usuario[T]) Publicar(posteo post) {
-// 	usu.feed.Encolar(posteo.posteado[0])
-// }
-
-// func (red *redSocial[T]) Logout() string {
-// 	if red.actual != nil {
-// 		red.actual = nil
-// 		return "Adios"
-// 	}
-// 	return new(errores.ErrorLogout).Error()
-// }
-
-// func (red *redSocial[T]) Publicar(posteo []string) string {
-// 	if red.actual != nil {
-// 		losUsuarios := red.registroUsuarios.Iterador()
-// 		for losUsuarios.HaySiguiente() {
-// 			_, usuario := losUsuarios.VerActual()
-// 			if usuario != (*red.actual) {
-// 				usuarioActual := *red.actual
-// 				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
-// 				usuario.Publicar(aPublicar.id)
-// 			}
-// 		}
-// 		red.idPosteos++
-// 		return "Post publicado"
-// 	}
-// 	return new(errores.ErrorUsuarioLoggeado).Error()
-// }
+func (usu *usuario[T]) PublicarPosteo(posteo string) {
+	usu.feed.Encolar(posteo.posteado[0])
+}

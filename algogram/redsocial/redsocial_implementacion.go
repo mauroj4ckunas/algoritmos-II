@@ -63,17 +63,34 @@ func (red *redSocial[T]) Logout() string {
 	return new(errores.ErrorLogout).Error()
 }
 
+func (red *redSocial[T]) Publicar(posteo []string) string {
+	if red.actual != nil {
+		losUsuarios := red.registroUsuarios.Iterador()
+		for losUsuarios.HaySiguiente() {
+			_, usuario := losUsuarios.VerActual()
+			if usuario != (*red.actual) {
+				usuarioActual := *red.actual
+				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
+				usuario.PublicarPosteo()
+			}
+		}
+		red.idPosteos++
+		return "Post publicado"
+	}
+	return new(errores.ErrorUsuarioLoggeado).Error()
+}
+
+func sacarPrioridad(usuario1 int, usuario2 int) int {
+	if usuario1 < usuario2 {
+		return usuario2 - usuario1
+	}
+	return usuario1 - usuario2
+}
+
 // type redSocial[T comparable] struct {
 // 	actual           Usuario[T]
 // 	registroUsuarios diccionario.Diccionario[string, Usuario[T]]
 // 	idPosteos        int
-// }
-
-// func sacarPrioridad(usuario1 int, usuario2 int) int {
-// 	if usuario1 < usuario2 {
-// 		return usuario2 - usuario1
-// 	}
-// 	return usuario1 - usuario2
 // }
 
 // func (red *redSocial[T]) Login(usuario string) string {

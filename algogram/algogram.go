@@ -2,7 +2,6 @@ package main
 
 import (
 	red "algogram/redsocial"
-	usuarios "algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
@@ -34,12 +33,12 @@ func main() {
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO2:
-			err := usuarios.Logout()
+			err := algogram.Logout()
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO3:
 			post := comandos[1:]
-			err := usuarios.Publicar(post)
+			err := algogram.Publicar(post)
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 		default:
 			/* code */
