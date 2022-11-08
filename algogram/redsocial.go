@@ -2,7 +2,7 @@ package main
 
 //TDAheap "algogram/Heap"
 
-type AlgoGram[T comparable] interface {
+type AlgoGram interface {
 	Login(usuario string) string
 	Logout() string
 	Publicar(posteo []string)

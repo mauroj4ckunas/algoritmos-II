@@ -8,28 +8,21 @@ import (
 	"os"
 )
 
-func sacarPrioridad(usuario1 int, usuario2 int) int {
-	if usuario1 < usuario2 {
-		return usuario2 - usuario1
-	}
-	return usuario1 - usuario2
-}
-
-type redSocial[T comparable] struct {
-	actual           *usuarios.Usuario[T]
-	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario[T]]
+type redSocial struct {
+	actual           *string
+	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario]
 	idPosteos        int
 }
 
-func crearAlgoGram[T comparable](nombreArchivo string, compararPosteos func(T, T) int) AlgoGram[T] {
+func crearAlgoGram(nombreArchivo string) AlgoGram {
 	archivoListas, err := os.Open(ruta)
 	defer archivoListas.Close()
 }
 
-func (red *redSocial[T]) Login(usuario string) string {
+func (red *redSocial) Login(usuario string) string {
 	if red.actual == nil {
 		if red.registroUsuarios.Pertenece(usuario) {
-			*red.actual = red.registroUsuarios.Obtener(usuario)
+			red.actual = &usuario
 			return fmt.Sprintf("Hola %s", usuario)
 		} else {
 			return err.Error()
@@ -39,7 +32,7 @@ func (red *redSocial[T]) Login(usuario string) string {
 	}
 }
 
-func (red *redSocial[T]) Logout() string {
+func (red *redSocial) Logout() string {
 	if red.actual != nil {
 		red.actual = nil
 		return "Adios"
@@ -47,14 +40,14 @@ func (red *redSocial[T]) Logout() string {
 	return new(err.ErrorLogout).Error()
 }
 
-func (red *redSocial[T]) Publicar(posteo []string) string {
+func (red *redSocial) Publicar(posteo []string) string {
 	if red.actual != nil {
 		losUsuarios := red.registroUsuarios.Iterador()
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
-			if usuario != (*red.actual) {
-				usuarioActual := *red.actual
-				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioPublicando.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
+			if usuario != red.registroUsuarios.Obtener(*red.actual) {
+				usuarioActual := red.registroUsuarios.Obtener(*red.actual)
+				aPublicar := usuarios.CrearPosteo(usuarioPublicando.afinidadCon(usuario), posteo, red.idPosteos)
 				usuario.Publicar(aPublicar)
 			}
 		}
