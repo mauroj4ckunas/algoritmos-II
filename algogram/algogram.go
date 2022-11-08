@@ -17,7 +17,7 @@ const (
 
 func main() {
 	archivoUsuarios := os.Args[1:]
-	Algogram, err := red.CrearAlgoGram[string](archivoUsuarios[0])
+	algogram, err := red.CrearAlgoGram[string](archivoUsuarios[0])
 
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "%s\n", err.Error())
@@ -30,7 +30,7 @@ func main() {
 		switch comandos[0] {
 		case COMANDO1:
 			usuario := comandos[1]
-			err := usuarios.Login(usuario)
+			err := algogram.Login(usuario)
 			fmt.Fprintf(os.Stdout, "%s\n", err)
 
 		case COMANDO2:

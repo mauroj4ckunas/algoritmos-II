@@ -5,6 +5,7 @@ import (
 	errores "algogram/errores"
 	usuarios "algogram/usuarios"
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -39,6 +40,27 @@ func (red *redSocial[T]) agregarRegistroUsuarios(nuevosUsuarios *bufio.Scanner) 
 		pos++
 	}
 	red.registroUsuarios = registro
+}
+
+func (red *redSocial[T]) Login(usuario string) string {
+	if red.actual == nil {
+		if red.registroUsuarios.Pertenece(usuario) {
+			*red.actual = red.registroUsuarios.Obtener(usuario)
+			return fmt.Sprintf("Hola %s", usuario)
+		} else {
+			return new(errores.ErrorUsuarioNoExiste).Error()
+		}
+	} else {
+		return new(errores.ErrorUsuarioLoggeado).Error()
+	}
+}
+
+func (red *redSocial[T]) Logout() string {
+	if red.actual != nil {
+		red.actual = nil
+		return "Adios"
+	}
+	return new(errores.ErrorLogout).Error()
 }
 
 // type redSocial[T comparable] struct {

@@ -46,21 +46,6 @@ func CrearPosteo(prioridadPost int, posteo []string, id int) *post {
 // 	usu.feed.Encolar(posteo.posteado[0])
 // }
 
-// func (red *redSocial[T]) Login(usuario string) string {
-// 	if red.actual == nil {
-// 		if red.registroUsuarios.Pertenece(usuario) {
-// 			*red.actual = red.registroUsuarios.Obtener(usuario)
-// 			return fmt.Sprintf("Hola %s", usuario)
-// 		} else {
-// 			err := new(errores.ErrorUsuarioNoExiste)
-// 			return err.Error()
-// 		}
-// 	} else {
-// 		err := new(errores.ErrorUsuarioLoggeado)
-// 		return err.Error()
-// 	}
-// }
-
 // func (red *redSocial[T]) Logout() string {
 // 	if red.actual != nil {
 // 		red.actual = nil
