@@ -3,7 +3,7 @@ package errores
 type ErrorLecturaArchivo struct{}
 
 func (e ErrorLecturaArchivo) Error() string {
-	return "ERROR: Lectura de archivos"
+	return "Error: Lectura de archivos"
 }
 
 type ErrorUsuarioLoggeado struct{}
@@ -15,13 +15,13 @@ func (e ErrorUsuarioLoggeado) Error() string {
 type ErrorUsuarioNoExiste struct{}
 
 func (e ErrorUsuarioNoExiste) Error() string {
-	return "ERROR: usuario no existente"
+	return "Error: usuario no existente"
 }
 
 type ErrorLogout struct{}
 
 func (e ErrorLogout) Error() string {
-	return "ERROR: no habia usuario loggeado"
+	return "Error: no habia usuario loggeado"
 }
 
 type ErrorNoMasPost struct{}

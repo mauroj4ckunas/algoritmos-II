@@ -1,7 +1,7 @@
 package redsocial
 
 type AlgoGram[T comparable] interface {
-	Login(usuario string) string
+	Login(usuario string) (string, error)
 
 	Logout() string
 

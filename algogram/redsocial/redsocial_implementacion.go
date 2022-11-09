@@ -11,7 +11,7 @@ import (
 
 type redSocial[T comparable] struct {
 	actual           *usuarios.Usuario[T]
-	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario[T]]
+	registroUsuarios diccionario.Diccionario[string, *usuarios.Usuario[T]]
 	idPosteos        int
 }
 
@@ -32,11 +32,11 @@ func CrearAlgoGram[T comparable](nombreArchivo string) (*redSocial[T], error) {
 }
 
 func (red *redSocial[T]) agregarRegistroUsuarios(nuevosUsuarios *bufio.Scanner) {
-	registro := diccionario.CrearHash[string, usuarios.Usuario[T]]()
+	registro := diccionario.CrearHash[string, *usuarios.Usuario[T]]()
 	pos := 1
 	for nuevosUsuarios.Scan() {
 		nuevo := usuarios.CrearUsuario[T](pos)
-		registro.Guardar(nuevosUsuarios.Text(), nuevo)
+		registro.Guardar(nuevosUsuarios.Text(), &nuevo)
 		pos++
 	}
 	red.registroUsuarios = registro
@@ -45,13 +45,15 @@ func (red *redSocial[T]) agregarRegistroUsuarios(nuevosUsuarios *bufio.Scanner) 
 func (red *redSocial[T]) Login(usuario string) string {
 	if red.actual == nil {
 		if red.registroUsuarios.Pertenece(usuario) {
-			*red.actual = red.registroUsuarios.Obtener(usuario)
+			red.actual = red.registroUsuarios.Obtener(usuario)
 			return fmt.Sprintf("Hola %s", usuario)
 		} else {
-			return new(errores.ErrorUsuarioNoExiste).Error()
+			err := new(errores.ErrorUsuarioNoExiste)
+			return err.Error()
 		}
 	} else {
-		return new(errores.ErrorUsuarioLoggeado).Error()
+		err := new(errores.ErrorUsuarioLoggeado)
+		return err.Error()
 	}
 }
 
@@ -68,17 +70,17 @@ func (red *redSocial[T]) Publicar(posteo []string) string {
 		losUsuarios := red.registroUsuarios.Iterador()
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
-			if usuario != (*red.actual) {
+			if usuario != red.actual {
 				usuarioActual := *red.actual
-				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
-				usuario.PublicarPosteo(aPublicar)
+				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), (*usuario).Prioridad()), posteo, red.idPosteos)
+				(*usuario).PublicarPosteo(aPublicar)
 			}
 			losUsuarios.Siguiente()
 		}
 		red.idPosteos++
 		return "Post publicado"
 	}
-	return new(errores.ErrorUsuarioLoggeado).Error()
+	return new(errores.ErrorLogout).Error()
 }
 
 func sacarPrioridad(usuario1 int, usuario2 int) int {
