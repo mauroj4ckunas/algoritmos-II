@@ -3,14 +3,14 @@ package usuarios
 import (
 	Heap "algogram/Heap"
 	errores "algogram/errores"
+	diccionario "algogram/diccionario"
 )
 
 type Post struct {
 	prioridadPosteo int
 	id              int
-	likes           int
 	posteado        string
-	quienPosteo     string
+	likes 			diccionario.DiccionarioOrdenado[string,bool]
 }
 
 type usuario struct {
@@ -54,6 +54,15 @@ func CrearPosteo(prioridadPost int, posteo string, id int) *Post {
 	post.prioridadPosteo = prioridadPost
 	post.posteado = posteo
 	post.id = id
+	ordenarLikes := func(nombre1,nombre2 string) int {
+		if nombre1 < nombre2{
+			return -1
+		} else if nombre1 == nombre2 {
+			return 0
+		}
+		return 1
+	}
+	post.likes = CrearABB[string, bool](ordenarLikes)
 	return post
 }
 
