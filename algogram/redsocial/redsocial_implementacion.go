@@ -3,7 +3,7 @@ package redsocial
 import (
 	diccionario "algogram/diccionario"
 	errores "algogram/errores"
-	usuarios "algogram/usuarios"
+	"algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
@@ -65,7 +65,7 @@ func (red *redSocial[T]) Logout() string {
 	return new(errores.ErrorLogout).Error()
 }
 
-func (red *redSocial[T]) Publicar(posteo []string) string {
+func (red *redSocial[T]) Publicar(posteo string) string {
 	if red.actual != nil {
 		losUsuarios := red.registroUsuarios.Iterador()
 		for losUsuarios.HaySiguiente() {
@@ -83,55 +83,18 @@ func (red *redSocial[T]) Publicar(posteo []string) string {
 	return new(errores.ErrorLogout).Error()
 }
 
+func (red *redSocial[T]) VerSiguientePost() string {
+	if red.actual != nil {
+		usuarioActual := *red.actual
+		return usuarioActual.PrimerPostDelFeed()
+	}
+	err := new(errores.ErrorNoMasPost)
+	return err.Error()
+}
+
 func sacarPrioridad(usuario1 int, usuario2 int) int {
 	if usuario1 < usuario2 {
 		return usuario2 - usuario1
 	}
 	return usuario1 - usuario2
 }
-
-// type redSocial[T comparable] struct {
-// 	actual           Usuario[T]
-// 	registroUsuarios diccionario.Diccionario[string, Usuario[T]]
-// 	idPosteos        int
-// }
-
-// func (red *redSocial[T]) Login(usuario string) string {
-// 	if red.actual == nil {
-// 		if red.registroUsuarios.Pertenece(usuario) {
-// 			*red.actual = red.registroUsuarios.Obtener(usuario)
-// 			return fmt.Sprintf("Hola %s", usuario)
-// 		} else {
-// 			err := new(errores.ErrorUsuarioNoExiste)
-// 			return err.Error()
-// 		}
-// 	} else {
-// 		err := new(errores.ErrorUsuarioLoggeado)
-// 		return err.Error()
-// 	}
-// }
-
-// func (red *redSocial[T]) Logout() string {
-// 	if red.actual != nil {
-// 		red.actual = nil
-// 		return "Adios"
-// 	}
-// 	return new(errores.ErrorLogout).Error()
-// }
-
-// func (red *redSocial[T]) Publicar(posteo []string) string {
-// 	if red.actual != nil {
-// 		losUsuarios := red.registroUsuarios.Iterador()
-// 		for losUsuarios.HaySiguiente() {
-// 			_, usuario := losUsuarios.VerActual()
-// 			if usuario != (*red.actual) {
-// 				usuarioActual := *red.actual
-// 				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), usuario.Prioridad()), posteo, red.idPosteos)
-// 				usuario.Publicar(aPublicar.id)
-// 			}
-// 		}
-// 		red.idPosteos++
-// 		return "Post publicado"
-// 	}
-// 	return new(errores.ErrorUsuarioLoggeado).Error()
-// }

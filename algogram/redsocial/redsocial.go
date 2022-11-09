@@ -6,4 +6,6 @@ type AlgoGram[T comparable] interface {
 	Logout() string
 
 	Publicar(posteo T)
+
+	VerSiguientePost() string
 }

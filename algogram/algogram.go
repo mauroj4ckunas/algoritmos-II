@@ -12,6 +12,7 @@ const (
 	COMANDO1 = "login"
 	COMANDO2 = "logout"
 	COMANDO3 = "publicar"
+	COMANDO4 = "ver_siguiente_feed"
 )
 
 func main() {
@@ -29,17 +30,20 @@ func main() {
 		switch comandos[0] {
 		case COMANDO1:
 			usuario := comandos[1]
-			err := algogram.Login(usuario)
-			fmt.Fprintf(os.Stdout, "%s\n", err)
+			mensaje := algogram.Login(usuario)
+			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
 
 		case COMANDO2:
-			err := algogram.Logout()
-			fmt.Fprintf(os.Stdout, "%s\n", err)
+			mensaje := algogram.Logout()
+			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
 
 		case COMANDO3:
-			post := comandos[1:]
-			err := algogram.Publicar(post)
-			fmt.Fprintf(os.Stdout, "%s\n", err)
+			post := strings.Join(comandos[1:], " ")
+			mensaje := algogram.Publicar(post)
+			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
+		case COMANDO4:
+			mensaje := algogram.VerSiguientePost()
+			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
 		default:
 			/* code */
 			return

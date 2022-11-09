@@ -2,12 +2,15 @@ package usuarios
 
 import (
 	Heap "algogram/Heap"
+	errores "algogram/errores"
 )
 
 type post struct {
 	prioridadPosteo int
-	posteado        []string
 	id              int
+	likes           int
+	posteado        string
+	quienPosteo     string
 }
 
 type usuario[T comparable] struct {
@@ -39,7 +42,7 @@ func CrearUsuario[T comparable](prioridadUsuario int) Usuario[T] {
 	return usuario
 }
 
-func CrearPosteo(prioridadPost int, posteo []string, id int) post {
+func CrearPosteo(prioridadPost int, posteo string, id int) post {
 	post := new(post)
 	post.prioridadPosteo = prioridadPost
 	post.posteado = posteo
@@ -52,6 +55,16 @@ func (usu *usuario[T]) Prioridad() int {
 }
 
 func (usu *usuario[T]) PublicarPosteo(nuevoPost post) {
-	// usu.feed.Encolar(posteo.posteado[0])
 	usu.feed.Encolar(&nuevoPost)
+}
+
+func (usu *usuario[T]) PrimerPostDelFeed() string {
+	if !usu.feed.EstaVacia() {
+		posteo := usu.feed.Desencolar()
+		mensaje := (*posteo).posteado
+
+		return mensaje
+	}
+	err := new(errores.ErrorNoMasPost)
+	return err.Error()
 }
