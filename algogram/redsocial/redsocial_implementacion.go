@@ -2,8 +2,8 @@ package redsocial
 
 import (
 	diccionario "algogram/diccionario"
-	errores "algogram/errores"
-	"algogram/usuarios"
+	"algogram/errores"
+	usuarios "algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
