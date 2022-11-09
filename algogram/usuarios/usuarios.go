@@ -1,9 +1,9 @@
 package usuarios
 
-type Usuario[T comparable] interface {
+type Usuario interface {
 	Prioridad() int
 
-	PublicarPosteo(nuevoPost post)
+	PublicarPosteo(nuevoPost *Post)
 
-	PrimerPostDelFeed() string
+	PrimerPostDelFeed() (string, string)
 }
