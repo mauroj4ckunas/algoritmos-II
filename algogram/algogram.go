@@ -17,7 +17,7 @@ const (
 
 func main() {
 	archivoUsuarios := os.Args[1:]
-	algogram, err := red.CrearAlgoGram[string](archivoUsuarios[0])
+	algogram, err := red.CrearAlgoGram(archivoUsuarios[0])
 
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "%s\n", err.Error())

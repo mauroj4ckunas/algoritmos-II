@@ -8,56 +8,49 @@ import (
 	"fmt"
 	"os"
 )
-
-type redSocial[T comparable] struct {
-	actual           *usuarios.Usuario[T]
-	registroUsuarios diccionario.Diccionario[string, *usuarios.Usuario[T]]
-	idPosteos        int
+const(
+	TAMAÑOINICIAL = 5
+)
+type redSocial struct {
+	actual 				*string
+	registroUsuarios	diccionario.Diccionario[string, usuarios.Usuario]
+	publicaciones		[]*usuarios.Post
 }
 
-func CrearAlgoGram[T comparable](nombreArchivo string) (*redSocial[T], error) {
+func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 	archivoListas, err := os.Open(nombreArchivo)
 	defer archivoListas.Close()
 
 	if err != nil {
-		err = new(errores.ErrorLecturaArchivo)
-		return nil, err
+		return nil, new(errores.ErrorLecturaArchivo)
 	}
 
-	nuevos := bufio.NewScanner(archivoListas)
-	nuevaRed := new(redSocial[T])
-	nuevaRed.agregarRegistroUsuarios(nuevos)
+	nuevosUsuarios := bufio.NewScanner(archivoListas)
+	nuevaRed := new(redSocial)
+	nuevaRed.publicaciones = make([]*usuarios.Post,0,TAMAÑOINICIAL)
+	nuevaRed.registroUsuarios = diccionario.CrearHash[string, usuarios.Usuario]()
+	for i:=0 ;nuevosUsuarios.Scan(); i++ {
+		nuevo := usuarios.CrearUsuario(i)
+		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), &nuevo)
+	}
 
 	return nuevaRed, nil
 }
 
-func (red *redSocial[T]) agregarRegistroUsuarios(nuevosUsuarios *bufio.Scanner) {
-	registro := diccionario.CrearHash[string, *usuarios.Usuario[T]]()
-	pos := 1
-	for nuevosUsuarios.Scan() {
-		nuevo := usuarios.CrearUsuario[T](pos)
-		registro.Guardar(nuevosUsuarios.Text(), &nuevo)
-		pos++
-	}
-	red.registroUsuarios = registro
-}
-
-func (red *redSocial[T]) Login(usuario string) string {
+func (red *redSocial) Login(usuario string) string {
 	if red.actual == nil {
 		if red.registroUsuarios.Pertenece(usuario) {
-			red.actual = red.registroUsuarios.Obtener(usuario)
+			red.actual = &usuario
 			return fmt.Sprintf("Hola %s", usuario)
 		} else {
-			err := new(errores.ErrorUsuarioNoExiste)
-			return err.Error()
+			return new(errores.ErrorUsuarioNoExiste).Error()
 		}
 	} else {
-		err := new(errores.ErrorUsuarioLoggeado)
-		return err.Error()
+		return new(errores.ErrorUsuarioLoggeado).Error()
 	}
 }
 
-func (red *redSocial[T]) Logout() string {
+func (red *redSocial) Logout() string {
 	if red.actual != nil {
 		red.actual = nil
 		return "Adios"
@@ -65,15 +58,16 @@ func (red *redSocial[T]) Logout() string {
 	return new(errores.ErrorLogout).Error()
 }
 
-func (red *redSocial[T]) Publicar(posteo string) string {
+func (red *redSocial) Publicar(posteo string) string {
 	if red.actual != nil {
+		usuarioPublicando := red.registroUsuarios.Obtener(*red.actual)
+		red.publicaciones = red.publicaciones.append(usuarios.CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones)))
 		losUsuarios := red.registroUsuarios.Iterador()
+		
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
-			if usuario != red.actual {
-				usuarioActual := *red.actual
-				aPublicar := usuarios.CrearPosteo(sacarPrioridad(usuarioActual.Prioridad(), (*usuario).Prioridad()), posteo, red.idPosteos)
-				(*usuario).PublicarPosteo(aPublicar)
+			if usuario != usuarioPublicando {
+				usuario.PublicarPosteo(red.publicaciones[len(red.publicaciones)-1])
 			}
 			losUsuarios.Siguiente()
 		}
@@ -83,13 +77,12 @@ func (red *redSocial[T]) Publicar(posteo string) string {
 	return new(errores.ErrorLogout).Error()
 }
 
-func (red *redSocial[T]) VerSiguientePost() string {
+func (red *redSocial) VerSiguientePost() string {
 	if red.actual != nil {
-		usuarioActual := *red.actual
+		usuarioActual := red.registroUsuarios.Obtener(*red.actual)
 		return usuarioActual.PrimerPostDelFeed()
 	}
-	err := new(errores.ErrorNoMasPost)
-	return err.Error()
+	return new(errores.ErrorNoMasPost).Error()
 }
 
 func sacarPrioridad(usuario1 int, usuario2 int) int {
@@ -98,3 +91,4 @@ func sacarPrioridad(usuario1 int, usuario2 int) int {
 	}
 	return usuario1 - usuario2
 }
+T

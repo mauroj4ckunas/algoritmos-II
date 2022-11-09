@@ -1,11 +1,11 @@
 package redsocial
 
-type AlgoGram[T comparable] interface {
-	Login(usuario string) (string, error)
+type AlgoGram interface {
+	Login(usuario string) string
 
 	Logout() string
 
-	Publicar(posteo T)
+	Publicar(posteo string)
 
 	VerSiguientePost() string
 }
