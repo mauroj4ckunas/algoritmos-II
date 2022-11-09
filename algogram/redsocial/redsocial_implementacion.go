@@ -80,7 +80,11 @@ func (red *redSocial) Publicar(posteo string) string {
 func (red *redSocial) VerSiguientePost() string {
 	if red.actual != nil {
 		usuarioActual := red.registroUsuarios.Obtener(*red.actual)
-		return usuarioActual.PrimerPostDelFeed()
+		linea1,linea3:= usuarioActual.PrimerPostDelFeed()
+		if linea3== ""{
+			return linea1
+		}
+		return fmt.Sprintf("%s%s%s",linea1,*red.actual,linea3)
 	}
 	return new(errores.ErrorNoMasPost).Error()
 }

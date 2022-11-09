@@ -5,5 +5,5 @@ type Usuario interface {
 
 	PublicarPosteo(nuevoPost Post)
 
-	PrimerPostDelFeed() string
+	PrimerPostDelFeed() (string,string)
 }

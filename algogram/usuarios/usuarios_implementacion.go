@@ -74,13 +74,13 @@ func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
 	usu.feed.Encolar(nuevoPost)
 }
 
-func (usu *usuario) PrimerPostDelFeed() string {
+func (usu *usuario) PrimerPostDelFeed() (string,string) {
 	if !usu.feed.EstaVacia() {
 		posteo := usu.feed.Desencolar()
-		mensaje := (*posteo).posteado
+		linea1 := fmt.Sprintf("Post ID %d\n", posteo.id)
+		linea3 := fmt.Sprintf(" dijo: %s\nLikes: %d",posteo.posteado,posteo.likes.Cantidad())
 
-		return mensaje
+		return linea1,linea3
 	}
-	err := new(errores.ErrorNoMasPost)
-	return err.Error()
+	return new(errores.ErrorNoMasPost).Error(),""
 }
