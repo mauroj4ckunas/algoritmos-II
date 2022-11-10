@@ -2,15 +2,17 @@ package usuarios
 
 import (
 	Heap "algogram/Heap"
-	errores "algogram/errores"
 	diccionario "algogram/diccionario"
+	errores "algogram/errores"
+	"fmt"
 )
 
 type Post struct {
 	prioridadPosteo int
 	id              int
 	posteado        string
-	likes 			diccionario.DiccionarioOrdenado[string,bool]
+	likes           diccionario.DiccionarioOrdenado[string, bool]
+	publicador      string
 }
 
 type usuario struct {
@@ -18,15 +20,14 @@ type usuario struct {
 	feed  Heap.ColaPrioridad[*Post]
 }
 
-
 func CrearUsuario(prioridadUsuario int) Usuario {
 	usuario := new(usuario)
 	usuario.nivel = prioridadUsuario
 
 	compararPosteos := func(comp1, comp2 *Post) int {
 		prioridad := &usuario.nivel
-		prioridadPost1:= comp1.prioridadPosteo - *prioridad
-		prioridadPost2:= comp2.prioridadPosteo - *prioridad
+		prioridadPost1 := comp1.prioridadPosteo - *prioridad
+		prioridadPost2 := comp2.prioridadPosteo - *prioridad
 
 		if prioridadPost1 < 0 {
 			prioridadPost1 *= -1
@@ -37,7 +38,7 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 
 		if prioridadPost1 < prioridadPost2 {
 			return 1
-		}else if prioridadPost1 == prioridadPost2{
+		} else if prioridadPost1 == prioridadPost2 {
 			if comp1.id < comp2.id {
 				return 1
 			}
@@ -49,20 +50,21 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 	return usuario
 }
 
-func CrearPosteo(prioridadPost int, posteo string, id int) *Post {
+func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *Post {
 	post := new(Post)
 	post.prioridadPosteo = prioridadPost
+	post.publicador = usuario
 	post.posteado = posteo
 	post.id = id
-	ordenarLikes := func(nombre1,nombre2 string) int {
-		if nombre1 < nombre2{
+	ordenarLikes := func(nombre1, nombre2 string) int {
+		if nombre1 < nombre2 {
 			return -1
 		} else if nombre1 == nombre2 {
 			return 0
 		}
 		return 1
 	}
-	post.likes = CrearABB[string, bool](ordenarLikes)
+	post.likes = diccionario.CrearABB[string, bool](ordenarLikes)
 	return post
 }
 
@@ -74,13 +76,12 @@ func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
 	usu.feed.Encolar(nuevoPost)
 }
 
-func (usu *usuario) PrimerPostDelFeed() (string,string) {
+func (usu *usuario) PrimerPostDelFeed() string {
 	if !usu.feed.EstaVacia() {
 		posteo := usu.feed.Desencolar()
-		linea1 := fmt.Sprintf("Post ID %d\n", posteo.id)
-		linea3 := fmt.Sprintf(" dijo: %s\nLikes: %d",posteo.posteado,posteo.likes.Cantidad())
+		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.likes.Cantidad())
 
-		return linea1,linea3
+		return mensaje
 	}
-	return new(errores.ErrorNoMasPost).Error(),""
+	return new(errores.ErrorNoMasPost).Error()
 }

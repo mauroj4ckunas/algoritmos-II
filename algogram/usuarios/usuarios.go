@@ -3,7 +3,7 @@ package usuarios
 type Usuario interface {
 	Prioridad() int
 
-	PublicarPosteo(nuevoPost Post)
+	PublicarPosteo(nuevoPost *Post)
 
-	PrimerPostDelFeed() (string,string)
+	PrimerPostDelFeed() string
 }

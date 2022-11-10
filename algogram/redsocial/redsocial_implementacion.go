@@ -8,13 +8,15 @@ import (
 	"fmt"
 	"os"
 )
-const(
+
+const (
 	TAMAÑOINICIAL = 5
 )
+
 type redSocial struct {
-	actual 				*string
-	registroUsuarios	diccionario.Diccionario[string, usuarios.Usuario]
-	publicaciones		[]*usuarios.Post
+	actual           *string
+	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario]
+	publicaciones    []*usuarios.Post
 }
 
 func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
@@ -27,11 +29,11 @@ func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 
 	nuevosUsuarios := bufio.NewScanner(archivoListas)
 	nuevaRed := new(redSocial)
-	nuevaRed.publicaciones = make([]*usuarios.Post,0,TAMAÑOINICIAL)
+	nuevaRed.publicaciones = make([]*usuarios.Post, 0, TAMAÑOINICIAL)
 	nuevaRed.registroUsuarios = diccionario.CrearHash[string, usuarios.Usuario]()
-	for i:=0 ;nuevosUsuarios.Scan(); i++ {
+	for i := 0; nuevosUsuarios.Scan(); i++ {
 		nuevo := usuarios.CrearUsuario(i)
-		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), &nuevo)
+		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), nuevo)
 	}
 
 	return nuevaRed, nil
@@ -61,9 +63,9 @@ func (red *redSocial) Logout() string {
 func (red *redSocial) Publicar(posteo string) string {
 	if red.actual != nil {
 		usuarioPublicando := red.registroUsuarios.Obtener(*red.actual)
-		red.publicaciones = red.publicaciones.append(usuarios.CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones)))
+		red.publicaciones = append(red.publicaciones, usuarios.CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones), *red.actual))
 		losUsuarios := red.registroUsuarios.Iterador()
-		
+
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
 			if usuario != usuarioPublicando {
@@ -71,7 +73,6 @@ func (red *redSocial) Publicar(posteo string) string {
 			}
 			losUsuarios.Siguiente()
 		}
-		red.idPosteos++
 		return "Post publicado"
 	}
 	return new(errores.ErrorLogout).Error()
@@ -80,11 +81,8 @@ func (red *redSocial) Publicar(posteo string) string {
 func (red *redSocial) VerSiguientePost() string {
 	if red.actual != nil {
 		usuarioActual := red.registroUsuarios.Obtener(*red.actual)
-		linea1,linea3:= usuarioActual.PrimerPostDelFeed()
-		if linea3== ""{
-			return linea1
-		}
-		return fmt.Sprintf("%s%s%s",linea1,*red.actual,linea3)
+		mensaje := usuarioActual.PrimerPostDelFeed()
+		return mensaje
 	}
 	return new(errores.ErrorNoMasPost).Error()
 }
@@ -95,4 +93,3 @@ func sacarPrioridad(usuario1 int, usuario2 int) int {
 	}
 	return usuario1 - usuario2
 }
-T

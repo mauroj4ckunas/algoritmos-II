@@ -5,7 +5,7 @@ type AlgoGram interface {
 
 	Logout() string
 
-	Publicar(posteo string)
+	Publicar(posteo string) string
 
 	VerSiguientePost() string
 }
