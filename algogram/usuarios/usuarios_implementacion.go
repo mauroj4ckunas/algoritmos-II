@@ -12,6 +12,7 @@ type Post struct {
 	id              int
 	posteado        string
 	likes           diccionario.DiccionarioOrdenado[string, bool]
+	publicador      string
 }
 
 type usuario struct {
@@ -49,9 +50,10 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 	return usuario
 }
 
-func CrearPosteo(prioridadPost int, posteo string, id int) *Post {
+func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *Post {
 	post := new(Post)
 	post.prioridadPosteo = prioridadPost
+	post.publicador = usuario
 	post.posteado = posteo
 	post.id = id
 	ordenarLikes := func(nombre1, nombre2 string) int {
@@ -74,13 +76,12 @@ func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
 	usu.feed.Encolar(nuevoPost)
 }
 
-func (usu *usuario) PrimerPostDelFeed() (string, string) {
+func (usu *usuario) PrimerPostDelFeed() string {
 	if !usu.feed.EstaVacia() {
 		posteo := usu.feed.Desencolar()
-		linea1 := fmt.Sprintf("Post ID %d\n", posteo.id)
-		linea3 := fmt.Sprintf(" dijo: %s\nLikes: %d", posteo.posteado, posteo.likes.Cantidad())
+		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.likes.Cantidad())
 
-		return linea1, linea3
+		return mensaje
 	}
-	return new(errores.ErrorNoMasPost).Error(), ""
+	return new(errores.ErrorNoMasPost).Error()
 }

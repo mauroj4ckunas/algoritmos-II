@@ -63,8 +63,9 @@ func (red *redSocial) Logout() string {
 func (red *redSocial) Publicar(posteo string) string {
 	if red.actual != nil {
 		usuarioPublicando := red.registroUsuarios.Obtener(*red.actual)
-		red.publicaciones = append(red.publicaciones, usuarios.CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones)))
+		red.publicaciones = append(red.publicaciones, usuarios.CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones), *red.actual))
 		losUsuarios := red.registroUsuarios.Iterador()
+
 		for losUsuarios.HaySiguiente() {
 			_, usuario := losUsuarios.VerActual()
 			if usuario != usuarioPublicando {
@@ -80,11 +81,15 @@ func (red *redSocial) Publicar(posteo string) string {
 func (red *redSocial) VerSiguientePost() string {
 	if red.actual != nil {
 		usuarioActual := red.registroUsuarios.Obtener(*red.actual)
-		linea1, linea3 := usuarioActual.PrimerPostDelFeed()
-		if linea3 == "" {
-			return linea1
-		}
-		return fmt.Sprintf("%s%s%s", linea1, *red.actual, linea3)
+		mensaje := usuarioActual.PrimerPostDelFeed()
+		return mensaje
 	}
 	return new(errores.ErrorNoMasPost).Error()
+}
+
+func sacarPrioridad(usuario1 int, usuario2 int) int {
+	if usuario1 < usuario2 {
+		return usuario2 - usuario1
+	}
+	return usuario1 - usuario2
 }
