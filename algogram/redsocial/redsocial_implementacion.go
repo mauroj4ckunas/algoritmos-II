@@ -31,7 +31,7 @@ func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 	nuevaRed := new(redSocial)
 	nuevaRed.publicaciones = make([]*usuarios.Post, 0, TAMAÑOINICIAL)
 	nuevaRed.registroUsuarios = diccionario.CrearHash[string, usuarios.Usuario]()
-	for i := 0; nuevosUsuarios.Scan(); i++ {
+	for i := 1; nuevosUsuarios.Scan(); i++ {
 		nuevo := usuarios.CrearUsuario(i)
 		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), nuevo)
 	}

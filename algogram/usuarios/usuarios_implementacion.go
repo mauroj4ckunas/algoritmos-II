@@ -33,7 +33,7 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 			prioridadPost1 *= -1
 		}
 		if prioridadPost2 < 0 {
-			prioridadPost1 *= -1
+			prioridadPost2 *= -1
 		}
 
 		if prioridadPost1 < prioridadPost2 {
