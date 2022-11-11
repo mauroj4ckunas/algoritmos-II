@@ -87,6 +87,30 @@ func (red *redSocial) VerSiguientePost() string {
 	return new(errores.ErrorNoMasPost).Error()
 }
 
+func (red *redSocial) LikearPost(iD int) string {
+	if red.actual != nil {
+		if iD < len(red.publicaciones) {
+			red.publicaciones[iD].likes.Guardar(*red.actual, true)
+			return "Post likeado"
+		}
+	}
+	return new(errores.ErrorLikeoPostInexistente).Error()
+}
+
+func (red *redSocial) ImprimirLikesPost(iD int) {
+	if iD < len(red.publicaciones) {
+		if red.publicaciones[iD].likes.Cantidad() > 0 {
+			fmt.Printf("El post tiene %d likes:\n", red.publicaciones[iD].likes.Cantidad())
+			losLikes := red.publicaciones[iD].likes.Iterador()
+			for losLikes.HaySiguiente() {
+				usuario, _ := losLikes.VerActual()
+				fmt.Printf("\t%s\n", usuario)
+			}
+		}
+	}
+	fmt.Printf("\t%s\n", new(errores.ErrorVerLikes).Error())
+}
+
 func sacarPrioridad(usuario1 int, usuario2 int) int {
 	if usuario1 < usuario2 {
 		return usuario2 - usuario1

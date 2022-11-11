@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -13,6 +14,8 @@ const (
 	COMANDO2 = "logout"
 	COMANDO3 = "publicar"
 	COMANDO4 = "ver_siguiente_feed"
+	COMANDO5 = "likear_post"
+	COMANDO6 = "mostrar_likes"
 )
 
 func main() {
@@ -44,9 +47,13 @@ func main() {
 		case COMANDO4:
 			mensaje := algogram.VerSiguientePost()
 			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
-		default:
-			/* code */
-			return
+		case COMANDO5:
+			idPosteo, _ := strconv.Atoi(comandos[1])
+			mensaje := algogram.LikearPost(idPosteo)
+			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
+		case COMANDO6:
+			idPosteo, _ := strconv.Atoi(comandos[1])
+			algogram.ImprimirLikesPost(idPosteo)
 		}
 	}
 }

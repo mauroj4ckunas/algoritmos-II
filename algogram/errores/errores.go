@@ -35,3 +35,15 @@ type ErrorPostInexistente struct{}
 func (e ErrorPostInexistente) Error() string {
 	return "Error: Post inexistente o sin likes"
 }
+
+type ErrorLikeoPostInexistente struct{}
+
+func (e ErrorLikeoPostInexistente) Error() string {
+	return "Usuario no loggeado o Post inexistente"
+}
+
+type ErrorVerLikes struct{}
+
+func (e ErrorVerLikes) Error() string {
+	return "Error: Post inexistente o sin likes"
+}
