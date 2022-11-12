@@ -8,4 +8,8 @@ type AlgoGram interface {
 	Publicar(posteo string) string
 
 	VerSiguientePost() string
+
+	LikearPost(iD int) string
+
+	ImprimirLikesPost(iD int)
 }

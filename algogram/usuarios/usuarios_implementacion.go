@@ -11,7 +11,7 @@ type Post struct {
 	prioridadPosteo int
 	id              int
 	posteado        string
-	likes           diccionario.DiccionarioOrdenado[string, bool]
+	Likes           diccionario.DiccionarioOrdenado[string, bool]
 	publicador      string
 }
 
@@ -33,7 +33,7 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 			prioridadPost1 *= -1
 		}
 		if prioridadPost2 < 0 {
-			prioridadPost1 *= -1
+			prioridadPost2 *= -1
 		}
 
 		if prioridadPost1 < prioridadPost2 {
@@ -64,7 +64,7 @@ func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *Post
 		}
 		return 1
 	}
-	post.likes = diccionario.CrearABB[string, bool](ordenarLikes)
+	post.Likes = diccionario.CrearABB[string, bool](ordenarLikes)
 	return post
 }
 
@@ -79,7 +79,7 @@ func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
 func (usu *usuario) PrimerPostDelFeed() string {
 	if !usu.feed.EstaVacia() {
 		posteo := usu.feed.Desencolar()
-		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.likes.Cantidad())
+		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.Likes.Cantidad())
 
 		return mensaje
 	}

@@ -1,9 +1,9 @@
 package redsocial
 
 import (
-	diccionario "algogram/diccionario"
+	"algogram/diccionario"
 	"algogram/errores"
-	usuarios "algogram/usuarios"
+	"algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
@@ -31,7 +31,7 @@ func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 	nuevaRed := new(redSocial)
 	nuevaRed.publicaciones = make([]*usuarios.Post, 0, TAMAÑOINICIAL)
 	nuevaRed.registroUsuarios = diccionario.CrearHash[string, usuarios.Usuario]()
-	for i := 0; nuevosUsuarios.Scan(); i++ {
+	for i := 1; nuevosUsuarios.Scan(); i++ {
 		nuevo := usuarios.CrearUsuario(i)
 		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), nuevo)
 	}
@@ -85,6 +85,30 @@ func (red *redSocial) VerSiguientePost() string {
 		return mensaje
 	}
 	return new(errores.ErrorNoMasPost).Error()
+}
+
+func (red *redSocial) LikearPost(iD int) string {
+	if red.actual != nil {
+		if iD < len(red.publicaciones) {
+			red.publicaciones[iD].Likes.Guardar(*red.actual, true)
+			return "Post likeado"
+		}
+	}
+	return new(errores.ErrorLikeoPostInexistente).Error()
+}
+
+func (red *redSocial) ImprimirLikesPost(iD int) {
+	if iD < len(red.publicaciones) {
+		if red.publicaciones[iD].Likes.Cantidad() > 0 {
+			fmt.Printf("El post tiene %d likes:\n", red.publicaciones[iD].Likes.Cantidad())
+			losLikes := red.publicaciones[iD].Likes.Iterador()
+			for losLikes.HaySiguiente() {
+				usuario, _ := losLikes.VerActual()
+				fmt.Printf("\t%s\n", usuario)
+			}
+		}
+	}
+	fmt.Printf("\t%s\n", new(errores.ErrorVerLikes).Error())
 }
 
 func sacarPrioridad(usuario1 int, usuario2 int) int {
