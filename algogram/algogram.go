@@ -9,14 +9,18 @@ import (
 	"strings"
 )
 
-const (
-	COMANDO1 = "login"
-	COMANDO2 = "logout"
-	COMANDO3 = "publicar"
-	COMANDO4 = "ver_siguiente_feed"
-	COMANDO5 = "likear_post"
-	COMANDO6 = "mostrar_likes"
-)
+// const (
+// 	COMANDO1 = "login"
+// 	COMANDO2 = "logout"
+// 	COMANDO3 = "publicar"
+// 	COMANDO4 = "ver_siguiente_feed"
+// 	COMANDO5 = "likear_post"
+// 	COMANDO6 = "mostrar_likes"
+// )
+
+const CANT_COMANDOS int = 6
+
+var opciones = [CANT_COMANDOS]string{"login", "logout", "publicar", "ver_siguiente_feed", "likear_post", "mostrar_likes"}
 
 func main() {
 	archivoUsuarios := os.Args[1:]
@@ -28,32 +32,29 @@ func main() {
 	}
 
 	entradaUsuario := bufio.NewScanner(os.Stdin)
+	var mensaje string
 	for entradaUsuario.Scan() {
 		comandos := strings.Split(entradaUsuario.Text(), " ")
 		switch comandos[0] {
-		case COMANDO1:
+		case opciones[0]:
 			usuario := comandos[1]
-			mensaje := algogram.Login(usuario)
-			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
-
-		case COMANDO2:
-			mensaje := algogram.Logout()
-			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
-
-		case COMANDO3:
+			mensaje = algogram.Login(usuario)
+		case opciones[1]:
+			mensaje = algogram.Logout()
+		case opciones[2]:
 			post := strings.Join(comandos[1:], " ")
-			mensaje := algogram.Publicar(post)
-			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
-		case COMANDO4:
-			mensaje := algogram.VerSiguientePost()
-			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
-		case COMANDO5:
+			mensaje = algogram.Publicar(post)
+		case opciones[3]:
+			mensaje = algogram.VerSiguientePost()
+		case opciones[4]:
 			idPosteo, _ := strconv.Atoi(comandos[1])
-			mensaje := algogram.LikearPost(idPosteo)
-			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
-		case COMANDO6:
+			mensaje = algogram.LikearPost(idPosteo)
+		case opciones[5]:
 			idPosteo, _ := strconv.Atoi(comandos[1])
 			algogram.ImprimirLikesPost(idPosteo)
+		}
+		if mensaje != "" {
+			fmt.Fprintf(os.Stdout, "%s\n", mensaje)
 		}
 	}
 }

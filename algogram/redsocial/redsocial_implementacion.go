@@ -110,10 +110,3 @@ func (red *redSocial) ImprimirLikesPost(iD int) {
 	}
 	fmt.Printf("\t%s\n", new(errores.ErrorVerLikes).Error())
 }
-
-func sacarPrioridad(usuario1 int, usuario2 int) int {
-	if usuario1 < usuario2 {
-		return usuario2 - usuario1
-	}
-	return usuario1 - usuario2
-}
