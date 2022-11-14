@@ -37,7 +37,7 @@ func main() {
 		comandos := strings.Split(entradaUsuario.Text(), " ")
 		switch comandos[0] {
 		case opciones[0]:
-			usuario := comandos[1]
+			usuario := strings.Join(comandos[1:], " ")
 			mensaje = algogram.Login(usuario)
 		case opciones[1]:
 			mensaje = algogram.Logout()
@@ -52,6 +52,7 @@ func main() {
 		case opciones[5]:
 			idPosteo, _ := strconv.Atoi(comandos[1])
 			algogram.ImprimirLikesPost(idPosteo)
+			mensaje = ""
 		}
 		if mensaje != "" {
 			fmt.Fprintf(os.Stdout, "%s\n", mensaje)

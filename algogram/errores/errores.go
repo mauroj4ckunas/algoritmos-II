@@ -30,12 +30,6 @@ func (e ErrorNoMasPost) Error() string {
 	return "Usuario no loggeado o no hay mas posts para ver"
 }
 
-type ErrorPostInexistente struct{}
-
-func (e ErrorPostInexistente) Error() string {
-	return "Error: Post inexistente o sin likes"
-}
-
 type ErrorLikeoPostInexistente struct{}
 
 func (e ErrorLikeoPostInexistente) Error() string {

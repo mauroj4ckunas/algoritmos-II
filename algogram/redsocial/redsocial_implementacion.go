@@ -21,11 +21,12 @@ type redSocial struct {
 
 func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 	archivoListas, err := os.Open(nombreArchivo)
-	defer archivoListas.Close()
 
 	if err != nil {
 		return nil, new(errores.ErrorLecturaArchivo)
 	}
+
+	defer archivoListas.Close()
 
 	nuevosUsuarios := bufio.NewScanner(archivoListas)
 	nuevaRed := new(redSocial)
@@ -105,8 +106,10 @@ func (red *redSocial) ImprimirLikesPost(iD int) {
 			for losLikes.HaySiguiente() {
 				usuario, _ := losLikes.VerActual()
 				fmt.Printf("\t%s\n", usuario)
+				losLikes.Siguiente()
 			}
+			return
 		}
 	}
-	fmt.Printf("\t%s\n", new(errores.ErrorVerLikes).Error())
+	fmt.Printf("%s\n", new(errores.ErrorVerLikes).Error())
 }
