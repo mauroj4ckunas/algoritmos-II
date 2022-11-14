@@ -153,51 +153,43 @@ func (arbol *arbolBinario[K, V]) Borrar(clave K) V {
 	arbol.cantidad--
 
 	var devolver V
-
-	for true {
-
-		if (*(*borrar)).hijoDer == nil && (*(*borrar)).hijoIzq == nil {
-
-			devolver = (*borrar).valor
-			*borrar = nil
-			return devolver
-
-		}
-
-		//caso 1 hijo
-		if (*(*borrar)).hijoDer == nil && (*(*borrar)).hijoIzq != nil {
-
-			devolver = (*borrar).valor
-			*borrar = (*borrar).hijoIzq
-			return devolver
-
-		} else if (*(*borrar)).hijoDer != nil && (*(*borrar)).hijoIzq == nil {
-
-			devolver = (*borrar).valor
-			*borrar = (*borrar).hijoDer
-			return devolver
-
-		}
-
-		//caso 2 hijos
-		if (*(*borrar)).hijoDer != nil && (*(*borrar)).hijoIzq != nil {
-
-			reemplazante := &(*borrar).hijoDer
-
-			for (*reemplazante).hijoIzq != nil {
-
-				reemplazante = &(*reemplazante).hijoIzq
-
-			}
-
-			(*borrar).clave, (*reemplazante).clave = (*reemplazante).clave, (*borrar).clave
-			(*borrar).valor, (*reemplazante).valor = (*reemplazante).valor, (*borrar).valor
-			borrar = reemplazante
-		}
-	}
-
+	devolver = (*borrar).valor
+	borrarSinHijos[K, V](borrar)
 	return devolver
+}
+func borrarSinHijos[K comparable, V any](borrar **hojas[K, V]) {
+	if (*(*borrar)).hijoDer == nil && (*(*borrar)).hijoIzq == nil {
+		*borrar = nil
+	} else {
+		tieneUnHijo[K, V](borrar)
+	}
+}
+func tieneUnHijo[K comparable, V any](borrar **hojas[K, V]) {
+	if (*(*borrar)).hijoDer == nil && (*(*borrar)).hijoIzq != nil {
+		*borrar = (*borrar).hijoIzq
+	} else if (*(*borrar)).hijoDer != nil && (*(*borrar)).hijoIzq == nil {
+		*borrar = (*borrar).hijoDer
+	} else {
+		tieneDosHijos[K, V](borrar)
+	}
+}
 
+func tieneDosHijos[K comparable, V any](borrar **hojas[K, V]) {
+	if (*(*borrar)).hijoDer != nil && (*(*borrar)).hijoIzq != nil {
+
+		reemplazante := &(*borrar).hijoDer
+
+		for (*reemplazante).hijoIzq != nil {
+
+			reemplazante = &(*reemplazante).hijoIzq
+
+		}
+
+		(*borrar).clave, (*reemplazante).clave = (*reemplazante).clave, (*borrar).clave
+		(*borrar).valor, (*reemplazante).valor = (*reemplazante).valor, (*borrar).valor
+
+		borrarSinHijos(reemplazante)
+	}
 }
 
 func (arbol *arbolBinario[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
