@@ -7,6 +7,8 @@ type heap[T comparable] struct {
 }
 
 const TAM_INICIAL int = 20
+const POCA_CANTIDAD int = 4
+const MODIFICAR_CAPACIDAD int = 2
 
 func (cola *heap[T]) EstaVacia() bool {
 	return cola.cantidad == 0
@@ -40,7 +42,7 @@ func upheap[T comparable](hijo int, array []T, comparar func(T, T) int) {
 
 func (cola *heap[T]) Encolar(elem T) {
 	if cola.cantidad == cap(cola.datos) {
-		cola.redimensionar(cap(cola.datos) * 2)
+		cola.redimensionar(cap(cola.datos) * MODIFICAR_CAPACIDAD)
 	}
 
 	nuevaPosicion := cola.cantidad
@@ -78,8 +80,8 @@ func (cola *heap[T]) Desencolar() T {
 		panic("La cola esta vacia")
 	}
 
-	if cola.cantidad*4 <= cap(cola.datos) {
-		cola.redimensionar(cap(cola.datos) / 2)
+	if cola.cantidad*POCA_CANTIDAD <= cap(cola.datos) {
+		cola.redimensionar(cap(cola.datos) / MODIFICAR_CAPACIDAD)
 	}
 
 	pos_ultimo := cola.cantidad - 1
