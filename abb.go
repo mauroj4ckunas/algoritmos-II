@@ -26,7 +26,7 @@ func crearHoja[K comparable, V any](clave K, dato V) *hojas[K, V] {
 
 }
 
-func (hoja *hojas[K, V]) encontrarClave(compara func(K, K) int, clave K) (**hojas[K, V], string) {
+func encontrarClave[K comparable, V any](compara func(K, K) int, clave K, hoja *hojas[K, V]) (**hojas[K, V], string) {
 
 	if compara(clave, hoja.clave) < 0 {
 		if hoja.hijoIzq == nil {
@@ -39,7 +39,7 @@ func (hoja *hojas[K, V]) encontrarClave(compara func(K, K) int, clave K) (**hoja
 
 		}
 
-		return hoja.hijoIzq.encontrarClave(compara, clave)
+		return encontrarClave(compara, clave, hoja.hijoIzq)
 
 	} else {
 
@@ -53,7 +53,7 @@ func (hoja *hojas[K, V]) encontrarClave(compara func(K, K) int, clave K) (**hoja
 
 		}
 
-		return hoja.hijoDer.encontrarClave(compara, clave)
+		return encontrarClave(compara, clave, hoja.hijoDer)
 	}
 
 }
@@ -100,8 +100,7 @@ func (arbol *arbolBinario[K, V]) encontrarClave(clave K) (**hojas[K, V], string)
 		return &arbol.raiz, ""
 
 	}
-	resultado, err := arbol.raiz.encontrarClave(arbol.comparador, clave)
-	return resultado, err
+	return encontrarClave[K, V](arbol.comparador, clave, arbol.raiz)
 }
 
 func (arbol *arbolBinario[K, V]) Guardar(clave K, dato V) {
