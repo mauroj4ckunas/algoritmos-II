@@ -36,7 +36,6 @@ func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 		nuevo := usuarios.CrearUsuario(i)
 		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), nuevo)
 	}
-
 	return nuevaRed, nil
 }
 
