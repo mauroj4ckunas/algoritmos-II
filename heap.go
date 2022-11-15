@@ -24,9 +24,7 @@ func (cola *heap[T]) Cantidad() int {
 }
 
 func swap[T comparable](ind1 int, ind2 int, arr []T) {
-	reemplazado := arr[ind1]
-	arr[ind1] = arr[ind2]
-	arr[ind2] = reemplazado
+	arr[ind1], arr[ind2] = arr[ind2], arr[ind1]
 }
 
 func upheap[T comparable](hijo int, array []T, comparar func(T, T) int) {
@@ -41,7 +39,6 @@ func upheap[T comparable](hijo int, array []T, comparar func(T, T) int) {
 }
 
 func (cola *heap[T]) Encolar(elem T) {
-
 	if cola.cantidad == cap(cola.datos) {
 		cola.redimensionar(cap(cola.datos) * 2)
 	}
@@ -77,7 +74,6 @@ func downheap[T comparable](padre int, array []T, cantidad int, comparar func(T,
 }
 
 func (cola *heap[T]) Desencolar() T {
-
 	if cola.EstaVacia() {
 		panic("La cola esta vacia")
 	}
@@ -123,11 +119,10 @@ func CrearHeapArr[T comparable](arr []T, f_comparar func(T, T) int) ColaPriorida
 	arrHeap := new(heap[T])
 	arrHeap.comparar = f_comparar
 	arrHeap.cantidad = len(arr)
-	arrHeap.datos = arr
-	arrHeap.redimensionar(arrHeap.cantidad)
-	if arrHeap.cantidad > 0 {
-		heapify(arrHeap.datos, arrHeap.cantidad, arrHeap.comparar)
-	}
+	proxHeap := make([]T, len(arr)*2)
+	copy(proxHeap, arr)
+	arrHeap.datos = proxHeap
+	heapify(arrHeap.datos, arrHeap.cantidad, arrHeap.comparar)
 	return arrHeap
 }
 
