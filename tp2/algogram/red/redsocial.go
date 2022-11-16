@@ -1,4 +1,4 @@
-package redsocial
+package red
 
 type AlgoGram interface {
 	Login(usuario string) string

@@ -1,4 +1,4 @@
-package usuarios
+package red
 
 type Usuario interface {
 	Prioridad() int

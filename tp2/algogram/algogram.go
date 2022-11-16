@@ -1,7 +1,7 @@
 package main
 
 import (
-	red "algogram/redsocial"
+	red "algogram/red"
 	"bufio"
 	"fmt"
 	"os"

@@ -1,9 +1,8 @@
-package redsocial
+package red
 
 import (
 	"algogram/diccionario"
 	"algogram/errores"
-	"algogram/usuarios"
 	"bufio"
 	"fmt"
 	"os"
@@ -15,8 +14,8 @@ const (
 
 type redSocial struct {
 	actual           *string
-	registroUsuarios diccionario.Diccionario[string, usuarios.Usuario]
-	publicaciones    []*usuarios.Post
+	registroUsuarios diccionario.Diccionario[string, Usuario]
+	publicaciones    []*Post
 }
 
 func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
@@ -30,10 +29,10 @@ func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 
 	nuevosUsuarios := bufio.NewScanner(archivoListas)
 	nuevaRed := new(redSocial)
-	nuevaRed.publicaciones = make([]*usuarios.Post, 0, TAMAÑOINICIAL)
-	nuevaRed.registroUsuarios = diccionario.CrearHash[string, usuarios.Usuario]()
+	nuevaRed.publicaciones = make([]*Post, 0, TAMAÑOINICIAL)
+	nuevaRed.registroUsuarios = diccionario.CrearHash[string, Usuario]()
 	for i := 1; nuevosUsuarios.Scan(); i++ {
-		nuevo := usuarios.CrearUsuario(i)
+		nuevo := CrearUsuario(i)
 		nuevaRed.registroUsuarios.Guardar(nuevosUsuarios.Text(), nuevo)
 	}
 	return nuevaRed, nil
@@ -63,7 +62,7 @@ func (red *redSocial) Logout() string {
 func (red *redSocial) Publicar(posteo string) string {
 	if red.actual != nil {
 		usuarioPublicando := red.registroUsuarios.Obtener(*red.actual)
-		red.publicaciones = append(red.publicaciones, usuarios.CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones), *red.actual))
+		red.publicaciones = append(red.publicaciones, CrearPosteo(usuarioPublicando.Prioridad(), posteo, len(red.publicaciones), *red.actual))
 		losUsuarios := red.registroUsuarios.Iterador()
 
 		for losUsuarios.HaySiguiente() {
@@ -90,7 +89,7 @@ func (red *redSocial) VerSiguientePost() string {
 func (red *redSocial) LikearPost(iD int) string {
 	if red.actual != nil {
 		if iD < len(red.publicaciones) {
-			red.publicaciones[iD].Likes.Guardar(*red.actual, true)
+			red.publicaciones[iD].likes.Guardar(*red.actual, true)
 			return "Post likeado"
 		}
 	}
@@ -99,9 +98,9 @@ func (red *redSocial) LikearPost(iD int) string {
 
 func (red *redSocial) ImprimirLikesPost(iD int) {
 	if iD < len(red.publicaciones) {
-		if red.publicaciones[iD].Likes.Cantidad() > 0 {
-			fmt.Printf("El post tiene %d likes:\n", red.publicaciones[iD].Likes.Cantidad())
-			losLikes := red.publicaciones[iD].Likes.Iterador()
+		if red.publicaciones[iD].likes.Cantidad() > 0 {
+			fmt.Printf("El post tiene %d likes:\n", red.publicaciones[iD].likes.Cantidad())
+			losLikes := red.publicaciones[iD].likes.Iterador()
 			for losLikes.HaySiguiente() {
 				usuario, _ := losLikes.VerActual()
 				fmt.Printf("\t%s\n", usuario)

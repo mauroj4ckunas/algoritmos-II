@@ -1,4 +1,4 @@
-package usuarios
+package red
 
 import (
 	Heap "algogram/Heap"
@@ -11,7 +11,7 @@ type Post struct {
 	prioridadPosteo int
 	id              int
 	posteado        string
-	Likes           diccionario.DiccionarioOrdenado[string, bool]
+	likes           diccionario.DiccionarioOrdenado[string, bool]
 	publicador      string
 }
 
@@ -64,7 +64,7 @@ func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *Post
 		}
 		return 1
 	}
-	post.Likes = diccionario.CrearABB[string, bool](ordenarLikes)
+	post.likes = diccionario.CrearABB[string, bool](ordenarLikes)
 	return post
 }
 
@@ -79,7 +79,7 @@ func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
 func (usu *usuario) PrimerPostDelFeed() string {
 	if !usu.feed.EstaVacia() {
 		posteo := usu.feed.Desencolar()
-		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.Likes.Cantidad())
+		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.likes.Cantidad())
 
 		return mensaje
 	}
