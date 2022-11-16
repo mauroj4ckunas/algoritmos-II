@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-type Post struct {
+type post struct {
 	prioridadPosteo int
 	id              int
 	posteado        string
@@ -17,14 +17,14 @@ type Post struct {
 
 type usuario struct {
 	nivel int
-	feed  Heap.ColaPrioridad[*Post]
+	feed  Heap.ColaPrioridad[*post]
 }
 
 func CrearUsuario(prioridadUsuario int) Usuario {
 	usuario := new(usuario)
 	usuario.nivel = prioridadUsuario
 
-	compararPosteos := func(comp1, comp2 *Post) int {
+	compararPosteos := func(comp1, comp2 *post) int {
 		prioridad := &usuario.nivel
 		prioridadPost1 := comp1.prioridadPosteo - *prioridad
 		prioridadPost2 := comp2.prioridadPosteo - *prioridad
@@ -50,8 +50,8 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 	return usuario
 }
 
-func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *Post {
-	post := new(Post)
+func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *post {
+	post := new(post)
 	post.prioridadPosteo = prioridadPost
 	post.publicador = usuario
 	post.posteado = posteo
@@ -72,7 +72,7 @@ func (usu *usuario) Prioridad() int {
 	return usu.nivel
 }
 
-func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
+func (usu *usuario) PublicarPosteo(nuevoPost *post) {
 	usu.feed.Encolar(nuevoPost)
 }
 

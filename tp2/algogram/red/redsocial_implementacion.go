@@ -15,7 +15,7 @@ const (
 type redSocial struct {
 	actual           *string
 	registroUsuarios diccionario.Diccionario[string, Usuario]
-	publicaciones    []*Post
+	publicaciones    []*post
 }
 
 func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
@@ -29,7 +29,7 @@ func CrearAlgoGram(nombreArchivo string) (AlgoGram, error) {
 
 	nuevosUsuarios := bufio.NewScanner(archivoListas)
 	nuevaRed := new(redSocial)
-	nuevaRed.publicaciones = make([]*Post, 0, TAMAÑOINICIAL)
+	nuevaRed.publicaciones = make([]*post, 0, TAMAÑOINICIAL)
 	nuevaRed.registroUsuarios = diccionario.CrearHash[string, Usuario]()
 	for i := 1; nuevosUsuarios.Scan(); i++ {
 		nuevo := CrearUsuario(i)

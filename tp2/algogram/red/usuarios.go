@@ -3,7 +3,7 @@ package red
 type Usuario interface {
 	Prioridad() int
 
-	PublicarPosteo(nuevoPost *Post)
+	PublicarPosteo(nuevoPost *post)
 
 	PrimerPostDelFeed() string
 }
