@@ -1,3 +1,5 @@
+import random
+
 class Grafo:
 	def __init__(self,direccion = None):
 		self.vertices = {}
