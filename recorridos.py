@@ -35,9 +35,9 @@ def dfs(grafo):
 			_dfs(grafo,v,padres,visitados,orden)
 
 def _dfs(grafo,vertice,padres,visitados,orden):
-	for adyacentes in grafo.AdyacentesDe(vertice):
-		if adyacentes not in visitados:
+	for adyacente in grafo.AdyacentesDe(vertice):
+		if adyacente not in visitados:
 			padres[adyacente] = vertice
 			orden[adyacente] = orden[vertice] + 1
 			visitados.add(adyacente)
-			_dfs(grafo,adyacentes,padres,visitados,orden)
+			_dfs(grafo,adyacente,padres,visitados,orden)
