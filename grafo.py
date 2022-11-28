@@ -14,10 +14,10 @@ class Grafo:
 			cadena += f"]\n"
 		return cadena[:len(cadena)-1]
 		
-	def AgregarVertice(self,vertice):
+	def agregarVertice(self,vertice):
 		self.vertices[vertice] = self.vertices.get(vertice,{})
 
-	def SacarVertice(self,vertice):
+	def sacarVertice(self,vertice):
 		if vertice in self.vertices:
 			if self.direccion == None:
 				for v in self.vertices.pop(vertice).keys():
@@ -30,7 +30,7 @@ class Grafo:
 		else:
 			raise Exception("No existe vertices")
 
-	def SacarArista(self,desde,al):
+	def sacarArista(self,desde,al):
 		if desde in self.vertices and al in self.vertices:
 			if al in self.vertices[desde]:
 				self.vertices[desde].pop(al)
@@ -41,7 +41,7 @@ class Grafo:
 		else:
 			raise Exception("No existe vertices")
 
-	def AgregarArista(self,desde,al,peso = None):
+	def agregarArista(self,desde,al,peso = None):
 		if desde in self.vertices and al in self.vertices:
 			self.vertices[desde][al] = peso
 			if self.direccion == None:
@@ -49,10 +49,10 @@ class Grafo:
 		else:
 			raise Exception("No existe vertices")
 
-	def ExisteVertice(self,vertice):
+	def pertenece(self,vertice):
 		return vertice in self.vertices
 
-	def EstanUnidos(self,vertice1,vertice2):
+	def estanUnidos(self,vertice1,vertice2):
 		if vertice1 in self.vertices:
 			if vertice2 in self.vertices[vertice1]:
 				return (True,self.vertices[vertice1][vertice2])
@@ -60,14 +60,14 @@ class Grafo:
 		raise Exception("No existe vertices")
 
 
-	def LosVertices(self):
+	def vertices(self):
 		return list(self.vertices.keys())
 
-	def AdyacentesDe(self,vertice):
+	def adyacentes(self,vertice):
 		if vertice in self.vertices:
 			return list(self.vertices[vertice].items())
 		else:
 			raise Exception("No existe vertices")
 
-	def VerticeAlAzar(self):
+	def verticeAlAzar(self):
 		return random.choice(list(self.vertices.keys()))

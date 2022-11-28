@@ -4,7 +4,7 @@ def bfs_generico(grafo):
 	padres = {}
 	visitados = set()
 	orden = {}
-	for v in grafo.LosVertices():
+	for v in grafo.vertices():
 		if v not in visitados:
 			padres[v] = None
 			orden[v] = 0
@@ -16,7 +16,7 @@ def bfs(grafo,origen,padres,visitados,orden):
 	cola.Encolar(origen)
 	while not cola.EstaVacia() :
 		vertice = cola.Desencolar()
-		for adyacente in grafo.AdyacentesDe(vertice):
+		for adyacente in grafo.adyacentes(vertice):
 			if adyacente not in visitados:
 				padres[adyacente] = vertice
 				orden[adyacente] = orden[vertice] + 1
@@ -27,7 +27,7 @@ def dfs(grafo):
 	padres = {}
 	visitados = set()
 	orden = {}
-	for v in grafo.LosVertices():
+	for v in grafo.vertices():
 		if v not in visitados:
 			padres[v] = None
 			orden[v] = 0
@@ -35,9 +35,11 @@ def dfs(grafo):
 			_dfs(grafo,v,padres,visitados,orden)
 
 def _dfs(grafo,vertice,padres,visitados,orden):
-	for adyacente in grafo.AdyacentesDe(vertice):
+	for adyacente in grafo.adyacentes(vertice):
 		if adyacente not in visitados:
 			padres[adyacente] = vertice
 			orden[adyacente] = orden[vertice] + 1
 			visitados.add(adyacente)
 			_dfs(grafo,adyacente,padres,visitados,orden)
+
+
