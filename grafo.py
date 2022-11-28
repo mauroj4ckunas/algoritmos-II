@@ -52,11 +52,15 @@ class Grafo:
 	def pertenece(self,vertice):
 		return vertice in self.vertices
 
+	def peso(self,vertice1,vertice2):
+		if vertice1 in self.vertices and vertice2 in self.vertices: return self.vertices[vertice1][vertice2]
+		else: raise Exception("No existe vertices")
+
 	def estanUnidos(self,vertice1,vertice2):
 		if vertice1 in self.vertices:
 			if vertice2 in self.vertices[vertice1]:
-				return (True,self.vertices[vertice1][vertice2])
-			return (False,None)
+				return True
+			return False
 		raise Exception("No existe vertices")
 
 

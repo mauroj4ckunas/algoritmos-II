@@ -1,4 +1,6 @@
 import cola as Tda
+from heap import Heap
+from grafo import Grafo
 
 def bfs_generico(grafo):
 	padres = {}
@@ -51,7 +53,7 @@ def _dfs(grafo,vertice,padres,visitados,orden):
 
 def bfsordenadoentrada(grafo):
 	grado = {}
-	cola = Cola()
+	cola = Tda.Cola()
 	orden = []
 	for v in grafo.vertices():
 		grado[v] = 0
@@ -75,7 +77,7 @@ def bfsordenadoentrada(grafo):
 	return orden
 
 
-def dfsorden(grafo):
+"""def dfsorden(grafo):
 	pila = Pila()
 	visitados = set()
 
@@ -96,7 +98,7 @@ def _dfsorden(grafo,visitados,pila,vertice):
 		if w not in visitados:
 			visitados.add(w)
 			_dfsorden(grafo,visitados,pila,w)
-	pila.Apilar(vertice)
+	pila.Apilar(vertice)"""
 
 
 #Camino minimo:
@@ -147,7 +149,7 @@ def belmanford(grafo,origen):
 
 	for v,w,peso in aristas:
 		if distancia[v] + peso < distancia[w]:
-			....problemas(hay un ciclo)
+			raise Exception("Hay un ciclo")
 
 	return padre,distancia
 
@@ -182,7 +184,19 @@ class UnionFind:
 		for x in vertices:
 			self.groups[x] = x
 
-	def
+	def union(self,vertice1,vertice2):
+		new_group = self.find(vertice1)
+		other = self.find(vertice2)
+		self.groups[other] = new_group
+
+	def find(self,vertice):
+		if self.groups[vertice] == vertice:
+			return vertice
+
+		real_groups = self.find(self.groups[vertice])
+		self.groups[vertice] = real_groups
+		return real_groups
+
 
 
 def kruskal(grafo):
