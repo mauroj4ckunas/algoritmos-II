@@ -43,3 +43,168 @@ def _dfs(grafo,vertice,padres,visitados,orden):
 			_dfs(grafo,adyacente,padres,visitados,orden)
 
 
+			
+			
+			
+			
+#Orden topologico:
+
+def bfsordenadoentrada(grafo):
+	grado = {}
+	cola = Cola()
+	orden = []
+	for v in grafo.vertices():
+		grado[v] = 0
+
+	for v in grado.vertices():
+		for w in grado.adyacentes(v):
+			grado[w] += 1
+
+	for v in grafo.vertices():
+		if grado[v]==0:
+			cola.Encolar(v)
+
+	while not cola.EstaVacia():
+		v = cola.Desencolar()
+		orden.append(v)
+		for w in grafo.adyacentes(v):
+			grado[w] -= 1
+			if grado[w]==0:
+				cola.Encolar(w)
+
+	return orden
+
+
+def dfsorden(grafo):
+	pila = Pila()
+	visitados = set()
+
+	for v in grafo.vertices():
+		if v not in visitados:
+			visitados.add(v)
+			_dfsorden(grafo,visitados,pila,v)
+
+	result = []
+	while not pila.EstaVacia():
+		result.append(pila.Desapilar())
+
+	return result
+
+
+def _dfsorden(grafo,visitados,pila,vertice):
+	for w in grafo.adyacentes(vertice):
+		if w not in visitados:
+			visitados.add(w)
+			_dfsorden(grafo,visitados,pila,w)
+	pila.Apilar(vertice)
+
+
+#Camino minimo:
+		
+def dijkstra(grafo,origen):
+	distancia = {}
+	padres = {}
+	for v in grafo.vertices():
+		distancia[v] = float("inf")
+	distancia[origen] = 0
+	padres[origen] = None
+	cola = Heap()
+	cola.Encolar((origen,distancia[origen]))
+	while not cola.EstaVacia():
+		v , _ = cola.Desencolar()
+		for w in grafo.adyacentes(v):
+			if distancia[v] + grafo.peso(v,w) < distancia[w]:
+				distancia[w] = distancia[v] + grafo.peso(v,w)
+				padre[w] = v 
+				cola.Encolar(w,distancia[v] + grafo.peso(v,w))
+
+	return distancia,padres
+
+def belmanford(grafo,origen):
+	distancia = {}
+	padres = {}
+	for v in grafo.vertices():
+		distancia[v] = float("inf")
+	distancia[origen] = 0
+	padres[origen] = None
+	aristas = []
+	visitado = set()
+	for v in grafo.vertices():
+		for w in adyacentes():
+			if (v,w) not in visitado:
+				visitado.add((v,w))
+				aristas.append((v,w,grafo.peso(v,w)))
+
+	for i in range(len(grafo.vertices())):
+		cambio = False
+		for origen,destino,peso in aristas:
+			if distancia[origen]+peso < distancia[destino]:
+				cambio = True
+				padre[destino] = origen
+				distancia[destino] = distancia[origen] + peso
+		if not cambio:
+			break
+
+	for v,w,peso in aristas:
+		if distancia[v] + peso < distancia[w]:
+			....problemas(hay un ciclo)
+
+	return padre,distancia
+
+
+#arbol tendido minimo:
+
+def prim(grafo,origen):
+	visitados = set()
+	visitados.add(origen)
+	cola = Heap()
+	for w in grafo.adyacentes(origen):
+		cola.Encolar((origen,w,grafo.peso(origen,w)))
+
+	arbol = Grafo()
+	for v in grafo.vertices():
+		arbol.AgregarVertice(v)
+
+	while not cola.EstaVacia():
+		v,w,peso = cola.Desencolar()
+		if w not in visitados:
+			arbol.agregararista(v,w,grafo.peso(v,w))
+			visitados.add(w)
+			for x in grafo.adyacentes(w):
+				if x not in visitados:
+					cola.Encolar((w,x,grafo.peso(w,x)))
+	return arbol
+
+class UnionFind:
+	
+	def __init__(self,vertices):
+		self.groups = {}
+		for x in vertices:
+			self.groups[x] = x
+
+	def
+
+
+def kruskal(grafo):
+	conjunto = UnionFind(grafo.vertices())
+	aristas = []
+	visitados = set()
+	for v in grafo.vertices():
+		if v not in visitados: visitados.add(v)
+		for w in grafo.adyacentes(v)
+			if w not in visitados:
+				aristas.append((v,w,grafo.peso(v,w)))
+
+	arbol = Grafo()
+	for v in grafo.vertices():
+		arbol.AgregarVertice(v)
+
+	aristas = sorted(aristas)
+
+	for a in aristas:
+		v,w,peso = a
+		if conjuntos.find(v) != conjuntos.find(w):
+			arbol.agregararista(v,w,peso)
+			conjuntos.union(v,w)
+
+	return arbol
