@@ -2,6 +2,7 @@ package red
 
 import (
 	"algogram/diccionario"
+	errores "algogram/errores"
 	"fmt"
 )
 
@@ -33,7 +34,7 @@ func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) Post 
 }
 
 func (pst *post) ImprimirMensaje() string {
-	return fmt.Sprintf("%s dijo: %s", pst.autor, pst.publicacion)
+	return fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", pst.id, pst.autor, pst.publicacion, pst.likes.Cantidad())
 }
 
 func (pst *post) PrioridadDelAutor() int {
@@ -59,4 +60,5 @@ func (pst *post) VerTodosLosLikes() {
 		}
 		return
 	}
+	fmt.Printf("%s\n", new(errores.ErrorVerLikes).Error())
 }

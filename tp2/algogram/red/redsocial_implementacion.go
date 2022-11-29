@@ -103,6 +103,7 @@ func (sesion *redSocial) ImprimirLikesPost(iD int) {
 	if iD < sesion.publicaciones.Cantidad() {
 		post := sesion.publicaciones.Obtener(iD)
 		post.VerTodosLosLikes()
+		return
 	}
 	fmt.Printf("%s\n", new(errores.ErrorVerLikes).Error())
 }
