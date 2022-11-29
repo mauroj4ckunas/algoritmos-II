@@ -1,9 +1,9 @@
 package red
 
 type Usuario interface {
+	PublicarPosteo(*Post)
+
 	Prioridad() int
 
-	PublicarPosteo(nuevoPost *post)
-
-	PrimerPostDelFeed() string
+	PrimerPostDelFeed() (*Post, string)
 }

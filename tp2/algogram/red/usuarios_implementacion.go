@@ -2,32 +2,22 @@ package red
 
 import (
 	Heap "algogram/Heap"
-	diccionario "algogram/diccionario"
 	errores "algogram/errores"
-	"fmt"
 )
 
-type post struct {
-	prioridadPosteo int
-	id              int
-	posteado        string
-	likes           diccionario.DiccionarioOrdenado[string, bool]
-	publicador      string
-}
-
 type usuario struct {
-	nivel int
-	feed  Heap.ColaPrioridad[*post]
+	nombre string
+	nivel  int
+	feed   Heap.ColaPrioridad[*Post]
 }
 
-func CrearUsuario(prioridadUsuario int) Usuario {
-	usuario := new(usuario)
-	usuario.nivel = prioridadUsuario
+func crearFuncionComparativa(prioridad int) func(*Post, *Post) int {
 
-	compararPosteos := func(comp1, comp2 *post) int {
-		prioridad := &usuario.nivel
-		prioridadPost1 := comp1.prioridadPosteo - *prioridad
-		prioridadPost2 := comp2.prioridadPosteo - *prioridad
+	ptrPriori := &prioridad
+
+	var compararPosteos = func(comp1, comp2 *Post) int {
+		prioridadPost1 := (*comp1).PrioridadDelAutor() - *ptrPriori
+		prioridadPost2 := (*comp2).PrioridadDelAutor() - *ptrPriori
 
 		if prioridadPost1 < 0 {
 			prioridadPost1 *= -1
@@ -39,49 +29,38 @@ func CrearUsuario(prioridadUsuario int) Usuario {
 		if prioridadPost1 < prioridadPost2 {
 			return 1
 		} else if prioridadPost1 == prioridadPost2 {
-			if comp1.id < comp2.id {
+			if (*comp1).VerIDPost() < (*comp2).VerIDPost() {
 				return 1
 			}
 		}
 		return -1
 	}
 
-	usuario.feed = Heap.CrearHeap(compararPosteos)
+	return compararPosteos
+}
+
+func CrearUsuario(nombreUsuario string, prioridadUsuario int) Usuario {
+	usuario := new(usuario)
+	usuario.nombre = nombreUsuario
+	usuario.nivel = prioridadUsuario
+
+	usuario.feed = Heap.CrearHeap(crearFuncionComparativa(prioridadUsuario))
+
 	return usuario
 }
 
-func CrearPosteo(prioridadPost int, posteo string, id int, usuario string) *post {
-	post := new(post)
-	post.prioridadPosteo = prioridadPost
-	post.publicador = usuario
-	post.posteado = posteo
-	post.id = id
-	ordenarLikes := func(nombre1, nombre2 string) int {
-		if nombre1 < nombre2 {
-			return -1
-		} else if nombre1 == nombre2 {
-			return 0
-		}
-		return 1
-	}
-	post.likes = diccionario.CrearABB[string, bool](ordenarLikes)
-	return post
+func (usu *usuario) PublicarPosteo(nuevoPost *Post) {
+	usu.feed.Encolar(nuevoPost)
 }
 
 func (usu *usuario) Prioridad() int {
 	return usu.nivel
 }
 
-func (usu *usuario) PublicarPosteo(nuevoPost *post) {
-	usu.feed.Encolar(nuevoPost)
-}
-
-func (usu *usuario) PrimerPostDelFeed() string {
+func (usu *usuario) PrimerPostDelFeed() (*Post, string) {
 	if !usu.feed.EstaVacia() {
 		posteo := usu.feed.Desencolar()
-		mensaje := fmt.Sprintf("Post ID %d\n%s dijo: %s\nLikes: %d", posteo.id, posteo.publicador, posteo.posteado, posteo.likes.Cantidad())
-
-		return mensaje
+		return posteo, ""
 	}
-	return new(errores.ErrorNoMasPost).Error()
+	return nil, new(errores.ErrorNoMasPost).Error()
 }

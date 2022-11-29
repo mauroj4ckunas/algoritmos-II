@@ -1,15 +1,10 @@
 package red
 
-type AlgoGram interface {
-	Login(usuario string) string
-
+type RedSocial interface {
+	Login(string) string
 	Logout() string
-
-	Publicar(posteo string) string
-
+	Publicar(string) string
 	VerSiguientePost() string
-
-	LikearPost(iD int) string
-
-	ImprimirLikesPost(iD int)
+	LikearPost(int) string
+	ImprimirLikesPost(int)
 }
