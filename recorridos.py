@@ -29,13 +29,16 @@ def dfs(grafo):
 	padres = {}
 	visitados = set()
 	orden = {}
+	cant_comp = 0
 	for v in grafo.vertices():
 		if v not in visitados:
 			padres[v] = None
+			cant_comp += 1
 			orden[v] = 0
 			visitados.add(v)
 			_dfs(grafo,v,padres,visitados,orden)
-
+	return padres, cant_comp
+			
 def _dfs(grafo,vertice,padres,visitados,orden):
 	for adyacente in grafo.adyacentes(vertice):
 		if adyacente not in visitados:
@@ -45,7 +48,20 @@ def _dfs(grafo,vertice,padres,visitados,orden):
 			_dfs(grafo,adyacente,padres,visitados,orden)
 
 
-			
+def gradosNoDirigido(grafo: Grafo, dirigido: bool) -> dict:
+	cola = Tda.Cola()
+	origen = grafo.verticeAlAzar()
+	visitados = set()
+	grados = {}
+	cola.Encolar(origen)
+	while not cola.EstaVacia():
+		v = cola.Desencolar()
+		grados[v] = grafo.adyacentes(v)
+		for adyacente in grafo.adyacentes(v):
+			if adyacente not in visitados:
+				visitados.add(adyacente)
+				cola.Encolar(adyacente)
+	return grados			
 			
 			
 			
