@@ -4,6 +4,15 @@ class Cola:
     def __init__(self) -> None:
         self.__cola = deque([])
     
+    def __str__(self):
+        a = []
+        if len(list(self.__cola)) != 0:
+            for b in list(self.__cola):
+                a.append(b)
+        else:
+            return "[]"
+        return str(a)
+
     def __esta_vacia(self) -> bool:
         return len(self.__cola) == 0
 
@@ -22,3 +31,9 @@ class Cola:
         if self.__esta_vacia():
             raise Exception("La cola esta vacia")
         return self.__cola.popleft()
+
+# q = Cola()
+# q.Encolar("A")
+# q.Encolar("B")
+# q.Encolar("C")
+# print(q)

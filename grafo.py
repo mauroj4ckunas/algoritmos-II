@@ -64,14 +64,23 @@ class Grafo:
 		raise Exception("No existe vertices")
 
 
-	def vertices(self):
+	def verVertices(self):
 		return list(self.vertices.keys())
 
 	def adyacentes(self,vertice):
 		if vertice in self.vertices:
-			return list(self.vertices[vertice].items())
+			if self.direccion == None:
+				ady = []
+				for a in list(self.vertices[vertice].items()):
+					ady.append(a[0])
+			else:
+				ady = list(self.vertices[vertice].items())
+			return ady
 		else:
 			raise Exception("No existe vertices")
 
 	def verticeAlAzar(self):
 		return random.choice(list(self.vertices.keys()))
+
+
+	
