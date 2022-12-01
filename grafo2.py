@@ -65,7 +65,10 @@ class Grafo:
 
 	def AdyacentesDe(self,vertice):
 		if self.ExisteVertice(vertice):
-			return list(self.vertices[vertice].items())
+			listaAd = []
+			for v in list(self.vertices[vertice].items()):
+				listaAd.append(v[0])
+			return listaAd
 		else:
 			raise Exception("No existe vertices")
 
