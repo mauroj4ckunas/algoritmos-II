@@ -1,34 +1,34 @@
 from collections import deque
 
-class Cola:
+class Pila:
     def __init__(self) -> None:
-        self.__cola = deque([])
+        self.__pila = deque([])
     
     def __str__(self):
         a = []
-        if len(list(self.__cola)) != 0:
-            for b in list(self.__cola):
+        if len(list(self.__pila)) != 0:
+            for b in list(self.__pila):
                 a.append(b)
         else:
             return "[]"
         return str(a)
 
     def __esta_vacia(self) -> bool:
-        return len(self.__cola) == 0
+        return len(self.__pila) == 0
 
     def EstaVacia(self) -> bool:
         return self.__esta_vacia()
 
-    def VerPrimero(self):
+    def VerUltimo(self):
         if self.__esta_vacia():
             raise Exception("La cola esta vacia")
-        return self.__cola[0]
+        return self.__pila[len(list(self.__pila)) - 1]
 
-    def Encolar(self, elemento):
-        self.__cola.append(elemento)
+    def Apilar(self, elemento):
+        self.__pila.append(elemento)
     
-    def Desencolar(self):
+    def Desapilar(self):
         if self.__esta_vacia():
             raise Exception("La cola esta vacia")
-        return self.__cola.popleft()
+        return self.__pila.pop()
 

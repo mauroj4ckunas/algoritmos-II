@@ -1,5 +1,6 @@
 import recorridos
-import cola as cl
+import cola as col
+import pila as pil
 import grafo as gf
 
 class Euler():
@@ -26,28 +27,47 @@ class Euler():
                 impar += 1
         return impar
         
-    def cicloEuleriano(self, origen):
+    def cicloEulerianoHierholzer(self, origen):
         if not self.__tieneCircuito():
             raise Exception("Tiene grado impar o no es conexo")
 
-        camino = cl.Cola()
-        visitados = set()
-
+        aristasNoVisitadas = pil.Pila()
+        aristasVisitadas = set()
+        camino = pil.Pila()
         for v in self.grafo.adyacentes(origen):
-            camino.Encolar(origen)
-            if v not in visitados:
-                visitados.add(origen)
-                camino.Encolar(v)
-                visitados.add(v)
-            self.__dfsEuler(v, origen, visitados, camino)
+            aristasNoVisitadas.Apilar((origen, v))
+        
+
+        self.__algoritmoHierholzer(aristasNoVisitadas, aristasVisitadas, camino, origen)
+
         return camino
-                
-    def __dfsEuler(self, vertice, origen, visitados: set, camino: cl.Cola):
-        for adyacente in self.grafo.adyacentes(vertice):
-            if adyacente not in visitados:
-                camino.Encolar(adyacente)
-                visitados.add(adyacente)
-                self.__dfsEuler(adyacente,origen,visitados,camino)
+
+
+    def __algoritmoHierholzer(self, aristasNoVisitadas: pil.Pila, aristasVisitadas: set, camino: pil.Pila, origen):
+        
+        while not aristasNoVisitadas.EstaVacia():
+            arista = aristasNoVisitadas.Desapilar()
+            aristasVisitadas.add(arista)
+            camino.Apilar(origen)
+            if arista[0] == origen:
+                visitado = arista[1]
+            else:
+                visitado = arista[0]
+            camino.Apilar(visitado)
+            self.__dfsHierholzer(visitado, origen, aristasVisitadas, camino)
+
+
+    def __dfsHierholzer(self, inicio, origen, visitadas: set, camino: pil.Pila):
+        for adyacente in self.grafo.adyacentes(inicio):
+            if ((adyacente, inicio) not in visitadas) and ((inicio, adyacente) not in visitadas):
+                print((inicio, adyacente))
+                visitadas.add((inicio, adyacente))
+                if adyacente == origen:
+                    if camino.VerUltimo() != origen:
+                        camino.Apilar(adyacente)
+                    break
+                camino.Apilar(adyacente)
+                self.__dfsHierholzer(adyacente, origen, visitadas, camino)   
 
 
 
