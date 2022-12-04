@@ -129,12 +129,13 @@ def dijkstra(grafo: Grafo,origen):
 	cola = Heap()
 	cola.Encolar((origen,distancia[origen]))
 	while not cola.EstaVacia():
-		v , _ = cola.Desencolar()
+		tuplaV = cola.Desencolar()
+		v = tuplaV[0]
 		for w in grafo.adyacentes(v):
-			if distancia[v] + grafo.peso(v,w) < distancia[w]:
-				distancia[w] = distancia[v] + grafo.peso(v,w)
+			if distancia[v] + int(grafo.peso(v,w)) < distancia[w]:
+				distancia[w] = distancia[v] + int(grafo.peso(v,w))
 				padres[w] = v 
-				cola.Encolar(w,distancia[v] + grafo.peso(v,w))
+				cola.Encolar((w,distancia[v] + int(grafo.peso(v,w))))
 
 	return distancia,padres
 

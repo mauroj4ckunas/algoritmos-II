@@ -1,4 +1,4 @@
-import recorridos
+import funciones
 import cola as col
 import pila as pil
 import grafo as gf
@@ -16,8 +16,8 @@ class Euler():
         return self.__tieneCaminoEuleriano()
 
     def __tieneCaminoEuleriano(self) -> bool:
-        _, cant_componentes_conexas = recorridos.dfs(self.grafo)
-        cant_impar = self.__contarGradosImpares(recorridos.gradosNoDirigido(self.grafo))
+        _, cant_componentes_conexas = funciones.dfs(self.grafo)
+        cant_impar = self.__contarGradosImpares(funciones.gradosNoDirigido(self.grafo))
         return cant_componentes_conexas == 1 and cant_impar == 0#Es 0 si es un ciclo Euleriano
 
     def __contarGradosImpares(self, gradosVertices: dict) -> int:

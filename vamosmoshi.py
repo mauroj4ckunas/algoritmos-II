@@ -1,15 +1,18 @@
 import grafo as gf
-import recorridos as rec
+import funciones as func
 import euler as eu
 
 
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
-# class Sede():
-#     def __init__(self, nombre, lat, lng) -> None:
-#         self.nombre = nombre
-#         self.lat = lat
-#         self.lng = lng
+def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo):
+
+    dist, padres = func.dijkstra(grafo, desde)
+
+    print(dist)
+    print(padres)
+
+    pass
 
 
 def crearGrafoMundialista(listaAGrafo: list) -> gf.Grafo:
@@ -26,9 +29,9 @@ def crearGrafoMundialista(listaAGrafo: list) -> gf.Grafo:
         coordenadas[nombreSede] = [lat, lng]
         mundial.agregarVertice(nombreSede)
 
-    cantAristas = cantSedes+2
+    indicearistas = cantSedes+2
 
-    for j in range(cantAristas, len(listaAGrafo)):
+    for j in range(indicearistas, len(listaAGrafo)):
         arista: str = listaAGrafo[j]
         aristaLista = arista.split(",")
         desde = aristaLista[0]
@@ -38,7 +41,6 @@ def crearGrafoMundialista(listaAGrafo: list) -> gf.Grafo:
 
 
     return mundial, coordenadas
-
 
 def abrirArchivo():
     try:
@@ -58,8 +60,23 @@ def main():
     listaSedes = abrirArchivo()
     grafoMundial, coordenadas = crearGrafoMundialista(listaSedes)
 
-    print(grafoMundial)
-    print(coordenadas)
+    programa = True
+    while programa:
+        comandoStr = input()
+        comandoList = comandoStr.split(" ")
+        if comandoList[0] == COMANDOS[0]:
+            
+            desde = comandoList[1].replace(",", "")
+            hasta = comandoList[2].replace(",", "")
+            archivo = comandoList[3]
+
+            guardarCaminoMinimo(grafoMundial, desde, hasta, archivo)
+
+            pass
+
+        else:
+            programa = False
+
 
 main()
 
