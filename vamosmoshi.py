@@ -5,14 +5,30 @@ import euler as eu
 
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
-def crarArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
 
+def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
+    cicloEuler = eu.Euler(grafo)
+
+    camino, peso = cicloEuler.cicloEulerianoHierholzer(desde)
+
+    mensaje = ""
+    for i in range(len(camino)):
+        if i == 0:
+            mensaje += camino[i]
+            continue
+        mensaje += " -> " + camino[i]
+
+    print(mensaje)
+    print(f'Tiempo total: {peso}')
+    crearArchivoKML(camino, nombreArchivo, coordenadas, desde)
+
+def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
     with open(nombreArchivo, "w", encoding="UTF-8") as nuevo:
         nuevo.writelines('<?xml version="1.0" encoding="UTF-8"?>\n')
         nuevo.writelines('<kml xmlns="http://earth.google.com/kml/2.1">\n')
         nuevo.writelines('\t<Document>\n')
         if hasta != None: nuevo.writelines(f'\t\t<name>Camino desde {desde} hacia {hasta}</name>\n')
-        else: nuevo.writelines(f'Viaje desde {desde}\n')
+        else: nuevo.writelines(f'\t\t<name>Viaje desde {desde}</name>\n\n')
         for sede in listaPuntos:
             nuevo.writelines('\t\t<Placemark>\n')
             nuevo.writelines(f'\t\t\t<name>{sede}</name>\n')
@@ -29,7 +45,6 @@ def crarArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, des
             nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[listaPuntos[i]][0]}, {coordenadas[listaPuntos[i]][1]} {coordenadas[listaPuntos[i+1]][0]}, {coordenadas[listaPuntos[i+1]][1]}</coordinates>\n')
             nuevo.writelines('\t\t\t</LineString>\n')
             nuevo.writelines('\t\t</Placemark>\n')
-
 
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
 
@@ -52,7 +67,7 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
 
     print(mensaje)
     print(f'Tiempo total: {dist[hasta]}')
-    crarArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
+    crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
 
 def crearGrafoMundialista(listaAGrafo: list) -> gf.Grafo:
 
@@ -94,6 +109,8 @@ def abrirArchivo():
 
     return listaInformacion
 
+
+
 def main():
 
     listaSedes = abrirArchivo()
@@ -127,7 +144,16 @@ def main():
 
             guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
 
-        
+        if comandoList[0] == COMANDOS[2]:
+            
+            if len(comandoList) == 4:
+                desde = comandoList[1] + " " + comandoList[2].replace(",", "")
+                archivo = comandoList[3]
+            else: 
+                desde = comandoList[1].replace(",", "")
+                archivo = comandoList[2]
+
+            viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
 
         else:
             programa = False

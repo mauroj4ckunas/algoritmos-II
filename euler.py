@@ -30,19 +30,22 @@ class Euler():
         if not self.__tieneCaminoEuleriano():
             return []
         camino = list()
-        
         aristasNoVisitadas = {}
-
+        peso = 0
+        pesoVisto = set()
         for v in self.grafo.verVertices():
             aristasNoVisitadas[v] = pil.Pila()
             for w in self.grafo.adyacentes(v):
+                if (v, w) not in pesoVisto and (w, v) not in pesoVisto:
+                    pesoVisto.add((v, w))
+                    peso += int(self.grafo.peso(v, w))
                 aristasNoVisitadas[v].Apilar((v, w))
 
         aristasVisitadas = set()
         
         camino = self.__algoritmoHierholzer(aristasNoVisitadas, aristasVisitadas, camino, origen)
         
-        return camino
+        return camino, peso
 
 
     def __algoritmoHierholzer(self, aristasNoVisitadas: dict, aristasVisitadas: set, camino: list, vertice):
@@ -53,7 +56,6 @@ class Euler():
             while not aristasNoVisitadas[i].EstaVacia():
                 sig = aristasNoVisitadas[i].Desapilar()
                 if sig not in aristasVisitadas and (sig[1], sig[0]) not in aristasVisitadas:
-
                     caminoAux = []
                     caminoAux.append(sig[0])
                     self.__dfsHierholzer(sig[0], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
@@ -67,7 +69,6 @@ class Euler():
                                 b = camino[j+1:]
                                 camino = a + caminoAux + b
                                 break
-                
 
         return camino
 
