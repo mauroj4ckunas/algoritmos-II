@@ -1,5 +1,4 @@
 import funciones
-import cola as col
 import pila as pil
 import grafo as gf
 
