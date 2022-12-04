@@ -8,17 +8,17 @@ class Euler():
     def __init__(self, grafo: gf.Grafo):
         self.grafo = grafo
     
-    def esEuler(self):
+    def tieneCaminoEuleriano(self):
         '''
             Para que un grafo tenga un ciclo euleriano debe tener estas propiedades:
             Grafo no dirigido: sus vertices deben tener grado par y ser conexo.
         '''
-        return self.__tieneCircuito()
+        return self.__tieneCaminoEuleriano()
 
-    def __tieneCircuito(self) -> bool:
+    def __tieneCaminoEuleriano(self) -> bool:
         _, cant_componentes_conexas = recorridos.dfs(self.grafo)
         cant_impar = self.__contarGradosImpares(recorridos.gradosNoDirigido(self.grafo))
-        return cant_componentes_conexas == 1 and cant_impar == 0 #Es 0 si es un ciclo Euleriano
+        return cant_componentes_conexas == 1 and cant_impar == 0#Es 0 si es un ciclo Euleriano
 
     def __contarGradosImpares(self, gradosVertices: dict) -> int:
         impar = 0
@@ -28,46 +28,60 @@ class Euler():
         return impar
         
     def cicloEulerianoHierholzer(self, origen):
-        if not self.__tieneCircuito():
+        if not self.__tieneCaminoEuleriano():
             raise Exception("Tiene grado impar o no es conexo")
-
-        aristasNoVisitadas = pil.Pila()
-        aristasVisitadas = set()
-        camino = pil.Pila()
-        for v in self.grafo.adyacentes(origen):
-            aristasNoVisitadas.Apilar((origen, v))
+        camino = list()
         
+        aristasNoVisitadas = {}
 
-        self.__algoritmoHierholzer(aristasNoVisitadas, aristasVisitadas, camino, origen)
+        for v in self.grafo.verVertices():
+            aristasNoVisitadas[v] = pil.Pila()
+            for w in self.grafo.adyacentes(v):
+                aristasNoVisitadas[v].Apilar((v, w))
+
+        aristasVisitadas = set()
+        
+        camino = self.__algoritmoHierholzer(aristasNoVisitadas, aristasVisitadas, camino, origen)
+        
+        return camino
+
+
+    def __algoritmoHierholzer(self, aristasNoVisitadas: dict, aristasVisitadas: set, camino: list, vertice):
+        
+        camino.append(vertice)
+        self.__dfsHierholzer(vertice, aristasNoVisitadas, aristasVisitadas, camino, vertice)
+        for i in camino:
+            while not aristasNoVisitadas[i].EstaVacia():
+                sig = aristasNoVisitadas[i].Desapilar()
+                if sig not in aristasVisitadas and (sig[1], sig[0]) not in aristasVisitadas:
+
+                    caminoAux = []
+                    caminoAux.append(sig[0])
+                    self.__dfsHierholzer(sig[0], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
+
+                    if i == camino[len(camino) - 1]:
+                        camino = camino[:len(camino) - 2] + caminoAux
+                    else:
+                        for j in range(len(camino) - 2, -1, -1):
+                            if camino[j] == i:
+                                a = camino[:j]
+                                b = camino[j+1:]
+                                camino = a + caminoAux + b
+                                break
+                
 
         return camino
 
 
-    def __algoritmoHierholzer(self, aristasNoVisitadas: pil.Pila, aristasVisitadas: set, camino: pil.Pila, origen):
-        
-        while not aristasNoVisitadas.EstaVacia():
-            arista = aristasNoVisitadas.Desapilar()
-            aristasVisitadas.add(arista)
-            camino.Apilar(origen)
-            if arista[0] == origen:
-                visitado = arista[1]
-            else:
-                visitado = arista[0]
-            camino.Apilar(visitado)
-            self.__dfsHierholzer(visitado, origen, aristasVisitadas, camino)
-
-
-    def __dfsHierholzer(self, inicio, origen, visitadas: set, camino: pil.Pila):
-        for adyacente in self.grafo.adyacentes(inicio):
-            if ((adyacente, inicio) not in visitadas) and ((inicio, adyacente) not in visitadas):
-                print((inicio, adyacente))
-                visitadas.add((inicio, adyacente))
-                if adyacente == origen:
-                    if camino.VerUltimo() != origen:
-                        camino.Apilar(adyacente)
-                    break
-                camino.Apilar(adyacente)
-                self.__dfsHierholzer(adyacente, origen, visitadas, camino)   
-
-
+    def __dfsHierholzer(self, vertice, noVisitadas: dict, visitadas: set, caminoActualizado: list, inicio, seguir = True):
+        while not noVisitadas[vertice].EstaVacia() and seguir:
+            arista = noVisitadas[vertice].Desapilar()
+            if arista not in visitadas and (arista[1], arista[0]) not in visitadas:
+                visitadas.add(arista)
+                if len(caminoActualizado) != 0:
+                    if caminoActualizado[len(caminoActualizado) - 1] != arista[1]:
+                        caminoActualizado.append(arista[1])
+                if arista[1] == inicio:
+                    return False
+                seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
 

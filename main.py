@@ -23,6 +23,9 @@ grafo.agregarArista(3, 4)
 grafo.agregarArista(6, 4)
 grafo.agregarArista(6, 5)
 
+
 grafoEuler = eu.Euler(grafo)
 
+print(grafoEuler.cicloEulerianoHierholzer(1))
 print(grafoEuler.cicloEulerianoHierholzer(2))
+print(grafoEuler.cicloEulerianoHierholzer(6))
