@@ -29,7 +29,7 @@ class Euler():
         
     def cicloEulerianoHierholzer(self, origen):
         if not self.__tieneCaminoEuleriano():
-            raise Exception("Tiene grado impar o no es conexo")
+            return []
         camino = list()
         
         aristasNoVisitadas = {}

@@ -31,4 +31,3 @@ class Cola:
         if self.__esta_vacia():
             raise Exception("La cola esta vacia")
         return self.__cola.popleft()
-
