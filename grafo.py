@@ -69,13 +69,7 @@ class Grafo:
 
 	def adyacentes(self,vertice):
 		if vertice in self.vertices:
-			if self.direccion == None:
-				ady = []
-				for a in list(self.vertices[vertice].items()):
-					ady.append(a[0])
-			else:
-				ady = list(self.vertices[vertice].items())
-			return ady
+			return list(self.vertices[vertice].keys())
 		else:
 			raise Exception("No existe vertices")
 

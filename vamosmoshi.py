@@ -2,8 +2,30 @@ from collections import deque
 import grafo as gf
 import funciones as func
 import euler as eu
+import sys
 
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
+
+
+def itinerarioPosible(archivo, vertices: list):
+    grafo = gf.Grafo(True) #grafo dirigido
+    for vertice in vertices:
+        grafo.agregarVertice(vertice)
+
+    errorLectura = False
+    try:
+        caminos = open(archivo)
+        for linea in caminos.readlines():
+            union = linea[:len(linea)-1].split(",")
+            grafo.agregarArista(union[0],union[1])
+    except:
+        print("No se encontro recorrido")
+        errorLectura = True
+    finally:
+        caminos.close()
+
+    return grafo,errorLectura
+
 
 
 def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list):
@@ -49,15 +71,16 @@ def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, de
             nuevo.writelines('\t\t\t</LineString>\n')
             nuevo.writelines('\t\t</Placemark>\n')
 
-def mensajeFinal(listaSede: list, peso):
+def mensajeFinal(lista: list, peso = None):
     mensaje = ""
-    for i in range(len(listaSede)):
+    for i in range(len(lista)):
         if i == 0:
-            mensaje += listaSede[i]
+            mensaje += f"{lista[i]}"
             continue
-        mensaje += " -> " + listaSede[i]
+        mensaje += f" -> {lista[i]}"
     print(mensaje)
-    print(f'Tiempo total: {peso}')
+    if peso != None:
+        print(f'Tiempo total: {peso}')
 
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
     dist, padres= func.dijkstra(grafo, desde)
@@ -101,9 +124,9 @@ def crearGrafoMundialista(listaAGrafo: list):
 
     return mundial, coordenadas
 
-def abrirArchivo():
+def abrirArchivo(archivo):
     try:
-        qatar = open("qatar.pj")
+        qatar = open(archivo)
         listaInformacion = []
         for linea in qatar.readlines():
             listaInformacion.append(linea.replace('\n', ''))
@@ -116,7 +139,9 @@ def abrirArchivo():
 
 def main():
 
-    listaSedes = abrirArchivo()
+    arch = sys.stdin
+
+    listaSedes = abrirArchivo(arch)
     grafoMundial, coordenadas = crearGrafoMundialista(listaSedes)
 
     programa = True
@@ -148,11 +173,17 @@ def main():
 
             guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
 
-        if comandoList[0] == COMANDOS[1]:
+        elif comandoList[0] == COMANDOS[1]:
             archivo = comandoList[1]
-            print(func.bfsordenadoentrada(grafoMundial))
+            grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
+            if error == False:
+                posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
+                if esPosible == False:
+                    print("No se encontro recorrido")
+                else:
+                    mensajeFinal(posibleCamino)
 
-        if comandoList[0] == COMANDOS[2]:
+        elif comandoList[0] == COMANDOS[2]:
             
             if len(comandoList) == 4:
                 desde = comandoList[1] + " " + comandoList[2].replace(",", "")
@@ -163,7 +194,7 @@ def main():
 
             viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
 
-        if comandoList[0] == COMANDOS[3]:
+        elif comandoList[0] == COMANDOS[3]:
             archivo = comandoList[1]
             arbol, peso = func.prim(grafoMundial)
             print(f'Peso total: {peso}')
