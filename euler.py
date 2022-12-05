@@ -7,14 +7,14 @@ class Euler():
     def __init__(self, grafo: gf.Grafo):
         self.grafo = grafo
     
-    def tieneCaminoEuleriano(self):
+    def tieneCicloEuleriano(self):
         '''
             Para que un grafo tenga un ciclo euleriano debe tener estas propiedades:
             Grafo no dirigido: sus vertices deben tener grado par y ser conexo.
         '''
-        return self.__tieneCaminoEuleriano()
+        return self.__tieneCicloEuleriano()
 
-    def __tieneCaminoEuleriano(self) -> bool:
+    def __tieneCicloEuleriano(self) -> bool:
         _, cant_componentes_conexas = funciones.dfs(self.grafo)
         cant_impar = self.__contarGradosImpares(funciones.gradosNoDirigido(self.grafo))
         return cant_componentes_conexas == 1 and cant_impar == 0#Es 0 si es un ciclo Euleriano
@@ -27,8 +27,6 @@ class Euler():
         return impar
         
     def cicloEulerianoHierholzer(self, origen):
-        if not self.__tieneCaminoEuleriano():
-            return []
         camino = list()
         aristasNoVisitadas = {}
         peso = 0

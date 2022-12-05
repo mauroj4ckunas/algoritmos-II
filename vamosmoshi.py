@@ -21,6 +21,10 @@ def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list)
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
 
+    if not cicloEuler.tieneCicloEuleriano:
+        print('No se encontro recorrido')
+        return
+
     camino, peso = cicloEuler.cicloEulerianoHierholzer(desde)
 
     mensaje = ""
@@ -62,24 +66,27 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
 
     dist, padres= func.dijkstra(grafo, desde)
 
-    anterior = padres[hasta]
-    camino = deque([])
-    camino.appendleft(hasta)
-    camino.appendleft(anterior)
-    while anterior != desde:
-        anterior = padres[anterior]
+    try:
+        anterior = padres[hasta]
+        camino = deque([])
+        camino.appendleft(hasta)
         camino.appendleft(anterior)
+        while anterior != desde:
+            anterior = padres[anterior]
+            camino.appendleft(anterior)
 
-    mensaje = ""
-    for i in range(len(list(camino))):
-        if i == 0:
-            mensaje += list(camino)[i]
-            continue
-        mensaje += " -> " + list(camino)[i]
+        mensaje = ""
+        for i in range(len(list(camino))):
+            if i == 0:
+                mensaje += list(camino)[i]
+                continue
+            mensaje += " -> " + list(camino)[i]
 
-    print(mensaje)
-    print(f'Tiempo total: {dist[hasta]}')
-    crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
+        print(mensaje)
+        print(f'Tiempo total: {dist[hasta]}')
+        crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
+    except KeyError:
+        print("No se encontro recorrido")
 
 def crearGrafoMundialista(listaAGrafo: list):
 
@@ -154,6 +161,10 @@ def main():
                 archivo = comandoList[3]
 
             guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
+
+        if comandoList[0] == COMANDOS[1]:
+            archivo = comandoList[1]
+            
 
         if comandoList[0] == COMANDOS[2]:
             
