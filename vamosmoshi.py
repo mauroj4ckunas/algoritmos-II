@@ -2,7 +2,7 @@ from collections import deque
 import grafo as gf
 import funciones as func
 import euler as eu
-import sys
+from errores import ErrorSinRecorrido
 
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
@@ -19,7 +19,7 @@ def itinerarioPosible(archivo, vertices: list):
             union = linea[:len(linea)-1].split(",")
             grafo.agregarArista(union[0],union[1])
     except:
-        print("No se encontro recorrido")
+        print(ErrorSinRecorrido().Error())
         errorLectura = True
     finally:
         caminos.close()
@@ -41,7 +41,7 @@ def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list)
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
     if not cicloEuler.tieneCicloEuleriano:
-        print('No se encontro recorrido')
+        print(ErrorSinRecorrido().Error())
         return
     camino, peso = cicloEuler.cicloEulerianoHierholzer(desde)
     mensajeFinal(camino, peso)
@@ -95,7 +95,7 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
         mensajeFinal(list(camino), dist[hasta])
         crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
     except KeyError: #Si el hasta no tiene  
-        print("No se encontro recorrido")
+        print(ErrorSinRecorrido().Error())
 
 def crearGrafoMundialista(listaAGrafo: list):
 
@@ -139,9 +139,7 @@ def abrirArchivo(archivo):
 
 def main():
 
-    arch = sys.stdin
-
-    listaSedes = abrirArchivo(arch)
+    listaSedes = abrirArchivo()
     grafoMundial, coordenadas = crearGrafoMundialista(listaSedes)
 
     programa = True
@@ -179,7 +177,7 @@ def main():
             if error == False:
                 posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
                 if esPosible == False:
-                    print("No se encontro recorrido")
+                    print(ErrorSinRecorrido().Error())
                 else:
                     mensajeFinal(posibleCamino)
 
