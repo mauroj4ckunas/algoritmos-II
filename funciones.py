@@ -1,6 +1,7 @@
 import cola as Tda
 from heap import Heap
 from grafo import Grafo
+import heapq
 
 def bfs_generico(grafo: Grafo):
 	padres = {}
@@ -173,26 +174,45 @@ def belmanford(grafo: Grafo,origen):
 
 #arbol tendido minimo:
 
-def prim(grafo: Grafo,origen):
+def pesoTotalAristas(grafo: Grafo) -> int:
+
+	vistos = set()
+	peso = 0
+	for v in grafo.verVertices():
+		for w in grafo.adyacentes(v):
+			if (v, w) not in vistos and (w, v) not in vistos:
+				vistos.add((v, w))
+				peso += int(grafo.peso(v, w))
+
+	return peso
+
+def prim(grafo: Grafo):
+	origen = grafo.verticeAlAzar()
 	visitados = set()
 	visitados.add(origen)
-	cola = Heap()
+	cola = []
 	for w in grafo.adyacentes(origen):
-		cola.Encolar((origen,w,grafo.peso(origen,w)))
+		heapq.heappush(cola, (int(grafo.peso(origen,w)), (origen,w)))
 
 	arbol = Grafo()
 	for v in grafo.verVertices():
-		arbol.AgregarVertice(v)
+		arbol.agregarVertice(v)
 
-	while not cola.EstaVacia():
-		v,w,peso = cola.Desencolar()
-		if w not in visitados:
-			arbol.agregararista(v,w,grafo.peso(v,w))
-			visitados.add(w)
-			for x in grafo.adyacentes(w):
-				if x not in visitados:
-					cola.Encolar((w,x,grafo.peso(w,x)))
-	return arbol
+	while len(cola) != 0:
+		peso, arista = heapq.heappop(cola)
+		v = arista[0]
+		w = arista[1]
+		if w in visitados:
+			continue
+		arbol.agregarArista(v,w,grafo.peso(v,w))
+		visitados.add(w)
+		for x in grafo.adyacentes(w):
+			if x not in visitados:
+				heapq.heappush(cola, (int(grafo.peso(w,x)), (w,x)))
+
+	pesoTotal = pesoTotalAristas(arbol)
+	
+	return arbol, pesoTotal
 
 class UnionFind:
 	

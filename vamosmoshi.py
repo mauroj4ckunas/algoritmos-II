@@ -6,6 +6,8 @@ import euler as eu
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
 
+
+
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
 
@@ -69,7 +71,7 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
     print(f'Tiempo total: {dist[hasta]}')
     crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
 
-def crearGrafoMundialista(listaAGrafo: list) -> gf.Grafo:
+def crearGrafoMundialista(listaAGrafo: list):
 
     cantSedes = int(listaAGrafo[0])
     mundial = gf.Grafo()
@@ -108,7 +110,6 @@ def abrirArchivo():
         qatar.close()
 
     return listaInformacion
-
 
 
 def main():
@@ -154,6 +155,12 @@ def main():
                 archivo = comandoList[2]
 
             viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
+
+        if comandoList[0] == COMANDOS[3]:
+            archivo = comandoList[1]
+            grafo, peso = func.prim(grafoMundial)
+
+            print(peso)
 
         else:
             programa = False

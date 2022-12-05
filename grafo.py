@@ -81,6 +81,3 @@ class Grafo:
 
 	def verticeAlAzar(self):
 		return random.choice(list(self.vertices.keys()))
-
-
-	
