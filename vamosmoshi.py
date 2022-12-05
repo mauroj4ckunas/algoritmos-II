@@ -6,6 +6,27 @@ import euler as eu
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
 
+def itinerarioPosible(archivo, vertices: list):
+    grafo = gf.Grafo(True) #grafo dirigido
+    for vertice in vertices:
+        grafo.agregarVertice(vertice)
+
+    errorLectura = False
+    try:
+        caminos = open(archivo)
+        for linea in caminos:
+            union = linea[:len(linea)-1].split(",")
+            grafo.agregarArista(union[0],union[1])
+    except:
+        print("No se encontro recorrido")
+        errorLectura = True
+    finally:
+        caminos.close()
+
+    return grafo,errorLectura
+
+
+
 def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list):
 
     with open(archivo, "w") as pajek:
@@ -51,15 +72,16 @@ def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, de
             nuevo.writelines('\t\t\t</LineString>\n')
             nuevo.writelines('\t\t</Placemark>\n')
 
-def mensajeFinal(listaSede: list, peso):
+def mensajeFinal(lista: list, peso = None):
     mensaje = ""
-    for i in range(len(listaSede)):
+    for i in range(len(lista)):
         if i == 0:
-            mensaje += listaSede[i]
+            mensaje += f"{lista[i]}"
             continue
-        mensaje += " -> " + listaSede[i]
+        mensaje += f" -> {lista[i]}"
     print(mensaje)
-    print(f'Tiempo total: {peso}')
+    if peso != None:
+        print(f'Tiempo total: {peso}')
 
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
     dist, padres= func.dijkstra(grafo, desde)
@@ -153,7 +175,16 @@ def main():
 
         if comandoList[0] == COMANDOS[1]:
             archivo = comandoList[1]
-            print(func.bfsordenadoentrada(grafoMundial))
+            grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
+            if error == False:
+                posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
+                if esPosible == False:
+                    print("No se encontro recorrido")
+                else:
+                    mensajeFinal(posibleCamino)
+
+
+
 
         if comandoList[0] == COMANDOS[2]:
             

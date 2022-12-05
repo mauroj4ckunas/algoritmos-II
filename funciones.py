@@ -89,8 +89,13 @@ def bfsordenadoentrada(grafo: Grafo):
 			grado[w] -= 1
 			if grado[w]==0:
 				cola.Encolar(w)
+	noHayCiclo = True
+	for v in grafo.verVertices():
+		if grado[v] != 0:
+			noHayCiclo = False
+			break
 
-	return orden
+	return orden, noHayCiclo
 
 
 """def dfsorden(grafo):
