@@ -6,7 +6,17 @@ import euler as eu
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
 
+def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list):
 
+    with open(archivo, "w") as pajek:
+        pajek.writelines(f'{len(arbol.verVertices())}\n')
+        for sede in arbol.verVertices():
+            pajek.writelines(f'{sede},{coordenadas[sede][0]},{coordenadas[sede][1]}\n')
+        pajek.writelines(f'{len(arbol.verVertices())}\n')
+        for ar in aristas:
+            pajek.writelines(f'{ar[0]},{ar[1]},{ar[2]}\n')
+
+    pass
 
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
@@ -158,9 +168,10 @@ def main():
 
         if comandoList[0] == COMANDOS[3]:
             archivo = comandoList[1]
-            grafo, peso = func.prim(grafoMundial)
-
-            print(peso)
+            arbol, peso = func.prim(grafoMundial)
+            print(f'Peso total: {peso}')
+            aristas = func.verAristas(arbol)
+            caminosReducidos(arbol, archivo, coordenadas, aristas)
 
         else:
             programa = False

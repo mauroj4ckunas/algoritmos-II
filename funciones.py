@@ -1,5 +1,4 @@
 import cola as Tda
-from heap import Heap
 from grafo import Grafo
 import heapq
 
@@ -127,16 +126,16 @@ def dijkstra(grafo: Grafo,origen):
 		distancia[v] = float("inf")
 	distancia[origen] = 0
 	padres[origen] = None
-	cola = Heap()
-	cola.Encolar((origen,distancia[origen]))
-	while not cola.EstaVacia():
-		tuplaV = cola.Desencolar()
-		v = tuplaV[0]
+	cola = []
+	heapq.heappush(cola, (distancia[origen], origen))
+	while len(cola) != 0:
+		tuplaV = heapq.heappop(cola)
+		v = tuplaV[1]
 		for w in grafo.adyacentes(v):
 			if distancia[v] + int(grafo.peso(v,w)) < distancia[w]:
 				distancia[w] = distancia[v] + int(grafo.peso(v,w))
 				padres[w] = v 
-				cola.Encolar((w,distancia[v] + int(grafo.peso(v,w))))
+				heapq.heappush(cola, (distancia[v] + int(grafo.peso(v,w)), w))
 
 	return distancia,padres
 
@@ -174,22 +173,22 @@ def belmanford(grafo: Grafo,origen):
 
 #arbol tendido minimo:
 
-def pesoTotalAristas(grafo: Grafo) -> int:
-
-	vistos = set()
-	peso = 0
+def verAristas(grafo: Grafo):
+	aristas = []
+	visitados = set()
 	for v in grafo.verVertices():
 		for w in grafo.adyacentes(v):
-			if (v, w) not in vistos and (w, v) not in vistos:
-				vistos.add((v, w))
-				peso += int(grafo.peso(v, w))
-
-	return peso
+			if (v, w) not in visitados and (w, v) not in visitados:
+				visitados.add((v, w))
+				aristas.append((v, w, grafo.peso(v, w)))
+	return aristas
+	
 
 def prim(grafo: Grafo):
 	origen = grafo.verticeAlAzar()
 	visitados = set()
 	visitados.add(origen)
+	pesoTotal = 0
 	cola = []
 	for w in grafo.adyacentes(origen):
 		heapq.heappush(cola, (int(grafo.peso(origen,w)), (origen,w)))
@@ -205,12 +204,11 @@ def prim(grafo: Grafo):
 		if w in visitados:
 			continue
 		arbol.agregarArista(v,w,grafo.peso(v,w))
+		pesoTotal += int(grafo.peso(v,w))
 		visitados.add(w)
 		for x in grafo.adyacentes(w):
 			if x not in visitados:
 				heapq.heappush(cola, (int(grafo.peso(w,x)), (w,x)))
-
-	pesoTotal = pesoTotalAristas(arbol)
 	
 	return arbol, pesoTotal
 
