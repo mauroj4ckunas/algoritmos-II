@@ -2,7 +2,7 @@ import cola as Tda
 from grafo import Grafo
 import heapq
 
-def bfs_generico(grafo: Grafo):
+"""def bfs_generico(grafo: Grafo):
 	padres = {}
 	visitados = set()
 	orden = {}
@@ -23,9 +23,9 @@ def bfs(grafo: Grafo,origen,padres,visitados,orden):
 				padres[adyacente] = vertice
 				orden[adyacente] = orden[vertice] + 1
 				visitados.add(adyacente)
-				cola.Encolar(adyacente)
+				cola.Encolar(adyacente)"""
 
-def dfs(grafo: Grafo):
+def dfs(grafo: Grafo): #se usa
 	padres = {}
 	visitados = set()
 	orden = {}
@@ -48,6 +48,22 @@ def _dfs(grafo: Grafo,vertice,padres,visitados: set,orden):
 			_dfs(grafo,adyacente,padres,visitados,orden)
 
 
+
+
+
+
+
+def grados(grafo: Grafo) -> dict:
+	grados = {}
+	for v in grafo.verVertices():
+		grado[v] = 0
+	for v in grafo.verVertices():
+		for w in grafo.adyacentes(v):
+			grado[w] += 1
+	return grados
+
+#SON LA MISMA FUNCION, DESPUES VEMOS CUAL USAR
+
 def gradosNoDirigido(grafo: Grafo) -> dict:
 	cola = Tda.Cola()
 	origen = grafo.verticeAlAzar()
@@ -62,21 +78,18 @@ def gradosNoDirigido(grafo: Grafo) -> dict:
 				visitados.add(adyacente)
 				cola.Encolar(adyacente)
 	return grados			
+
+
+
 			
 			
 			
 #Orden topologico:
 
-def bfsordenadoentrada(grafo: Grafo):
-	grado = {}
+def bfsordenadoentrada(grafo: Grafo): # se usa
 	cola = Tda.Cola()
 	orden = []
-	for v in grafo.verVertices():
-		grado[v] = 0
-
-	for v in grafo.verVertices():
-		for w in grafo.adyacentes(v):
-			grado[w] += 1
+	grado = grados(grafo)
 
 	for v in grafo.verVertices():
 		if grado[v]==0:
@@ -124,7 +137,7 @@ def _dfsorden(grafo,visitados,pila,vertice):
 
 #Camino minimo:
 		
-def dijkstra(grafo: Grafo,origen):
+def dijkstra(grafo: Grafo,origen): #se usa
 	distancia = {}
 	padres = {}
 	for v in grafo.verVertices():
@@ -144,7 +157,7 @@ def dijkstra(grafo: Grafo,origen):
 
 	return distancia,padres
 
-def belmanford(grafo: Grafo,origen):
+"""def belmanford(grafo: Grafo,origen):
 	distancia = {}
 	padres = {}
 	for v in grafo.verVertices():
@@ -173,12 +186,12 @@ def belmanford(grafo: Grafo,origen):
 		if distancia[v] + peso < distancia[w]:
 			raise Exception("Hay un ciclo")
 
-	return padres,distancia
+	return padres,distancia"""
 
 
 #arbol tendido minimo:
 
-def verAristas(grafo: Grafo):
+def verAristas(grafo: Grafo): #se usa 
 	aristas = []
 	visitados = set()
 	for v in grafo.verVertices():
@@ -189,7 +202,7 @@ def verAristas(grafo: Grafo):
 	return aristas
 	
 
-def prim(grafo: Grafo):
+def prim(grafo: Grafo): # se usa
 	origen = grafo.verticeAlAzar()
 	visitados = set()
 	visitados.add(origen)
@@ -217,7 +230,7 @@ def prim(grafo: Grafo):
 	
 	return arbol, pesoTotal
 
-class UnionFind:
+"""class UnionFind:
 	
 	def __init__(self,vertices):
 		self.groups = {}
@@ -236,22 +249,6 @@ class UnionFind:
 		real_groups = self.find(self.groups[vertice])
 		self.groups[vertice] = real_groups
 		return real_groups
-
-def dfs_convexo(grafo: Grafo, vistos, v):
-    for w in grafo.adyacentes(v):
-        if w not in vistos:
-            vistos.add(w)
-            dfs_convexo(grafo, vistos, w)
-
-
-def esConvexo(grafo: Grafo):
-    vistos = set()
-    contador = 0
-    for v in grafo.verVertices():
-        if v not in vistos:
-            contador += 1
-            dfs_convexo(grafo, vistos, v)
-    return contador == 1
 
 def kruskal(grafo: Grafo):
 	conjunto = UnionFind(grafo.verVertices())
@@ -275,4 +272,25 @@ def kruskal(grafo: Grafo):
 			arbol.agregarArista(v,w,peso)
 			conjunto.union(v,w)
 
-	return arbol
+	return arbol"""
+
+
+
+
+"""def dfs_convexo(grafo: Grafo, vistos, v):
+    for w in grafo.adyacentes(v):
+        if w not in vistos:
+            vistos.add(w)
+            dfs_convexo(grafo, vistos, w)
+
+
+def esConvexo(grafo: Grafo):
+    vistos = set()
+    contador = 0
+    for v in grafo.verVertices():
+        if v not in vistos:
+            contador += 1
+            dfs_convexo(grafo, vistos, v)
+    return contador == 1"""
+
+
