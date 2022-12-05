@@ -75,7 +75,7 @@ def bfsordenadoentrada(grafo: Grafo):
 		grado[v] = 0
 
 	for v in grafo.verVertices():
-		for w in grado.adyacentes(v):
+		for w in grafo.adyacentes(v):
 			grado[w] += 1
 
 	for v in grafo.verVertices():
@@ -232,7 +232,21 @@ class UnionFind:
 		self.groups[vertice] = real_groups
 		return real_groups
 
+def dfs_convexo(grafo: Grafo, vistos, v):
+    for w in grafo.adyacentes(v):
+        if w not in vistos:
+            vistos.add(w)
+            dfs_convexo(grafo, vistos, w)
 
+
+def esConvexo(grafo: Grafo):
+    vistos = set()
+    contador = 0
+    for v in grafo.verVertices():
+        if v not in vistos:
+            contador += 1
+            dfs_convexo(grafo, vistos, v)
+    return contador == 1
 
 def kruskal(grafo: Grafo):
 	conjunto = UnionFind(grafo.verVertices())
@@ -253,7 +267,7 @@ def kruskal(grafo: Grafo):
 	for a in aristas:
 		v,w,peso = a
 		if conjunto.find(v) != conjunto.find(w):
-			arbol.agregararista(v,w,peso)
+			arbol.agregarArista(v,w,peso)
 			conjunto.union(v,w)
 
 	return arbol

@@ -20,22 +20,11 @@ def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list)
 
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
-
     if not cicloEuler.tieneCicloEuleriano:
         print('No se encontro recorrido')
         return
-
     camino, peso = cicloEuler.cicloEulerianoHierholzer(desde)
-
-    mensaje = ""
-    for i in range(len(camino)):
-        if i == 0:
-            mensaje += camino[i]
-            continue
-        mensaje += " -> " + camino[i]
-
-    print(mensaje)
-    print(f'Tiempo total: {peso}')
+    mensajeFinal(camino, peso)
     crearArchivoKML(camino, nombreArchivo, coordenadas, desde)
 
 def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
@@ -62,10 +51,18 @@ def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, de
             nuevo.writelines('\t\t\t</LineString>\n')
             nuevo.writelines('\t\t</Placemark>\n')
 
+def mensajeFinal(listaSede: list, peso):
+    mensaje = ""
+    for i in range(len(listaSede)):
+        if i == 0:
+            mensaje += listaSede[i]
+            continue
+        mensaje += " -> " + listaSede[i]
+    print(mensaje)
+    print(f'Tiempo total: {peso}')
+
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
-
     dist, padres= func.dijkstra(grafo, desde)
-
     try:
         anterior = padres[hasta]
         camino = deque([])
@@ -74,18 +71,9 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
         while anterior != desde:
             anterior = padres[anterior]
             camino.appendleft(anterior)
-
-        mensaje = ""
-        for i in range(len(list(camino))):
-            if i == 0:
-                mensaje += list(camino)[i]
-                continue
-            mensaje += " -> " + list(camino)[i]
-
-        print(mensaje)
-        print(f'Tiempo total: {dist[hasta]}')
+        mensajeFinal(list(camino), dist[hasta])
         crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
-    except KeyError:
+    except KeyError: #Si el hasta no tiene  
         print("No se encontro recorrido")
 
 def crearGrafoMundialista(listaAGrafo: list):
@@ -140,6 +128,7 @@ def main():
         comandoList = comandoStr.split(" ")
         if comandoList[0] == COMANDOS[0]:
             
+            #Estas validaciones son porque existen sedes con nombres de dos palabras.
             if len(comandoList) > 4:
                 if len(comandoList) == 6:
                     desde = comandoList[1] + " " + comandoList[2].replace(",", "")
@@ -164,7 +153,7 @@ def main():
 
         if comandoList[0] == COMANDOS[1]:
             archivo = comandoList[1]
-            
+            print(func.bfsordenadoentrada(grafoMundial))
 
         if comandoList[0] == COMANDOS[2]:
             
