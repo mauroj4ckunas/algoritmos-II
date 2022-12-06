@@ -87,59 +87,58 @@ def mensajeFinal(lista: list, peso = None):
         print(f'Tiempo total: {peso}')
 
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
-    dist, padres= func.dijkstra(grafo, desde)
     try:
-        anterior = padres[hasta]
-        camino = deque([])
-        camino.appendleft(hasta)
-        camino.appendleft(anterior)
-        while anterior != desde:
-            anterior = padres[anterior]
-            camino.appendleft(anterior)
+        camino, dist = func.reconstruirCaminoMinimo(grafo,desde,hasta)
         mensajeFinal(list(camino), dist[hasta])
         crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
     except KeyError: #Si el hasta no tiene  
         print(ErrorSinRecorrido().Error())
 
-def crearGrafoMundialista(listaAGrafo: list):
-
-    cantSedes = int(listaAGrafo[0])
-    mundial = gf.Grafo()
-    coordenadas = {}
-    for i in range(1, cantSedes+1):
-        sede: str = listaAGrafo[i]
-        sedeLista = sede.split(",")
-        nombreSede: str = sedeLista[0]
-        lat = sedeLista[1]
-        lng = sedeLista[2]
-        coordenadas[nombreSede] = [lat, lng]
-        mundial.agregarVertice(nombreSede)
-
-    indicearistas = cantSedes+2
-
-    for j in range(indicearistas, len(listaAGrafo)):
-        arista: str = listaAGrafo[j]
-        aristaLista = arista.split(",")
-        desde = aristaLista[0]
-        hasta = aristaLista[1]
-        peso = aristaLista[2]
-        mundial.agregarArista(desde, hasta, peso)
-
-
-    return mundial, coordenadas
+def reconstruirComando(grafoMundial:gf.Grafo,comando: list)-> (str,str,str):
+    index = 0
+    primerElemento = comando[index].replace(",", "")
+    while not grafoMundial.pertenece(primerElemento):
+        index += 1
+        primerElemento += " " + comando[index].replace(",", "")
+    index += 1
+    segundoElemento = comando[index].replace(",", "")
+    if len(comando) - 1 == index:
+        terceroYultimo = ""
+    else:
+        while not grafoMundial.pertenece(segundoElemento):
+           index += 1
+           segundoElemento += " " + comando[index].replace(",", "")
+        index += 1
+        terceroYultimo = comando[index] 
+    
+    return primerElemento,segundoElemento,terceroYultimo
 
 def abrirArchivo(archivo):
     try:
         qatar = open(archivo)
-        listaInformacion = []
-        for linea in qatar.readlines():
-            listaInformacion.append(linea.replace('\n', ''))
+        mundial = gf.Grafo()
+        coordenadas = {}
+        cantCiudades = int(qatar.readline().replace('\n', ''))
+        visitadas = 0
+        while visitadas < cantCiudades:
+            linea = qatar.readline().replace('\n', '')
+            ciudad , lat , lng = linea.split(",")
+            mundial.agregarVertice(ciudad)
+            coordenadas[ciudad] = [lat,lng]
+            visitadas += 1
+        visitadas = 0
+        cantUniones =  int(qatar.readline().replace('\n', ''))
+        while visitadas < cantUniones:
+            linea = qatar.readline().replace('\n', '')
+            desde , hasta , tiempo = linea.split(",")
+            mundial.agregarArista(desde , hasta , tiempo)
+            visitadas += 1
     except:
-        print("No se encontro el archivo.")
+        raise Exception("No se encontro el archivo.")
     finally:
         qatar.close()
 
-    return listaInformacion
+    return mundial, coordenadas
 
 
 def main():
@@ -147,36 +146,15 @@ def main():
     if len(archivo) > 1:
         print("No se encontro el archivo.")
         return
-    listaSedes = abrirArchivo(archivo[0])
-    grafoMundial, coordenadas = crearGrafoMundialista(listaSedes)
+    grafoMundial, coordenadas = abrirArchivo(archivo[0])
 
     programa = True
     while programa:
         comandoStr = input()
         comandoList = comandoStr.split(" ")
+
         if comandoList[0] == COMANDOS[0]:
-            
-            #Estas validaciones son porque existen sedes con nombres de dos palabras.
-            if len(comandoList) > 4:
-                if len(comandoList) == 6:
-                    desde = comandoList[1] + " " + comandoList[2].replace(",", "")
-                    hasta = comandoList[3] + " " + comandoList[4].replace(",", "")
-                    archivo = comandoList[5]
-
-                elif "," in comandoList[2]:
-                    desde = comandoList[1] + " " + comandoList[2].replace(",", "")
-                    hasta = comandoList[3].replace(",", "")
-                    archivo = comandoList[4]
-
-                elif "," in comandoList[3]:
-                    desde = comandoList[1].replace(",", "")
-                    hasta = comandoList[2] + " " + comandoList[3].replace(",", "")
-                    archivo = comandoList[4]
-            elif len(comandoList) <= 4: 
-                desde = comandoList[1].replace(",", "")
-                hasta = comandoList[2].replace(",", "")
-                archivo = comandoList[3]
-
+            desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
             guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
 
         elif comandoList[0] == COMANDOS[1]:
@@ -189,18 +167,8 @@ def main():
                 else:
                     mensajeFinal(posibleCamino)
 
-
-
-
         elif comandoList[0] == COMANDOS[2]:
-            
-            if len(comandoList) == 4:
-                desde = comandoList[1] + " " + comandoList[2].replace(",", "")
-                archivo = comandoList[3]
-            else: 
-                desde = comandoList[1].replace(",", "")
-                archivo = comandoList[2]
-
+            desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
             viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
 
         elif comandoList[0] == COMANDOS[3]:
