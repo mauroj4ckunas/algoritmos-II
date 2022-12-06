@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from collections import deque
 import grafo as gf
 import funciones as func
@@ -124,21 +125,19 @@ def crearGrafoMundialista(listaAGrafo: list):
 
     return mundial, coordenadas
 
-def abrirArchivo(archivo):
+def abrirArchivo():
     try:
-        qatar = open(archivo)
+        qatar = open("qatar.pj")
         listaInformacion = []
         for linea in qatar.readlines():
             listaInformacion.append(linea.replace('\n', ''))
+
     except:
         print("No se encontro el archivo.")
-    finally:
-        qatar.close()
 
     return listaInformacion
 
 def main():
-
     listaSedes = abrirArchivo()
     grafoMundial, coordenadas = crearGrafoMundialista(listaSedes)
 

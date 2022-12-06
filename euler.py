@@ -38,11 +38,8 @@ class Euler():
                     pesoVisto.add((v, w))
                     peso += int(self.grafo.peso(v, w))
                 aristasNoVisitadas[v].Apilar((v, w))
-
         aristasVisitadas = set()
-        
         camino = self.__algoritmoHierholzer(aristasNoVisitadas, aristasVisitadas, camino, origen)
-        
         return camino, peso
 
 
@@ -83,3 +80,24 @@ class Euler():
                     return False
                 seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
 
+prueba = gf.Grafo()
+
+prueba.agregarVertice(1)
+prueba.agregarVertice(2)
+prueba.agregarVertice(3)
+prueba.agregarVertice(4)
+prueba.agregarVertice(5)
+prueba.agregarVertice(6)
+
+prueba.agregarArista(1, 2, 3)
+prueba.agregarArista(1, 4, 4)
+prueba.agregarArista(2, 3, 3)
+prueba.agregarArista(3, 4, 5)
+prueba.agregarArista(3, 6, 2)
+prueba.agregarArista(4, 6, 3)
+prueba.agregarArista(4, 5, 5)
+prueba.agregarArista(3, 5, 10)
+
+ciclo = Euler(prueba)
+
+print(ciclo.cicloEulerianoHierholzer(6))

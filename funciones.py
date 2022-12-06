@@ -56,10 +56,10 @@ def _dfs(grafo: Grafo,vertice,padres,visitados: set,orden):
 def grados(grafo: Grafo) -> dict:
 	grados = {}
 	for v in grafo.verVertices():
-		grado[v] = 0
+		grados[v] = 0
 	for v in grafo.verVertices():
 		for w in grafo.adyacentes(v):
-			grado[w] += 1
+			grados[w] += 1
 	return grados
 
 #SON LA MISMA FUNCION, DESPUES VEMOS CUAL USAR
