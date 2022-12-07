@@ -95,23 +95,18 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
         print(ErrorSinRecorrido().Error())
 
 def reconstruirComando(grafoMundial:gf.Grafo,comando: list):
+    resultado = []
     index = 0
-    primerElemento = comando[index].replace(",", "")
-    while not grafoMundial.pertenece(primerElemento):
-        index += 1
-        primerElemento += " " + comando[index].replace(",", "")
-    index += 1
-    segundoElemento = comando[index].replace(",", "")
-    if len(comando) - 1 == index:
-        terceroYultimo = ""
-    else:
-        while not grafoMundial.pertenece(segundoElemento):
-           index += 1
-           segundoElemento += " " + comando[index].replace(",", "")
-        index += 1
-        terceroYultimo = comando[index] 
-    
-    return primerElemento,segundoElemento,terceroYultimo
+    palabra = ""
+    while index < len(comando):
+        if "," in comando[index] or index == len(comando) - 1:
+            palabra += comando[index].replace(",", "")
+            resultado.append(palabra)
+            palabra = ""
+        else:
+            palabra += comando[index] + " "
+        index += 1 
+    return resultado
 
 def abrirArchivo(archivo):
     try:
@@ -158,8 +153,11 @@ def main():
         comandoList = comandoStr.split(" ")
 
         if comandoList[0] == COMANDOS[0]:
-            desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
-            guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
+            escrituraUsuario = reconstruirComando(grafoMundial,comandoList[1:])
+            if len(escrituraUsuario) != 3: #3 ya que necesita el desde, hasta y el nombre del archivo
+               print(ErrorSinRecorrido().Error()) 
+            else:
+                guardarCaminoMinimo(grafoMundial, escrituraUsuario[0], escrituraUsuario[1], escrituraUsuario[2], coordenadas)
 
         elif comandoList[0] == COMANDOS[1]:
             archivo = comandoList[1]
@@ -172,8 +170,11 @@ def main():
                     mensajeFinal(posibleCamino)
 
         elif comandoList[0] == COMANDOS[2]:
-            desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
-            viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
+            escrituraUsuario = reconstruirComando(grafoMundial,comandoList[1:])
+            if len(escrituraUsuario)!= 2:#2 ya que necesita la entrada de desde y el nombre del archivo
+                print(ErrorSinRecorrido().Error())
+            else:
+                viajeTodosLosCaminos(grafoMundial, escrituraUsuario[0], escrituraUsuario[1], coordenadas)
 
         elif comandoList[0] == COMANDOS[3]:
             archivo = comandoList[1]
