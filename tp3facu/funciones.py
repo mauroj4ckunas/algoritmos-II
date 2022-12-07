@@ -6,22 +6,19 @@ from pila import Pila
 def dfs(grafo: Grafo): #se usa
 	padres = {}
 	visitados = set()
-	orden = {}
 	cant_comp = 0
 	for v in grafo.verVertices():
 		if v not in visitados:
 			padres[v] = None
 			cant_comp += 1
-			orden[v] = 0
 			visitados.add(v)
 			_dfs(grafo,v,padres,visitados,orden)
 	return padres, cant_comp
 			
-def _dfs(grafo: Grafo,vertice,padres,visitados: set,orden):
+def _dfs(grafo: Grafo,vertice,padres,visitados):
 	for adyacente in grafo.adyacentes(vertice):
 		if adyacente not in visitados:
 			padres[adyacente] = vertice
-			orden[adyacente] = orden[vertice] + 1
 			visitados.add(adyacente)
 			_dfs(grafo,adyacente,padres,visitados,orden)
 
