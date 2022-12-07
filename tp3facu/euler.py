@@ -25,7 +25,7 @@ class Euler():
             if gradosVertices[v] % 2 != 0:
                 impar += 1
         return impar
-        
+
     def cicloEulerianoHierholzer(self, origen):
         camino = list()
         aristasNoVisitadas = {}
@@ -38,11 +38,8 @@ class Euler():
                     pesoVisto.add((v, w))
                     peso += int(self.grafo.peso(v, w))
                 aristasNoVisitadas[v].Apilar((v, w))
-
         aristasVisitadas = set()
-        
         camino = self.__algoritmoHierholzer(aristasNoVisitadas, aristasVisitadas, camino, origen)
-        
         return camino, peso
 
 
@@ -50,23 +47,22 @@ class Euler():
         
         camino.append(vertice)
         self.__dfsHierholzer(vertice, aristasNoVisitadas, aristasVisitadas, camino, vertice)
-        for i in camino:
-            while not aristasNoVisitadas[i].EstaVacia():
-                sig = aristasNoVisitadas[i].Desapilar()
+        i = 0
+        while i < len(camino):
+            while not aristasNoVisitadas[camino[i]].EstaVacia():
+                sig = aristasNoVisitadas[camino[i]].Desapilar()
                 if sig not in aristasVisitadas and (sig[1], sig[0]) not in aristasVisitadas:
                     caminoAux = []
+                    aristasVisitadas.add(sig)
                     caminoAux.append(sig[0])
-                    self.__dfsHierholzer(sig[0], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
+                    caminoAux.append(sig[1])
+                    self.__dfsHierholzer(sig[1], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
 
-                    if i == camino[len(camino) - 1]:
-                        camino = camino[:len(camino) - 2] + caminoAux
-                    else:
-                        for j in range(len(camino) - 2, -1, -1):
-                            if camino[j] == i:
-                                a = camino[:j]
-                                b = camino[j+1:]
-                                camino = a + caminoAux + b
-                                break
+                    a = camino[:i]
+                    b = camino[i+1:]
+                    camino = a + caminoAux + b
+                    i = -1 #Con esto reinicio el la busqueda de adyacentes.
+            i += 1
 
         return camino
 
@@ -76,9 +72,8 @@ class Euler():
             arista = noVisitadas[vertice].Desapilar()
             if arista not in visitadas and (arista[1], arista[0]) not in visitadas:
                 visitadas.add(arista)
-                if len(caminoActualizado) != 0:
-                    if caminoActualizado[len(caminoActualizado) - 1] != arista[1]:
-                        caminoActualizado.append(arista[1])
+                if caminoActualizado[len(caminoActualizado) - 1] != arista[1]:
+                    caminoActualizado.append(arista[1])
                 if arista[1] == inicio:
                     return False
                 seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
