@@ -44,7 +44,7 @@ def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list)
 
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
-    if not cicloEuler.tieneCicloEuleriano:
+    if not cicloEuler.tieneCicloEuleriano():
         print(ErrorSinRecorrido().Error())
         return
     camino, peso = cicloEuler.cicloEulerianoHierholzer(desde)
@@ -150,35 +150,35 @@ def main():
 
     programa = True
     while programa:
-        comandoStr = input()
-        comandoList = comandoStr.split(" ")
+        for escrito in sys.stdin:
+            comandoList = escrito.split(" ")
 
-        if comandoList[0] == COMANDOS[0]:
-            desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
-            guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
+            if comandoList[0] == COMANDOS[0]:
+                desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
+                guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
 
-        elif comandoList[0] == COMANDOS[1]:
-            archivo = comandoList[1]
-            grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
-            if error == False:
-                posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
-                if esPosible == False:
-                    print(ErrorSinRecorrido().Error())
-                else:
-                    mensajeFinal(posibleCamino)
+            elif comandoList[0] == COMANDOS[1]:
+                archivo = comandoList[1]
+                grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
+                if error == False:
+                    posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
+                    if esPosible == False:
+                        print(ErrorSinRecorrido().Error())
+                    else:
+                        mensajeFinal(posibleCamino)
 
-        elif comandoList[0] == COMANDOS[2]:
-            desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
-            viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
+            elif comandoList[0] == COMANDOS[2]:
+                desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
+                viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
 
-        elif comandoList[0] == COMANDOS[3]:
-            archivo = comandoList[1]
-            arbol, peso = func.prim(grafoMundial)
-            print(f'Peso total: {peso}')
-            aristas = func.verAristas(arbol)
-            caminosReducidos(arbol, archivo, coordenadas, aristas)
+            elif comandoList[0] == COMANDOS[3]:
+                archivo = comandoList[1]
+                arbol, peso = func.prim(grafoMundial)
+                print(f'Peso total: {peso}')
+                aristas = func.verAristas(arbol)
+                caminosReducidos(arbol, archivo, coordenadas, aristas)
 
-        else:
-            programa = False
+            else:
+                programa = False
 
 main()

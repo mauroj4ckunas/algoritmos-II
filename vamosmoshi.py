@@ -123,6 +123,7 @@ def crearGrafoMundialista(listaAGrafo: list):
         peso = aristaLista[2]
         mundial.agregarArista(desde, hasta, peso)
 
+    print(mundial)
 
     return mundial, coordenadas
 
@@ -139,11 +140,12 @@ def abrirArchivo(archivo):
     return listaInformacion
 
 def main():
-    archivo = sys.argv[1:]
-    if len(archivo) > 1:
-        print("No se encontro el archivo.")
-        return
-    listaSedes = abrirArchivo(archivo[0])
+    # archivo = sys.argv[1:]
+    # if len(archivo) > 1:
+    #     print("No se encontro el archivo.")
+    #     return
+
+    listaSedes = abrirArchivo("qatar.pj")
     grafoMundial, coordenadas = crearGrafoMundialista(listaSedes)
 
     programa = True
