@@ -150,35 +150,39 @@ def main():
 
     programa = True
     while programa:
-        for escrito in sys.stdin:
-            comandoList = escrito.split(" ")
+        try:
+            comandoStr = input()
+        except EOFError:
+            return
+        
+        comandoList = comandoStr.split(" ")
 
-            if comandoList[0] == COMANDOS[0]:
-                desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
-                guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
+        if comandoList[0] == COMANDOS[0]:
+            desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
+            guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
 
-            elif comandoList[0] == COMANDOS[1]:
-                archivo = comandoList[1]
-                grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
-                if error == False:
-                    posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
-                    if esPosible == False:
-                        print(ErrorSinRecorrido().Error())
-                    else:
-                        mensajeFinal(posibleCamino)
+        elif comandoList[0] == COMANDOS[1]:
+            archivo = comandoList[1]
+            grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
+            if error == False:
+                posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
+                if esPosible == False:
+                    print(ErrorSinRecorrido().Error())
+                else:
+                    mensajeFinal(posibleCamino)
 
-            elif comandoList[0] == COMANDOS[2]:
-                desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
-                viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
+        elif comandoList[0] == COMANDOS[2]:
+            desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
+            viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
 
-            elif comandoList[0] == COMANDOS[3]:
-                archivo = comandoList[1]
-                arbol, peso = func.prim(grafoMundial)
-                print(f'Peso total: {peso}')
-                aristas = func.verAristas(arbol)
-                caminosReducidos(arbol, archivo, coordenadas, aristas)
+        elif comandoList[0] == COMANDOS[3]:
+            archivo = comandoList[1]
+            arbol, peso = func.prim(grafoMundial)
+            print(f'Peso total: {peso}')
+            aristas = func.verAristas(arbol)
+            caminosReducidos(arbol, archivo, coordenadas, aristas)
 
-            else:
-                programa = False
+        else:
+            programa = False
 
 main()
