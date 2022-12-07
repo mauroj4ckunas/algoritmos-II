@@ -45,6 +45,7 @@ class Euler():
 
     def __algoritmoHierholzer(self, aristasNoVisitadas: dict, aristasVisitadas: set, camino: list, vertice):
         
+        
         camino.append(vertice)
         self.__dfsHierholzer(vertice, aristasNoVisitadas, aristasVisitadas, camino, vertice)
         i = 0
@@ -62,6 +63,7 @@ class Euler():
                     b = camino[i+1:]
                     camino = a + caminoAux + b
                     i = -1 #Con esto reinicio el la busqueda de adyacentes.
+                    break
             i += 1
 
         return camino
@@ -77,4 +79,3 @@ class Euler():
                 if arista[1] == inicio:
                     return False
                 seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
-

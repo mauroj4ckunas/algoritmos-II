@@ -45,7 +45,8 @@ def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coorde
     if not cicloEuler.tieneCicloEuleriano:
         print(ErrorSinRecorrido().Error())
         return
-    camino, peso = cicloEuler.cicloEulerianoHierholzer(desde)
+    camino, peso, lista = cicloEuler.cicloEulerianoHierholzer(desde)
+    print(f"La cantidad de arista es: {len(lista)}")
     mensajeFinal(camino, peso)
     crearArchivoKML(camino, nombreArchivo, coordenadas, desde)
 
@@ -124,6 +125,9 @@ def crearGrafoMundialista(listaAGrafo: list):
         mundial.agregarArista(desde, hasta, peso)
 
     print(mundial)
+    arista = func.verAristas(mundial)
+    print(len(arista))
+
 
     return mundial, coordenadas
 

@@ -51,36 +51,6 @@ def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coorde
     mensajeFinal(camino, peso)
     crearArchivoKML(camino, nombreArchivo, coordenadas, desde)
 
-
-
-    
-"""def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
-    with open(nombreArchivo, "w", encoding="UTF-8") as nuevo:
-        nuevo.writelines('<?xml version="1.0" encoding="UTF-8"?>\n')
-        nuevo.writelines('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
-        nuevo.writelines('\t<Document>\n')
-        if hasta != None: nuevo.writelines(f'\t\t<name>Camino desde {desde} hacia {hasta}</name>\n')
-        else: nuevo.writelines(f'\t\t<name>Viaje desde {desde}</name>\n\n')
-        nuevo.writelines('\n')
-        for sede in listaPuntos:
-            nuevo.writelines('\t\t<Placemark>\n')
-            nuevo.writelines(f'\t\t\t<name>{sede}</name>\n')
-            nuevo.writelines('\t\t\t<Point>\n')
-            nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[sede][0]}, {coordenadas[sede][1]}</coordinates>\n')
-            nuevo.writelines('\t\t\t</Point>\n')
-            nuevo.writelines('\t\t</Placemark>\n')
-            nuevo.writelines('\n')
-        for i in range(len(listaPuntos) - 1):
-            nuevo.writelines('\t\t<Placemark>\n')
-            nuevo.writelines('\t\t\t<LineString>\n')
-            nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[listaPuntos[i]][0]}, {coordenadas[listaPuntos[i]][1]} {coordenadas[listaPuntos[i+1]][0]}, {coordenadas[listaPuntos[i+1]][1]}</coordinates>\n')
-            nuevo.writelines('\t\t\t</LineString>\n')
-            nuevo.writelines('\t\t</Placemark>\n')
-            nuevo.writelines('\n')
-
-        nuevo.writelines('\t<Document>\n')
-        nuevo.writelines('</kml>')"""
-
 def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
     with open(nombreArchivo, "w", encoding="UTF-8") as nuevo:
         nuevo.writelines('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -96,14 +66,14 @@ def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, de
             nuevo.writelines('\t\t\t</Point>\n')
             nuevo.writelines('\t\t</Placemark>\n')
         nuevo.writelines('\n')
-        for i in range(len(listaPuntos)):
-            if i+1 == len(listaPuntos):
-                break
+        for i in range(len(listaPuntos)-1):
             nuevo.writelines('\t\t<Placemark>\n')
             nuevo.writelines('\t\t\t<LineString>\n')
             nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[listaPuntos[i]][0]}, {coordenadas[listaPuntos[i]][1]} {coordenadas[listaPuntos[i+1]][0]}, {coordenadas[listaPuntos[i+1]][1]}</coordinates>\n')
             nuevo.writelines('\t\t\t</LineString>\n')
             nuevo.writelines('\t\t</Placemark>\n')
+        nuevo.writelines('\t</Document>\n')
+        nuevo.writelines('</kml>')
 
 def mensajeFinal(lista: list, peso = None):
     mensaje = ""
