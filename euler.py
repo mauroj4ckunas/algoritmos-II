@@ -47,23 +47,23 @@ class Euler():
         
         camino.append(vertice)
         self.__dfsHierholzer(vertice, aristasNoVisitadas, aristasVisitadas, camino, vertice)
-        for i in camino:
-            while not aristasNoVisitadas[i].EstaVacia():
-                sig = aristasNoVisitadas[i].Desapilar()
+        # for i in range(len(camino)):
+        i = 0
+        while i < len(camino):
+            while not aristasNoVisitadas[camino[i]].EstaVacia():
+                sig = aristasNoVisitadas[camino[i]].Desapilar()
                 if sig not in aristasVisitadas and (sig[1], sig[0]) not in aristasVisitadas:
                     caminoAux = []
+                    aristasVisitadas.add(sig)
                     caminoAux.append(sig[0])
-                    self.__dfsHierholzer(sig[0], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
+                    caminoAux.append(sig[1])
+                    self.__dfsHierholzer(sig[1], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
 
-                    if i == camino[len(camino) - 1]:
-                        camino = camino[:len(camino) - 2] + caminoAux
-                    else:
-                        for j in range(len(camino) - 2, -1, -1):
-                            if camino[j] == i:
-                                a = camino[:j]
-                                b = camino[j+1:]
-                                camino = a + caminoAux + b
-                                break
+                    a = camino[:i]
+                    b = camino[i+1:]
+                    camino = a + caminoAux + b
+                    i = -1
+            i += 1
 
         return camino
 
@@ -73,9 +73,8 @@ class Euler():
             arista = noVisitadas[vertice].Desapilar()
             if arista not in visitadas and (arista[1], arista[0]) not in visitadas:
                 visitadas.add(arista)
-                if len(caminoActualizado) != 0:
-                    if caminoActualizado[len(caminoActualizado) - 1] != arista[1]:
-                        caminoActualizado.append(arista[1])
+                if caminoActualizado[len(caminoActualizado) - 1] != arista[1]:
+                    caminoActualizado.append(arista[1])
                 if arista[1] == inicio:
                     return False
                 seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
@@ -88,16 +87,82 @@ prueba.agregarVertice(3)
 prueba.agregarVertice(4)
 prueba.agregarVertice(5)
 prueba.agregarVertice(6)
+prueba.agregarVertice(7)
+prueba.agregarVertice(8)
+prueba.agregarVertice(9)
+prueba.agregarVertice(10)
+prueba.agregarVertice(11)
+prueba.agregarVertice(12)
+prueba.agregarVertice(13)
+prueba.agregarVertice(14)
+prueba.agregarVertice(15)
+prueba.agregarVertice(16)
+prueba.agregarVertice(17)
+prueba.agregarVertice(18)
+prueba.agregarVertice(19)
+prueba.agregarVertice(20)
 
-prueba.agregarArista(1, 2, 3)
-prueba.agregarArista(1, 4, 4)
-prueba.agregarArista(2, 3, 3)
-prueba.agregarArista(3, 4, 5)
-prueba.agregarArista(3, 6, 2)
-prueba.agregarArista(4, 6, 3)
-prueba.agregarArista(4, 5, 5)
-prueba.agregarArista(3, 5, 10)
+prueba.agregarArista(1, 2, 10)
+prueba.agregarArista(1, 3, 10)
+prueba.agregarArista(1, 4, 10)
+prueba.agregarArista(1, 5, 10)
+prueba.agregarArista(15, 2, 10)
+prueba.agregarArista(15, 6, 10)
+prueba.agregarArista(15, 7, 10)
+prueba.agregarArista(15, 8, 10)
+prueba.agregarArista(16, 8, 10)
+prueba.agregarArista(16, 9, 10)
+prueba.agregarArista(16, 10, 10)
+prueba.agregarArista(16, 11, 10)
+prueba.agregarArista(14, 11, 10)
+prueba.agregarArista(14, 12, 10)
+prueba.agregarArista(14, 13, 10)
+prueba.agregarArista(14, 5, 10)
+prueba.agregarArista(2, 3, 10)
+prueba.agregarArista(2, 6, 10)
+prueba.agregarArista(3, 17, 10)
+prueba.agregarArista(3, 4, 10)
+prueba.agregarArista(4, 18, 10)
+prueba.agregarArista(4, 5, 10)
+prueba.agregarArista(5, 13, 10)
+prueba.agregarArista(6, 17, 10)
+prueba.agregarArista(6, 7, 10)
+prueba.agregarArista(7, 19, 10)
+prueba.agregarArista(7, 8, 10)
+prueba.agregarArista(8, 9, 10)
+prueba.agregarArista(17, 19, 10)
+prueba.agregarArista(17, 18, 10)
+prueba.agregarArista(18, 20, 10)
+prueba.agregarArista(18, 13, 10)
+prueba.agregarArista(19, 20, 10)
+prueba.agregarArista(19, 9, 10)
+prueba.agregarArista(18, 20, 10)
+prueba.agregarArista(13, 18, 10)
+prueba.agregarArista(20, 12, 10)
+prueba.agregarArista(20, 10, 10)
+prueba.agregarArista(10, 11, 10)
+prueba.agregarArista(12, 11, 10)
+prueba.agregarArista(12, 13, 10)
+prueba.agregarArista(9, 10, 10)
 
 ciclo = Euler(prueba)
 
-print(ciclo.cicloEulerianoHierholzer(6))
+# a, peso = ciclo.cicloEulerianoHierholzer(5)
+
+# print(a)
+
+# for i in range(1, 21):
+#     a, peso = ciclo.cicloEulerianoHierholzer(i)
+
+#     print(peso)
+#     print(a)
+
+# vistos = set()
+# for ar in arista:
+#     if ar in vistos or (ar[1], ar[0]) in vistos:
+#         print(ar)
+#     else:
+#         vistos.add(ar)
+
+# for ar in arista:
+#     print(ar)
