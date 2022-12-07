@@ -16,7 +16,7 @@ class Euler():
 
     def __tieneCicloEuleriano(self) -> bool:
         _, cant_componentes_conexas = funciones.dfs(self.grafo)
-        cant_impar = self.__contarGradosImpares(funciones.gradosNoDirigido(self.grafo))
+        cant_impar = self.__contarGradosImpares(funciones.grados(self.grafo))
         return cant_componentes_conexas == 1 and cant_impar == 0#Es 0 si es un ciclo Euleriano
 
     def __contarGradosImpares(self, gradosVertices: dict) -> int:
