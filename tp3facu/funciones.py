@@ -12,7 +12,7 @@ def dfs(grafo: Grafo): #se usa
 			padres[v] = None
 			cant_comp += 1
 			visitados.add(v)
-			_dfs(grafo,v,padres,visitados,orden)
+			_dfs(grafo,v,padres,visitados)
 	return padres, cant_comp
 			
 def _dfs(grafo: Grafo,vertice,padres,visitados):
@@ -20,7 +20,7 @@ def _dfs(grafo: Grafo,vertice,padres,visitados):
 		if adyacente not in visitados:
 			padres[adyacente] = vertice
 			visitados.add(adyacente)
-			_dfs(grafo,adyacente,padres,visitados,orden)
+			_dfs(grafo,adyacente,padres,visitados)
 
 def grados(grafo: Grafo) -> dict:
 	grados = {}

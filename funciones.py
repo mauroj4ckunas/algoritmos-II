@@ -48,11 +48,6 @@ def _dfs(grafo: Grafo,vertice,padres,visitados: set,orden):
 			_dfs(grafo,adyacente,padres,visitados,orden)
 
 
-
-
-
-
-
 def grados(grafo: Grafo) -> dict:
 	grados = {}
 	for v in grafo.verVertices():
