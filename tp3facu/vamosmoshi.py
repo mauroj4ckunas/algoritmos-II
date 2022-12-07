@@ -51,6 +51,36 @@ def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coorde
     mensajeFinal(camino, peso)
     crearArchivoKML(camino, nombreArchivo, coordenadas, desde)
 
+
+
+    
+"""def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
+    with open(nombreArchivo, "w", encoding="UTF-8") as nuevo:
+        nuevo.writelines('<?xml version="1.0" encoding="UTF-8"?>\n')
+        nuevo.writelines('<kml xmlns="http://www.opengis.net/kml/2.2">\n')
+        nuevo.writelines('\t<Document>\n')
+        if hasta != None: nuevo.writelines(f'\t\t<name>Camino desde {desde} hacia {hasta}</name>\n')
+        else: nuevo.writelines(f'\t\t<name>Viaje desde {desde}</name>\n\n')
+        nuevo.writelines('\n')
+        for sede in listaPuntos:
+            nuevo.writelines('\t\t<Placemark>\n')
+            nuevo.writelines(f'\t\t\t<name>{sede}</name>\n')
+            nuevo.writelines('\t\t\t<Point>\n')
+            nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[sede][0]}, {coordenadas[sede][1]}</coordinates>\n')
+            nuevo.writelines('\t\t\t</Point>\n')
+            nuevo.writelines('\t\t</Placemark>\n')
+            nuevo.writelines('\n')
+        for i in range(len(listaPuntos) - 1):
+            nuevo.writelines('\t\t<Placemark>\n')
+            nuevo.writelines('\t\t\t<LineString>\n')
+            nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[listaPuntos[i]][0]}, {coordenadas[listaPuntos[i]][1]} {coordenadas[listaPuntos[i+1]][0]}, {coordenadas[listaPuntos[i+1]][1]}</coordinates>\n')
+            nuevo.writelines('\t\t\t</LineString>\n')
+            nuevo.writelines('\t\t</Placemark>\n')
+            nuevo.writelines('\n')
+
+        nuevo.writelines('\t<Document>\n')
+        nuevo.writelines('</kml>')"""
+
 def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, desde, hasta = None):
     with open(nombreArchivo, "w", encoding="UTF-8") as nuevo:
         nuevo.writelines('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -95,23 +125,18 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
         print(ErrorSinRecorrido().Error())
 
 def reconstruirComando(grafoMundial:gf.Grafo,comando: list):
+    resultado = []
     index = 0
-    primerElemento = comando[index].replace(",", "")
-    while not grafoMundial.pertenece(primerElemento):
-        index += 1
-        primerElemento += " " + comando[index].replace(",", "")
-    index += 1
-    segundoElemento = comando[index].replace(",", "")
-    if len(comando) - 1 == index:
-        terceroYultimo = ""
-    else:
-        while not grafoMundial.pertenece(segundoElemento):
-           index += 1
-           segundoElemento += " " + comando[index].replace(",", "")
-        index += 1
-        terceroYultimo = comando[index] 
-    
-    return primerElemento,segundoElemento,terceroYultimo
+    palabra = ""
+    while index < len(comando):
+        if "," in comando[index] or index == len(comando) - 1:
+            palabra += comando[index].replace(",", "")
+            resultado.append(palabra)
+            palabra = ""
+        else:
+            palabra += comando[index] + " "
+        index += 1 
+    return resultado
 
 def abrirArchivo(archivo):
     try:
@@ -149,35 +174,45 @@ def main():
 
     programa = True
     while programa:
-        for escrito in sys.stdin:
-            comandoList = escrito.split(" ")
+        try:
+            comandoStr = input()
+        except EOFError:
+            return
+        
+        comandoList = comandoStr.split(" ")
 
-            if comandoList[0] == COMANDOS[0]:
-                desde , hasta , archivo = reconstruirComando(grafoMundial,comandoList[1:])
-                guardarCaminoMinimo(grafoMundial, desde, hasta, archivo, coordenadas)
-
-            elif comandoList[0] == COMANDOS[1]:
-                archivo = comandoList[1]
-                grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
-                if error == False:
-                    posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
-                    if esPosible == False:
-                        print(ErrorSinRecorrido().Error())
-                    else:
-                        mensajeFinal(posibleCamino)
-
-            elif comandoList[0] == COMANDOS[2]:
-                desde,archivo,_ = reconstruirComando(grafoMundial,comandoList[1:])
-                viajeTodosLosCaminos(grafoMundial, desde, archivo, coordenadas)
-
-            elif comandoList[0] == COMANDOS[3]:
-                archivo = comandoList[1]
-                arbol, peso = func.prim(grafoMundial)
-                print(f'Peso total: {peso}')
-                aristas = func.verAristas(arbol)
-                caminosReducidos(arbol, archivo, coordenadas, aristas)
-
+        if comandoList[0] == COMANDOS[0]:
+            escrituraUsuario = reconstruirComando(grafoMundial,comandoList[1:])
+            if len(escrituraUsuario) != 3: #3 ya que necesita el desde, hasta y el nombre del archivo
+               print(ErrorSinRecorrido().Error()) 
             else:
-                programa = False
+                guardarCaminoMinimo(grafoMundial, escrituraUsuario[0], escrituraUsuario[1], escrituraUsuario[2], coordenadas)
+
+        elif comandoList[0] == COMANDOS[1]:
+            archivo = comandoList[1]
+            grafoDeRecorrido,error = itinerarioPosible(archivo, grafoMundial.verVertices())
+            if error == False:
+                posibleCamino, esPosible = func.bfsordenadoentrada(grafoDeRecorrido)
+                if esPosible == False:
+                    print(ErrorSinRecorrido().Error())
+                else:
+                    mensajeFinal(posibleCamino)
+
+        elif comandoList[0] == COMANDOS[2]:
+            escrituraUsuario = reconstruirComando(grafoMundial,comandoList[1:])
+            if len(escrituraUsuario)!= 2:#2 ya que necesita la entrada de desde y el nombre del archivo
+                print(ErrorSinRecorrido().Error())
+            else:
+                viajeTodosLosCaminos(grafoMundial, escrituraUsuario[0], escrituraUsuario[1], coordenadas)
+
+        elif comandoList[0] == COMANDOS[3]:
+            archivo = comandoList[1]
+            arbol, peso = func.prim(grafoMundial)
+            print(f'Peso total: {peso}')
+            aristas = func.verAristas(arbol)
+            caminosReducidos(arbol, archivo, coordenadas, aristas)
+
+        else:
+            programa = False
 
 main()
