@@ -140,7 +140,6 @@ def abrirArchivo(archivo):
 
     return mundial, coordenadas
 
-
 def main():
     archivo = sys.argv[1:]
     if len(archivo) > 1:
