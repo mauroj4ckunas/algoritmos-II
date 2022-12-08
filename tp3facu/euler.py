@@ -68,14 +68,13 @@ class Euler():
         return camino
 
 
-    def __dfsHierholzer(self, vertice, noVisitadas: dict, visitadas: set, caminoActualizado: list, inicio, seguir = True):
-        while not noVisitadas[vertice].EstaVacia() and seguir:
+    def __dfsHierholzer(self, vertice, noVisitadas: dict, visitadas: set, caminoActualizado: list, inicio):
+        while not noVisitadas[vertice].EstaVacia():
             arista = noVisitadas[vertice].Desapilar()
             if arista not in visitadas and (arista[1], arista[0]) not in visitadas:
                 visitadas.add(arista)
                 if caminoActualizado[len(caminoActualizado) - 1] != arista[1]:
                     caminoActualizado.append(arista[1])
                 if arista[1] == inicio:
-                    return False
-                seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
-        return False
+                    return 
+                return self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)

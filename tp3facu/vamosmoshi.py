@@ -58,13 +58,17 @@ def crearArchivoKML(listaPuntos: list, nombreArchivo: str, coordenadas: dict, de
         nuevo.writelines('\t<Document>\n')
         if hasta != None: nuevo.writelines(f'\t\t<name>Camino desde {desde} hacia {hasta}</name>\n')
         else: nuevo.writelines(f'\t\t<name>Viaje desde {desde}</name>\n\n')
+        vistos = set()
         for sede in listaPuntos:
+            if sede in vistos:
+                continue
             nuevo.writelines('\t\t<Placemark>\n')
             nuevo.writelines(f'\t\t\t<name>{sede}</name>\n')
             nuevo.writelines('\t\t\t<Point>\n')
             nuevo.writelines(f'\t\t\t\t<coordinates>{coordenadas[sede][0]}, {coordenadas[sede][1]}</coordinates>\n')
             nuevo.writelines('\t\t\t</Point>\n')
             nuevo.writelines('\t\t</Placemark>\n')
+            vistos.add(sede)
         nuevo.writelines('\n')
         for i in range(len(listaPuntos)-1):
             nuevo.writelines('\t\t<Placemark>\n')
@@ -97,7 +101,7 @@ def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenada
     except KeyError: #Si el hasta no tiene  
         print(ErrorSinRecorrido().Error())
 
-def reconstruirComando(grafoMundial:gf.Grafo,comando: list):
+def reconstruirComando(comando: list):
     resultado = []
     index = 0
     palabra = ""
@@ -155,7 +159,7 @@ def main():
         comandoList = comandoStr.split(" ")
 
         if comandoList[0] == COMANDOS[0]:
-            escrituraUsuario = reconstruirComando(grafoMundial,comandoList[1:])
+            escrituraUsuario = reconstruirComando(comandoList[1:])
             if len(escrituraUsuario) != 3: #3 ya que necesita el desde, hasta y el nombre del archivo
                print(ErrorSinRecorrido().Error()) 
             else:
@@ -172,7 +176,7 @@ def main():
                     mensajeFinal(posibleCamino)
 
         elif comandoList[0] == COMANDOS[2]:
-            escrituraUsuario = reconstruirComando(grafoMundial,comandoList[1:])
+            escrituraUsuario = reconstruirComando(comandoList[1:])
             if len(escrituraUsuario)!= 2:#2 ya que necesita la entrada de desde y el nombre del archivo
                 print(ErrorSinRecorrido().Error())
             else:
