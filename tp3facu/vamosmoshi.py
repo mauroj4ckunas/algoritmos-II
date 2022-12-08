@@ -88,7 +88,7 @@ def mensajeFinal(lista: list, peso = None):
 
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
     try:
-        if grafo.pertenece(desde) && grafo.pertenece(hasta):
+        if grafo.pertenece(desde) and grafo.pertenece(hasta):
             camino, dist = func.reconstruirCaminoMinimo(grafo,desde,hasta)
             mensajeFinal(list(camino), dist[hasta])
             crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)

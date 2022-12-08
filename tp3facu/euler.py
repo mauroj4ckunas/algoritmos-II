@@ -58,7 +58,6 @@ class Euler():
                     caminoAux.append(sig[0])
                     caminoAux.append(sig[1])
                     self.__dfsHierholzer(sig[1], aristasNoVisitadas, aristasVisitadas, caminoAux, sig[0])
-
                     a = camino[:i]
                     b = camino[i+1:]
                     camino = a + caminoAux + b
@@ -79,3 +78,4 @@ class Euler():
                 if arista[1] == inicio:
                     return False
                 seguir = self.__dfsHierholzer(arista[1], noVisitadas, visitadas, caminoActualizado, inicio)
+        return False
