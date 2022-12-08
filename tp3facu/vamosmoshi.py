@@ -88,9 +88,12 @@ def mensajeFinal(lista: list, peso = None):
 
 def guardarCaminoMinimo(grafo: gf.Grafo, desde, hasta, nombreArchivo, coordenadas):
     try:
-        camino, dist = func.reconstruirCaminoMinimo(grafo,desde,hasta)
-        mensajeFinal(list(camino), dist[hasta])
-        crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
+        if grafo.pertenece(desde) && grafo.pertenece(hasta):
+            camino, dist = func.reconstruirCaminoMinimo(grafo,desde,hasta)
+            mensajeFinal(list(camino), dist[hasta])
+            crearArchivoKML(list(camino), nombreArchivo, coordenadas, desde, hasta)
+        else:
+            print(ErrorSinRecorrido().Error())
     except KeyError: #Si el hasta no tiene  
         print(ErrorSinRecorrido().Error())
 
