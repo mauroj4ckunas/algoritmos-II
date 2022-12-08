@@ -6,6 +6,8 @@ import euler as eu
 from errores import ErrorSinRecorrido
 import sys
 
+sys.setrecursionlimit(3000)
+
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
 
