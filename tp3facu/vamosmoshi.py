@@ -7,7 +7,6 @@ from errores import ErrorSinRecorrido
 import sys
 
 sys.setrecursionlimit(3000)
-
 COMANDOS = ["ir", "itinerario", "viaje", "reducir_caminos"]
 
 
@@ -30,19 +29,15 @@ def itinerarioPosible(archivo, vertices: list):
 
     return grafo,errorLectura
 
-
-
 def caminosReducidos(arbol: gf.Grafo, archivo, coordenadas: dict, aristas: list):
 
     with open(archivo, "w") as pajek:
         pajek.writelines(f'{len(arbol.verVertices())}\n')
         for sede in arbol.verVertices():
             pajek.writelines(f'{sede},{coordenadas[sede][0]},{coordenadas[sede][1]}\n')
-        pajek.writelines(f'{len(arbol.verVertices())}\n')
+        pajek.writelines(f'{len(aristas)}\n')
         for ar in aristas:
             pajek.writelines(f'{ar[0]},{ar[1]},{ar[2]}\n')
-
-    pass
 
 def viajeTodosLosCaminos(grafo: gf.Grafo, desde: str, nombreArchivo: str, coordenadas):
     cicloEuler = eu.Euler(grafo)
